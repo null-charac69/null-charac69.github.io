@@ -2,6 +2,18 @@ body {
     font-family: 'Inter', sans-serif;
     background-color: #0a192f;
     color: #ccd6f6;
+    scroll-behavior: smooth;
+}
+
+@keyframes nav-glow {
+    0% { text-shadow: 0 0 5px rgba(100, 255, 218, 0); }
+    50% { text-shadow: 0 0 10px rgba(100, 255, 218, 0.5); }
+    100% { text-shadow: 0 0 5px rgba(100, 255, 218, 0); }
+}
+
+.nav-link.active {
+    color: #64ffda;
+    animation: nav-glow 2s infinite;
 }
 
 .font-playfair {
@@ -30,16 +42,26 @@ body {
 
 .skill-card {
     transition: all 0.3s ease-in-out;
+    position: relative;
+    background: linear-gradient(to bottom right, rgba(100, 255, 218, 0.1), rgba(10, 25, 47, 0.1));
+    border: 1px solid rgba(100, 255, 218, 0.1);
 }
 
 .skill-card:hover {
     transform: translateY(-8px);
     box-shadow: 0 20px 25px -5px rgba(100, 255, 218, 0.1),
                 0 10px 10px -5px rgba(100, 255, 218, 0.04);
+    border: 1px solid rgba(100, 255, 218, 0.3);
+    background: linear-gradient(135deg, rgba(100, 255, 218, 0.15), rgba(10, 25, 47, 0.15));
 }
 
 .project-card {
     transition: all 0.3s ease-in-out;
+}
+
+.project-card {
+    transform-style: preserve-3d;
+    perspective: 1000px;
 }
 
 .project-card::before {
@@ -51,12 +73,19 @@ body {
     bottom: 0;
     background: linear-gradient(45deg, rgba(100, 255, 218, 0.1), rgba(100, 255, 218, 0) 70%);
     opacity: 0;
-    transition: opacity 0.4s ease-in-out;
+    transition: all 0.4s ease-in-out;
     z-index: 1;
+    transform: translateZ(0);
+}
+
+.project-card:hover {
+    transform: translateY(-10px) rotateX(5deg);
+    box-shadow: 0 30px 40px -15px rgba(100, 255, 218, 0.15);
 }
 
 .project-card:hover::before {
     opacity: 1;
+    transform: translateZ(20px);
 }
 
 .project-content {
