@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anant Kumar Thakur - AI & Generative AI Specialist</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0a192f;
+            color: #ccd6f6;
+        }
+
+        .font-playfair {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .glass-effect {
+            background: rgba(23, 42, 70, 0.6);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .neon-text {
+            color: #64ffda;
+            text-shadow:
+                0 0 5px #64ffda,
+                0 0 10px #64ffda,
+                0 0 20px #64ffda,
+                0 0 40px #0fa,
+                0 0 80px #0fa,
+                0 0 90px #0fa,
+                0 0 100px #0fa,
+                0 0 150px #0fa;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(100, 255, 218, 0.1), 0 10px 10px -5px rgba(100, 255, 218, 0.04);
+        }
+
+        .project-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, rgba(100, 255, 218, 0.1), rgba(100, 255, 218, 0) 70%);
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+            z-index: 1;
+        }
+
+        .project-card:hover::before {
+            opacity: 1;
+        }
+
+        .project-content {
+            z-index: 2;
+        }
+
+        #signature-path {
+            stroke-dasharray: 1500;
+            stroke-dashoffset: 1500;
+            animation: draw 5s forwards;
+        }
+        
+        @keyframes draw {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
+
+        /* Chat Styles */
+        .chat-bubble-user {
+            background-color: #0c2d57;
+            align-self: flex-end;
+        }
+        .chat-bubble-ai {
+            background-color: #113c6e;
+            align-self: flex-start;
+        }
+        
+        /* Loading Spinner */
+        .loader {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #64ffda;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Typing indicator */
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            float: left;
+            margin: 0 1px;
+            background-color: #64ffda;
+            display: block;
+            border-radius: 50%;
+            opacity: 0.4;
+            animation: an-typing 1s infinite ease-in-out;
+        }
+        .typing-indicator span:nth-of-type(1) { animation-delay: -0.4s; }
+        .typing-indicator span:nth-of-type(2) { animation-delay: -0.2s; }
+        @keyframes an-typing {
+            50% { opacity: 1; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body class="antialiased">
+    <!-- Canvas for background animation -->
+    <canvas id="constellation-canvas" class="fixed top-0 left-0 w-full h-full z-0"></canvas>
+
+    <div class="relative z-10">
+        <!-- Header -->
+        <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+                <a href="#" class="text-2xl font-bold text-white tracking-wider">AK.</a>
+                <div class="hidden md:flex space-x-8 items-center">
+                    <a href="#about" class="text-gray-300 hover:text-cyan-400 transition duration-300">About</a>
+                    <a href="#experience" class="text-gray-300 hover:text-cyan-400 transition duration-300">Experience</a>
+                    <a href="#skills" class="text-gray-300 hover:text-cyan-400 transition duration-300">Skills</a>
+                    <a href="#projects" class="text-gray-300 hover:text-cyan-400 transition duration-300">Projects</a>
+                    <a href="#ai-chat" class="text-gray-300 hover:text-cyan-400 transition duration-300">AI Chat</a>
+                    <a href="#contact" class="border border-cyan-400 text-cyan-400 px-4 py-2 rounded-md hover:bg-cyan-400 hover:text-slate-900 transition duration-300">Contact</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-button" class="text-white focus:outline-none">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                        </svg>
+                    </button>
+                </div>
+            </nav>
+            <div id="mobile-menu" class="hidden md:hidden bg-slate-800">
+                <a href="#about" class="block py-2 px-4 text-sm text-gray-300 hover:bg-slate-700">About</a>
+                <a href="#experience" class="block py-2 px-4 text-sm text-gray-300 hover:bg-slate-700">Experience</a>
+                <a href="#skills" class="block py-2 px-4 text-sm text-gray-300 hover:bg-slate-700">Skills</a>
+                <a href="#projects" class="block py-2 px-4 text-sm text-gray-300 hover:bg-slate-700">Projects</a>
+                <a href="#ai-chat" class="block py-2 px-4 text-sm text-gray-300 hover:bg-slate-700">AI Chat</a>
+                <a href="#contact" class="block py-2 px-4 text-sm text-gray-300 hover:bg-slate-700">Contact</a>
+            </div>
+        </header>
+
+        <main class="container mx-auto px-6">
+            <!-- Hero Section -->
+            <section id="hero" class="min-h-screen flex flex-col justify-center items-start">
+                <div class="max-w-4xl">
+                    <p class="text-cyan-400 text-lg mb-4 fade-in">Greetings, my name is</p>
+                    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-bold text-slate-100 mb-4 fade-in" style="transition-delay: 100ms;">Anant Kumar Thakur.</h1>
+                    <h2 class="text-4xl sm:text-6xl lg:text-7xl font-bold text-slate-400 mb-8 fade-in" style="transition-delay: 200ms;">I craft intelligent solutions.</h2>
+                    <p class="text-slate-400 max-w-xl mb-12 fade-in" style="transition-delay: 300ms;">
+                        As a distinguished AI/ML & Generative AI Engineer at <span class="text-cyan-400">TATA ELXSI LTD.</span>, I specialize in designing and implementing cutting-edge AI solutions. With over 2+ years of hands-on experience, I transform complex challenges into groundbreaking solutions that set new industry benchmarks.
+                    </p>
+                    <a href="#projects" class="fade-in border-2 border-cyan-400 text-cyan-400 px-8 py-4 rounded-lg text-lg font-medium hover:bg-cyan-400 hover:text-slate-900 transition-all duration-300 transform hover:scale-105" style="transition-delay: 400ms;">
+                        Explore My Innovations
+                    </a>
+                </div>
+            </section>
+
+            <!-- About Section -->
+            <section id="about" class="py-24 fade-in">
+                <h2 class="text-3xl font-bold text-slate-100 mb-12 text-center font-playfair"><span class="text-cyan-400">01.</span> About Me</h2>
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
+                    <div class="md:col-span-3 text-slate-400 space-y-4 text-lg">
+                        <p>
+                            Since my first encounter with neural networks, I recognized that AI wasn't just another technological advancement—it was the cornerstone of future innovation. At TATA ELXSI, I've dedicated myself to pushing the boundaries of what's possible with artificial intelligence, developing solutions that not only meet current needs but anticipate future challenges.
+                        </p>
+                        <p>
+                            My approach combines deep technical expertise with strategic thinking. I specialize in developing end-to-end AI solutions, from conceptualization to deployment, with a particular focus on Generative AI and Large Language Models. My work spans across computer vision, natural language processing, and predictive analytics, always aiming to deliver solutions that drive real business value.
+                        </p>
+                        <p>
+                            I pride myself on staying at the cutting edge of AI advancement, constantly exploring new technologies and methodologies to enhance my toolkit and deliver more sophisticated solutions to complex problems.
+                        </p>
+                    </div>
+                    <div class="md:col-span-2 flex justify-center">
+                        <div class="w-64 h-64 relative group">
+                            <div class="absolute inset-0 bg-cyan-400 rounded-lg transform -rotate-6 transition-transform duration-300 group-hover:rotate-0"></div>
+                            <img src="assets/profile.jpg" alt="Anant Kumar Thakur" class="relative w-full h-full object-cover rounded-lg shadow-2xl">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Experience Section -->
+            <section id="experience" class="py-24 fade-in">
+                <h2 class="text-3xl font-bold text-slate-100 mb-12 text-center font-playfair"><span class="text-cyan-400">02.</span> Professional Journey</h2>
+                <div class="max-w-3xl mx-auto">
+                    <div class="glass-effect rounded-lg p-8 shadow-2xl">
+                        <h3 class="text-xl font-bold text-slate-100">AI/ML & Generative AI Engineer</h3>
+                        <p class="text-cyan-400 mb-4 text-lg">TATA ELXSI LTD.</p>
+                        <p class="text-slate-500 mb-6">2022 - Present</p>
+                        <ul class="space-y-3 text-slate-400 list-disc list-inside">
+                            <li>Led the development and deployment of enterprise-scale Generative AI solutions, implementing state-of-the-art Large Language Models that achieved breakthrough performance metrics.</li>
+                            <li>Architected and optimized deep learning models for complex computer vision tasks, achieving exceptional accuracy rates in production environments.</li>
+                            <li>Pioneered the implementation of advanced RAG (Retrieval-Augmented Generation) systems, significantly enhancing the contextual understanding of AI models.</li>
+                            <li>Established robust MLOps practices, streamlining the model development lifecycle and reducing deployment times by 70%.</li>
+                            <li>Developed innovative AI solutions for automotive and healthcare sectors, directly contributing to multi-million dollar revenue generation.</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Skills Section -->
+            <section id="skills" class="py-24 fade-in">
+                <h2 class="text-3xl font-bold text-slate-100 mb-12 text-center font-playfair"><span class="text-cyan-400">03.</span> Technical Expertise</h2>
+                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
+                        <h3 class="text-lg font-bold text-slate-100">AI/ML Foundations</h3>
+                        <p class="text-slate-400 text-sm mt-2">Deep expertise in TensorFlow, PyTorch, Scikit-learn, and Neural Network architectures</p>
+                    </div>
+                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
+                        <h3 class="text-lg font-bold text-slate-100">Generative AI & LLMs</h3>
+                        <p class="text-slate-400 text-sm mt-2">Advanced experience with transformers, BERT, GPT, and custom LLM development</p>
+                    </div>
+                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
+                        <h3 class="text-lg font-bold text-slate-100">Computer Vision</h3>
+                        <p class="text-slate-400 text-sm mt-2">Mastery in OpenCV, YOLO, CNN architectures, and image processing</p>
+                    </div>
+                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
+                        <h3 class="text-lg font-bold text-slate-100">NLP & Text Analytics</h3>
+                        <p class="text-slate-400 text-sm mt-2">Proficient in NLTK, SpaCy, transformers, and advanced text processing</p>
+                    </div>
+                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
+                        <h3 class="text-lg font-bold text-slate-100">MLOps & Deployment</h3>
+                        <p class="text-slate-400 text-sm mt-2">Expert in MLflow, Docker, Kubernetes, and CI/CD pipelines</p>
+                    </div>
+                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
+                        <h3 class="text-lg font-bold text-slate-100">Cloud Platforms</h3>
+                        <p class="text-slate-400 text-sm mt-2">Extensive experience with AWS, Azure, and GCP AI services</p>
+                    </div>
+                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
+                        <h3 class="text-lg font-bold text-slate-100">Programming</h3>
+                        <p class="text-slate-400 text-sm mt-2">Python, Java, C++, SQL, and modern development practices</p>
+                    </div>
+                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
+                        <h3 class="text-lg font-bold text-slate-100">Big Data & Analytics</h3>
+                        <p class="text-slate-400 text-sm mt-2">Proficient in Spark, Hadoop, and distributed computing</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Projects Section -->
+            <section id="projects" class="py-24 fade-in">
+                <h2 class="text-3xl font-bold text-slate-100 mb-12 text-center font-playfair"><span class="text-cyan-400">04.</span> Featured Projects</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Project 1 -->
+                    <div class="project-card glass-effect rounded-lg p-6 relative overflow-hidden flex flex-col justify-between">
+                        <div class="project-content">
+                            <h3 class="text-xl font-bold text-slate-100 mb-2">AI-Powered Healthcare Analytics</h3>
+                            <p class="text-slate-400 mb-4">Developed an advanced healthcare analytics platform using deep learning for medical image analysis and patient outcome prediction, achieving 95% accuracy in early disease detection.</p>
+                            <div class="text-cyan-400 font-mono text-sm mb-4">
+                                PyTorch • Computer Vision • MLOps • Healthcare AI
+                            </div>
+                            <button class="expand-ai-btn text-sm text-cyan-400 border border-cyan-400 rounded-full px-4 py-1 hover:bg-cyan-400 hover:text-slate-900 transition duration-300">✨ Expand with AI</button>
+                        </div>
+                    </div>
+                    <!-- Project 2 -->
+                    <div class="project-card glass-effect rounded-lg p-6 relative overflow-hidden flex flex-col justify-between">
+                        <div class="project-content">
+                            <h3 class="text-xl font-bold text-slate-100 mb-2">Autonomous Quality Control</h3>
+                            <p class="text-slate-400 mb-4">Engineered an end-to-end computer vision system for automotive manufacturing, reducing defect detection time by 80% and improving accuracy to 99.9%.</p>
+                            <div class="text-cyan-400 font-mono text-sm mb-4">
+                                TensorFlow • OpenCV • Edge AI • Industrial IoT
+                            </div>
+                            <button class="expand-ai-btn text-sm text-cyan-400 border border-cyan-400 rounded-full px-4 py-1 hover:bg-cyan-400 hover:text-slate-900 transition duration-300">✨ Expand with AI</button>
+                        </div>
+                    </div>
+                    <!-- Project 3 -->
+                    <div class="project-card glass-effect rounded-lg p-6 relative overflow-hidden flex flex-col justify-between">
+                        <div class="project-content">
+                            <h3 class="text-xl font-bold text-slate-100 mb-2">Enterprise Knowledge AI</h3>
+                            <p class="text-slate-400 mb-4">Created a custom LLM-powered knowledge management system with advanced RAG capabilities, improving information retrieval accuracy by 200%.</p>
+                            <div class="text-cyan-400 font-mono text-sm mb-4">
+                                LangChain • Transformers • Vector DB • AWS
+                            </div>
+                            <button class="expand-ai-btn text-sm text-cyan-400 border border-cyan-400 rounded-full px-4 py-1 hover:bg-cyan-400 hover:text-slate-900 transition duration-300">✨ Expand with AI</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI Chat Section -->
+            <section id="ai-chat" class="py-24 fade-in">
+                <h2 class="text-3xl font-bold text-slate-100 mb-6 text-center font-playfair"><span class="text-cyan-400">05.</span> Engage with My AI Persona</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto mb-10 text-center">Have questions about my experience or skills? Ask my digital twin, an AI powered by the Gemini model, trained on my portfolio data. This is a demonstration of my ability to build advanced conversational agents.</p>
+                <div class="max-w-2xl mx-auto glass-effect rounded-lg p-6 shadow-2xl">
+                    <div id="chat-window" class="h-80 overflow-y-auto mb-4 p-4 space-y-4 flex flex-col bg-slate-900/50 rounded-lg">
+                       <div class="chat-bubble-ai rounded-lg p-3 max-w-md text-sm">
+                           <p>Hello. I am the AI persona of Anant Kumar Thakur. Feel free to ask me anything about his qualifications, projects, or technical expertise.</p>
+                       </div>
+                    </div>
+                    <div id="typing-indicator" class="hidden h-8 items-center">
+                        <div class="typing-indicator"><span></span><span></span><span></span></div>
+                    </div>
+                    <form id="chat-form" class="flex gap-4">
+                        <input type="text" id="chat-input" placeholder="Ask about a project or skill..." class="flex-grow bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-300 focus:outline-none focus:ring-2 focus:ring-cyan-400">
+                        <button type="submit" class="bg-cyan-400 text-slate-900 font-bold px-6 py-2 rounded-lg hover:bg-cyan-300 transition-colors duration-300">Send</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Contact Section -->
+            <section id="contact" class="py-24 text-center fade-in">
+                <h2 class="text-3xl font-bold text-slate-100 mb-4 font-playfair">Let's Connect</h2>
+                <p class="text-slate-400 max-w-2xl mx-auto mb-12">
+                    I'm always interested in challenging AI projects and innovative collaborations. Whether you're looking to implement cutting-edge AI solutions or discuss the future of technology, I'd love to hear from you.
+                </p>
+                <a href="mailto:anant.thakur2000@gmail.com" class="border-2 border-cyan-400 text-cyan-400 text-xl font-medium px-10 py-5 rounded-lg hover:bg-cyan-400 hover:text-slate-900 transition-all duration-300 transform hover:scale-105">
+                    Get In Touch
+                </a>
+                
+                <!-- Signature -->
+                <div class="mt-24">
+                    <svg id="signature-svg" class="w-64 mx-auto" viewBox="0 0 500 150">
+                        <path id="signature-path" d="M20,80 C40,40 80,40 100,80 S160,120 180,80 C200,40 240,40 260,80 S320,120 340,80 C360,40 400,40 420,80 C440,120 480,120 500,80" stroke="#64FFDA" stroke-width="3" fill="none" />
+                    </svg>
+                    <p class="text-slate-100 font-playfair text-2xl mt-2">Anant Kumar Thakur</p>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="py-8 text-center text-slate-500">
+            <p>&copy; 2025 Anant Kumar Thakur. All rights reserved. Designed & Built with Excellence.</p>
+        </footer>
+    </div>
+
+    <!-- Modal for AI Project Summary -->
+    <div id="ai-summary-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4 modal-overlay hidden opacity-0">
+        <div class="glass-effect rounded-lg shadow-2xl p-8 max-w-2xl w-full modal-content transform scale-95">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-title" class="text-2xl font-bold text-slate-100">AI-Generated Summary</h3>
+                <button id="modal-close-btn" class="text-slate-400 hover:text-white">&times;</button>
+            </div>
+            <div id="modal-body" class="text-slate-300">
+                <div class="flex justify-center items-center h-48">
+                    <div class="loader"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/ai-features.js"></script>
+    <script src="js/config.js"></script>
+</body>
+</html>
