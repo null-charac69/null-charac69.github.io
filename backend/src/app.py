@@ -13,7 +13,7 @@ from botocore.exceptions import BotoCoreError, ClientError
 LOG = logging.getLogger()
 LOG.setLevel(logging.INFO)
 
-MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "apac.amazon.nova-lite-v1:0")
+MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "global.moonshotai.kimi-k3.1")
 ALLOWED_ORIGIN = os.environ.get("ALLOWED_ORIGIN", "https://null-charac69.github.io")
 MAX_OUTPUT_TOKENS = min(max(int(os.environ.get("MAX_OUTPUT_TOKENS", "600")), 128), 900)
 MAX_BODY_BYTES = 14_000
