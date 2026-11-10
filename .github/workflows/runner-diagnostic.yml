@@ -1,0 +1,20 @@
+name: Runner diagnostic (temporary)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".github/workflows/runner-diagnostic.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  runner-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Confirm runner executes commands
+        run: |
+          echo "GitHub hosted runner started and executed a shell step."
+          python3 --version
+          aws --version || true
