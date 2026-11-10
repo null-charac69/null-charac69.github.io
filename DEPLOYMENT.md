@@ -1,115 +1,137 @@
-# Deployment guide
+# Direct deployment guide
 
-The site is published by GitHub Pages from the repository's main branch using its built-in Jekyll publisher. The assistant runs separately on AWS Lambda + API Gateway and uses Amazon Bedrock.
+The portfolio frontend is published from the `main` branch through GitHub Pages/Jekyll. The chat API is a separate AWS SAM stack. The backend no longer uses a GitHub Actions workflow.
 
-## 1. Fix the old browser key
+## 1. Security
 
-The former js/config.js committed a Gemini API key into a public repository. Revoke that key in Google AI Studio. Removing the file does not remove the credential from Git history; treat it as compromised.
+The former public repository contained a Gemini API key in its Git history. Revoke that key in Google AI Studio; deleting the old file did not remove the key from prior commits.
 
-Do not add provider keys to frontend code.
+Do not put AWS credentials or Bedrock keys in frontend code, repository files, chat messages, or command output. The API invokes Bedrock using the Lambda execution role.
 
-## 2. Configure GitHub Pages once
+## 2. Model configuration
 
-Open repository **Settings → Pages → Build and deployment**.
-
-Set:
-- Source: **Deploy from a branch**
-- Branch: **main**
-- Folder: **/(root)**
-
-The normal GitHub Pages **pages build and deployment** workflow will build the root Jekyll site on each main-branch push. There is intentionally no second portfolio deployment workflow.
-
-## 3. AWS region and Bedrock model ID
-
-Choose the AWS region in which the Bedrock model or inference profile is available to your account. For this portfolio, the selected source region is ap-southeast-2 (Sydney). The configured model is global.moonshotai.kimi-k3.1 (Kimi K3.1 Pro - Highspeed). AWS documents the global inference profile as available from Sydney. The global profile can route inference across supported commercial AWS Regions.
-
-Use the exact Model ID or Inference Profile ID shown in the Bedrock console. A foundation model ID and an inference profile ID are not interchangeable. If you use a cross-region inference profile, use that profile ID.
-
-The model ID is configuration, not a secret. Do not store it as a credential.
-
-## 4. Use a dedicated AWS deployment IAM user
-
-Do not use root account access keys. Ideally create a dedicated IAM user for this GitHub deployment, with no AWS console sign-in. Attach a custom policy based on backend/infra/github-deployer-policy.json.
-
-Before attaching the policy, replace:
-- <AWS_ACCOUNT_ID> with your 12-digit AWS account ID
-- <AWS_REGION> with the region you selected
-
-The deployer policy allows CloudFormation, API Gateway, Lambda, the one named Lambda execution role, the SAM artifact bucket and its deployment logs. Review it in IAM before use. Do not attach AdministratorAccess simply to make a failed deployment pass.
-
-Create an access key for this dedicated IAM user under **IAM → Users → [user] → Security credentials → Create access key → Command Line Interface (CLI)**. Copy the secret access key when AWS displays it; AWS will not show it again.
-
-If you already have access keys from a dedicated deployment user with these permissions, you can use those. Do not use root keys or broadly privileged personal credentials.
-
-## 5. Store credentials in GitHub Secrets
-
-Open this repository:
-
-**Settings → Secrets and variables → Actions → Repository secrets → New repository secret**
-
-Create these two secrets:
-
-| Secret name | Value |
-|---|---|
-| AWS_ACCESS_KEY_ID | Access key ID from the dedicated IAM user |
-| AWS_SECRET_ACCESS_KEY | Secret access key from the same IAM user |
-
-Paste the values directly into GitHub's secret form. Do not send them in chat, commit them into files, or put them in GitHub Variables.
-
-## 6. Region and model configuration
-
-The deployment workflow is configured directly with:
+The backend is configured for:
 
 | Setting | Value |
 |---|---|
-| AWS_REGION | ap-southeast-2 |
-| BEDROCK_MODEL_ID | global.moonshotai.kimi-k3.1 |
+| AWS Region | `ap-southeast-2` (Sydney) |
+| Bedrock model/inference profile | `global.moonshotai.kimi-k3.1` |
+| Runtime | Python 3.12 |
+| Stack name | `anant-portfolio-api` |
+| Allowed browser origin | `https://null-charac69.github.io` |
 
-These values are not credentials, so they do not need to be stored as GitHub secrets or variables. The workflow ignores any old repository variables and uses the region/model specified above.
+The model ID is configuration, not a secret.
 
-## 7. Deploy the Bedrock API
+## 3. Obtain an AWS CLI identity
 
-After adding the two repository secrets:
+Run the deployment from AWS CloudShell or a trusted local machine with AWS CLI v2 and AWS SAM CLI installed. CloudShell uses the identity signed in to the AWS console; on a local machine, use an IAM role, IAM Identity Center, or a dedicated IAM deployment user.
 
-1. Open **Actions → Deploy Bedrock chat API**.
-2. Select **Run workflow → Run workflow**.
-3. Open the run summary after it finishes.
-4. Copy the **Base URL** shown under “Bedrock API deployment”.
+Do not use root access keys. The deployment identity needs permission to manage the SAM CloudFormation stack, API Gateway, the named Lambda function, its execution role, the SAM artifact bucket, and the Lambda log group. A starting least-privilege policy is in `backend/infra/sam-deployer-policy.json`; replace its account and region placeholders before attaching it to a dedicated IAM user.
 
-The URL looks like:
+Verify the identity before making changes:
 
-    https://<api-id>.execute-api.<region>.amazonaws.com
+```bash
+aws sts get-caller-identity
+aws configure set region ap-southeast-2
+aws configure set output json
+sam --version
+python3 --version
+```
 
-If the deployment fails with AccessDenied, check the deployment IAM user policy and the Lambda execution role's Bedrock permission. The workflow first runs backend unit tests, validates and builds the SAM template, and verifies the AWS identity. After deployment it runs a health check and a live chat request against Bedrock. If the model returns a validation or model-not-found error, confirm the model access and exact inference-profile ID in the Bedrock console.
+The STS command must return the AWS account and principal you intend to deploy with. Do not proceed if it returns the wrong account or role.
 
-## 8. Connect the website to the API
+## 4. Test, validate, build and deploy
 
-The API base URL is public configuration, not a secret.
+From the repository root:
 
-Edit _config.yml and set portfolio_api_url to the base URL from the workflow summary. Example:
+```bash
+cd backend
 
-    portfolio_api_url: "https://abc123.execute-api.ap-south-1.amazonaws.com"
+python3 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install -r src/requirements.txt
 
-Commit and push that change to main. GitHub Pages will rebuild the site and the assistant will use the new URL.
+PYTHONPATH=src python -m unittest discover -s tests -p 'test_*.py' -v
 
-Do not include /chat at the end; the frontend appends /chat itself.
+sam validate --lint --template-file template.yaml
+sam build --template-file template.yaml
 
-## 9. Verify the endpoints
+sam deploy \
+  --template-file .aws-sam/build/template.yaml \
+  --stack-name anant-portfolio-api \
+  --resolve-s3 \
+  --capabilities CAPABILITY_IAM \
+  --region ap-southeast-2 \
+  --no-confirm-changeset \
+  --no-fail-on-empty-changeset \
+  --parameter-overrides \
+    AllowedOrigin=https://null-charac69.github.io \
+    BedrockModelId=global.moonshotai.kimi-k3.1
+```
 
-Open the health endpoint in a browser or with curl:
+The deployment creates an HTTP API, a Python Lambda function, a Lambda execution role scoped to the configured Kimi inference profile/model, and a CloudWatch log group. SAM uploads the deployment artifact to its managed S3 bucket.
 
-    https://<api-id>.execute-api.<region>.amazonaws.com/health
+## 5. Verify the deployed API and make a live Bedrock request
 
-Expected response:
+Still from the same authenticated shell:
 
-    {"status":"ok","provider":"Amazon Bedrock"}
+```bash
+API_URL=$(aws cloudformation describe-stacks \
+  --stack-name anant-portfolio-api \
+  --region ap-southeast-2 \
+  --query "Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue" \
+  --output text)
 
-Then visit https://null-charac69.github.io, open “Ask about my work”, and ask about AgentOS. The browser should call POST /chat on API Gateway; it must never call Bedrock directly.
+test -n "$API_URL" && test "$API_URL" != "None"
 
-## Security, cost and chat data
+curl --fail --silent --show-error "$API_URL/health"
+```
 
-- The API uses CORS origin checks, input validation, bounded conversation history, an output-token cap and API Gateway throttling. CORS is not authentication; public APIs can be called by non-browser clients too.
-- The browser stores up to 12 recent messages in localStorage and sends up to 10 messages for each turn. The Lambda does not persist conversations or log prompt content.
-- Visitors should not share credentials or sensitive information in the public chat.
-- Bedrock model inference is billed by model and token use. Lambda, API Gateway, CloudWatch Logs and SAM's S3 artifact bucket can also incur charges. Check current AWS pricing and configure a billing alert before public launch.
-- If an access key is no longer needed, deactivate or delete it in IAM. Prefer GitHub OIDC with short-lived credentials for a later security improvement.
+Expected health response:
+
+```json
+{"status":"ok","provider":"Amazon Bedrock"}
+```
+
+Then send a real prompt through API Gateway to the Lambda/Bedrock Converse path:
+
+```bash
+CHAT_RESPONSE=$(curl --fail --silent --show-error --max-time 35 \
+  -X POST "$API_URL/chat" \
+  -H "Origin: https://null-charac69.github.io" \
+  -H "Content-Type: application/json" \
+  --data-binary '{"messages":[{"role":"user","content":"In one concise sentence, what does Anant’s AgentOS project do?"}]}')
+
+CHAT_RESPONSE="$CHAT_RESPONSE" python3 - <<'PY'
+import json
+import os
+
+result = json.loads(os.environ["CHAT_RESPONSE"])
+reply = result.get("reply")
+if not isinstance(reply, str) or not reply.strip():
+    raise SystemExit("Live Bedrock test failed: API returned no non-empty reply.")
+print("Live Bedrock test passed.")
+print("Response:", reply)
+PY
+```
+
+A successful health response only proves the HTTP API and Lambda health route are reachable. The second test is required to prove the configured Bedrock model can return a non-empty answer. If it fails, inspect the Lambda log group `/aws/lambda/anant-portfolio-api-chat` and check Bedrock model access, inference-profile permissions, and the IAM role policy.
+
+## 6. Connect the public portfolio
+
+After both API checks pass, copy the API base URL printed below (it will resemble `https://<api-id>.execute-api.ap-southeast-2.amazonaws.com`). Edit `_config.yml`:
+
+```yaml
+portfolio_api_url: "https://<api-id>.execute-api.ap-southeast-2.amazonaws.com"
+```
+
+Use the base URL only; do not append `/chat`. Commit and push the change to `main`. GitHub Pages will rebuild the frontend, and the chat widget will call `POST /chat`.
+
+## 7. Cost and data handling
+
+- Bedrock inference is metered. Lambda, API Gateway, CloudWatch Logs and the SAM S3 artifact bucket can also incur charges. Configure an AWS Budget before enabling public chat.
+- API Gateway throttling is set to 3 requests/second with a burst limit of 8. This is not user authentication; a public API can also be called outside a browser.
+- The Lambda does not persist conversation history or log prompt content. The browser stores up to 12 recent messages in localStorage and sends up to 10 messages per turn.
+- Do not invite visitors to submit credentials or sensitive information.
+- The previous GitHub Actions deployment secrets are not used by this direct deployment path. Remove the old `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY` repository secrets in GitHub Settings if they are no longer used elsewhere; rotate/deactivate the corresponding IAM access key if it was created only for that workflow.
