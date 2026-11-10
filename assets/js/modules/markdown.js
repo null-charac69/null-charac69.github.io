@@ -2,11 +2,11 @@ const INLINE_TOKEN = /(\[([^\]]+)\]\((https?:\/\/[^\s)]+|mailto:[^\s)]+)\)|\x60(
 
 function appendInline(parent, source) {
   const text = String(source ?? "");
+  const tokenPattern = new RegExp(INLINE_TOKEN.source, "g");
   let cursor = 0;
-  INLINE_TOKEN.lastIndex = 0;
   let match;
 
-  while ((match = INLINE_TOKEN.exec(text)) !== null) {
+  while ((match = tokenPattern.exec(text)) !== null) {
     if (match.index > cursor) {
       parent.append(document.createTextNode(text.slice(cursor, match.index)));
     }
@@ -36,7 +36,7 @@ function appendInline(parent, source) {
       parent.append(emphasis);
     }
 
-    cursor = INLINE_TOKEN.lastIndex;
+    cursor = tokenPattern.lastIndex;
   }
 
   if (cursor < text.length) {
