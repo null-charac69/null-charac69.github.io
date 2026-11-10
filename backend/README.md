@@ -8,4 +8,4 @@ AWS SAM application providing:
 - Bounded message size/history, origin validation, request validation and concise error responses.
 - No database and no server-side conversation persistence.
 
-Deploy with the repository workflow after configuring GitHub Actions secrets and variables. See DEPLOYMENT.md.
+Deploy with the repository workflow after configuring GitHub Actions secrets and variables. See ../DEPLOYMENT.md.

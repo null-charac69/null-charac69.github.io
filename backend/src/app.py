@@ -179,11 +179,7 @@ def handler(event: dict[str, Any], _context: Any):
             modelId=MODEL_ID,
             system=[{"text": SYSTEM_PROMPT}],
             messages=messages,
-            inferenceConfig={
-                "maxTokens": MAX_OUTPUT_TOKENS,
-                "temperature": 0.25,
-                "topP": 0.9,
-            },
+            inferenceConfig={"maxTokens": MAX_OUTPUT_TOKENS},
         )
         blocks = result.get("output", {}).get("message", {}).get("content", [])
         reply = "\n".join(
