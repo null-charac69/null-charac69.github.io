@@ -21,7 +21,7 @@ The normal GitHub Pages **pages build and deployment** workflow will build the r
 
 ## 3. AWS region and Bedrock model ID
 
-Choose the AWS region in which the Bedrock model or inference profile is available to your account. For example, ap-south-1 is the Mumbai region, but not every Bedrock model is available there.
+Choose the AWS region in which the Bedrock model or inference profile is available to your account. For this portfolio, the selected source region is ap-southeast-2 (Sydney). The configured model is global.moonshotai.kimi-k3.1 (Kimi K3.1 Pro - Highspeed). AWS documents the global inference profile as available from Sydney. The global profile can route inference across supported commercial AWS Regions.
 
 Use the exact Model ID or Inference Profile ID shown in the Bedrock console. A foundation model ID and an inference profile ID are not interchangeable. If you use a cross-region inference profile, use that profile ID.
 
@@ -62,14 +62,16 @@ In **Settings → Secrets and variables → Actions → Repository variables**, 
 
 | Variable name | Example value | Notes |
 |---|---|---|
-| AWS_REGION | ap-south-1 | Use the region selected in step 3 |
-| BEDROCK_MODEL_ID | your-exact-model-or-inference-profile-id | Copy the exact value from Bedrock |
+| AWS_REGION | ap-southeast-2 | Sydney; source region for the global inference profile |
+| BEDROCK_MODEL_ID | global.moonshotai.kimi-k3.1 | Kimi K3.1 Pro - Highspeed global inference profile |
 
 Do not add quotes around values in GitHub.
 
 ## 7. Deploy the Bedrock API
 
-After adding the two secrets and two variables:
+The deployment workflow defaults to ap-southeast-2 and global.moonshotai.kimi-k3.1 if the two optional repository variables are not created. If you already have repository variables with different values, change them to the values above before deploying.
+
+After adding the two secrets and confirming the two variables:
 
 1. Open **Actions → Deploy Bedrock chat API**.
 2. Select **Run workflow → Run workflow**.
@@ -80,7 +82,7 @@ The URL looks like:
 
     https://<api-id>.execute-api.<region>.amazonaws.com
 
-If the deployment fails with AccessDenied, check the deployment IAM user policy and the Lambda execution role's Bedrock permission. If the model returns a validation or model-not-found error, check the exact model/profile ID and regional availability.
+If the deployment fails with AccessDenied, check the deployment IAM user policy and the Lambda execution role's Bedrock permission. The workflow first runs unit tests, validates and builds the SAM template, verifies the AWS identity and retrieves the Bedrock inference profile. After deployment it runs a health check and a live chat request against Bedrock. If the model returns a validation or model-not-found error, confirm the model access and exact inference-profile ID in the Bedrock console.
 
 ## 8. Connect the website to the API
 
