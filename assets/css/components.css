@@ -176,8 +176,9 @@ h1 em, h2 em { color: var(--accent); font-style: normal; }
 .chat-send { width: 39px; height: 39px; flex: 0 0 39px; border: 0; border-radius: 6px; background: var(--accent); color: var(--accent-contrast); font-size: 20px; font-weight: 800; cursor: pointer; }
 .chat-send:disabled { opacity: .45; cursor: not-allowed; }
 .chat-footer { display: flex; justify-content: space-between; gap: 10px; padding: 0 15px 11px; color: var(--muted); font-size: 7px; }
-.reveal { opacity: 0; transform: translateY(18px); transition: opacity .65s ease, transform .65s cubic-bezier(.2,.7,.2,1); }
-.reveal.is-visible { opacity: 1; transform: translateY(0); }
+.reveal { opacity: 1; transform: none; transition: opacity .65s ease, transform .65s cubic-bezier(.2,.7,.2,1); }
+.js-reveal .reveal { opacity: 0; transform: translateY(18px); }
+.js-reveal .reveal.is-visible { opacity: 1; transform: translateY(0); }
 [data-reveal-delay="60"] { transition-delay: 60ms; }
 [data-reveal-delay="80"] { transition-delay: 80ms; }
 [data-reveal-delay="100"] { transition-delay: 100ms; }
