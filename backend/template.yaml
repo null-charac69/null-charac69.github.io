@@ -9,8 +9,8 @@ Parameters:
     Description: Exact browser origin allowed to call the public chat API.
   BedrockModelId:
     Type: String
-    Default: apac.amazon.nova-lite-v1:0
-    Description: Foundation model ID or Bedrock inference profile ID.
+    Default: global.moonshotai.kimi-k3.1
+    Description: Global inference profile ID for Moonshot AI Kimi K3.1 Pro Highspeed.
 
 Globals:
   Function:
@@ -48,7 +48,7 @@ Resources:
   PortfolioChatExecutionRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: !Sub "${AWS::StackName}-lambda-execution"
+      RoleName: !Sub "\${AWS::StackName}-lambda-execution"
       AssumeRolePolicyDocument:
         Version: "2012-10-17"
         Statement:
@@ -69,9 +69,9 @@ Resources:
                 Action:
                   - bedrock:InvokeModel
                 Resource:
-                  - !Sub "arn:${AWS::Partition}:bedrock:*::foundation-model/*"
-                  - !Sub "arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/*"
-                  - !Sub "arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:application-inference-profile/*"
+                  - !Sub "arn:\${AWS::Partition}:bedrock:*::foundation-model/*"
+                  - !Sub "arn:\${AWS::Partition}:bedrock:\${AWS::Region}:\${AWS::AccountId}:inference-profile/*"
+                  - !Sub "arn:\${AWS::Partition}:bedrock:\${AWS::Region}:\${AWS::AccountId}:application-inference-profile/*"
 
   PortfolioChatFunction:
     Type: AWS::Serverless::Function
@@ -102,10 +102,10 @@ Resources:
 Outputs:
   ApiUrl:
     Description: Base URL for the portfolio chat API.
-    Value: !Sub "https://${PortfolioHttpApi}.execute-api.${AWS::Region}.amazonaws.com"
+    Value: !Sub "https://\${PortfolioHttpApi}.execute-api.\${AWS::Region}.amazonaws.com"
   ChatEndpoint:
     Description: POST endpoint used by the portfolio assistant.
-    Value: !Sub "https://${PortfolioHttpApi}.execute-api.${AWS::Region}.amazonaws.com/chat"
+    Value: !Sub "https://\${PortfolioHttpApi}.execute-api.\${AWS::Region}.amazonaws.com/chat"
   HealthEndpoint:
     Description: GET health endpoint.
-    Value: !Sub "https://${PortfolioHttpApi}.execute-api.${AWS::Region}.amazonaws.com/health"
+    Value: !Sub "https://\${PortfolioHttpApi}.execute-api.\${AWS::Region}.amazonaws.com/health"
