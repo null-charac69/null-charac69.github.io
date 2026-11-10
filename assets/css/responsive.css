@@ -1,0 +1,73 @@
+@media (max-width: 1020px) {
+  .wordmark { min-width: auto; }
+  .desktop-nav { gap: 14px; }
+  .nav-wrap, .section-shell { width: min(calc(100% - 44px), var(--page-width)); }
+  .hero { grid-template-columns: minmax(0,1fr) minmax(280px,.72fr); gap: 35px; }
+  .portrait-image-wrap { height: 300px; }
+  .project-main { gap: 25px; }
+  .toolkit-grid { grid-template-columns: repeat(2,1fr); }
+  .toolkit-card:nth-child(2) { border-right: 0; }
+  .toolkit-card:nth-child(3), .toolkit-card:nth-child(4) { border-top: 1px solid var(--line); }
+  .toolkit-card:nth-child(3) { padding-left: 0; }
+}
+@media (max-width: 760px) {
+  :root { --header-height: 66px; }
+  .nav-wrap, .section-shell { width: min(calc(100% - 36px), var(--page-width)); }
+  .wordmark-name { font-size: 9px; letter-spacing: .09em; }
+  .desktop-nav, .nav-cta { display: none; }
+  .menu-toggle { display: grid; }
+  .mobile-nav:not([hidden]) { display: grid; gap: 0; padding: 4px 18px 16px; border-top: 1px solid var(--line); background: var(--bg); }
+  .mobile-nav a { padding: 11px 2px; border-bottom: 1px solid var(--line); }
+  .hero { min-height: auto; grid-template-columns: 1fr; gap: 42px; padding-block: 72px 82px; }
+  .hero h1 { font-size: clamp(46px, 13vw, 68px); }
+  .hero-intro { margin-top: 21px; font-size: 13px; }
+  .hero-actions { margin-top: 25px; }
+  .button { min-height: 44px; padding-inline: 14px; font-size: 10px; }
+  .hero-links { margin-top: 30px; }
+  .hero-side { width: min(100%, 390px); justify-self: center; }
+  .portrait-image-wrap { height: 330px; }
+  .hero-index { bottom: 20px; }
+  .intro-strip-inner { justify-content: flex-start; overflow-x: auto; padding-block: 15px; }
+  .intro-strip p { white-space: nowrap; font-size: 8px; }
+  .strip-mark { flex: 0 0 auto; }
+  .content-section, .toolkit-section { padding-block: 76px; }
+  .section-heading { margin-bottom: 35px; }
+  .section-heading h2 { font-size: clamp(36px, 9.5vw, 48px); }
+  .about-grid { grid-template-columns: 1fr; gap: 37px; }
+  .about-copy .lead-copy { font-size: 16px; }
+  .work-section { padding-block: 76px; }
+  .work-heading, .repo-heading { display: block; }
+  .work-aside { margin-top: 22px; }
+  .project-toolbar { display: block; margin-top: 0; }
+  .project-filters { margin-top: 9px; }
+  .filter-button { font-size: 8px; padding: 7px 8px; }
+  .projects-grid, .repo-grid { grid-template-columns: 1fr; }
+  .project-card, .project-card-featured { grid-column: auto; min-height: 0; padding: 20px; }
+  .project-main { grid-template-columns: 1fr; gap: 28px; }
+  .architecture-card { max-width: none; justify-self: stretch; }
+  .project-copy h3 { font-size: 26px; }
+  .project-bottom { margin-top: 25px; }
+  .repo-controls { width: 100%; margin-top: 22px; }
+  .timeline { margin-left: 3px; }
+  .timeline-item { grid-template-columns: 1fr; gap: 12px; padding-left: 25px; padding-bottom: 38px; }
+  .timeline-title-row { align-items: flex-start; }
+  .timeline-content h3 { font-size: 15px; }
+  .toolkit-grid { grid-template-columns: 1fr; }
+  .toolkit-card, .toolkit-card + .toolkit-card, .toolkit-card:nth-child(3) { min-height: auto; padding: 20px 0; border-right: 0; border-bottom: 1px solid var(--line); border-top: 0; }
+  .toolkit-card:last-child { border-bottom: 0; }
+  .toolkit-card h3 { margin-top: 12px; }
+  .toolkit-card p { min-height: 0; }
+  .contact-section { padding-block: 76px 55px; }
+  .contact-panel { padding: 28px 22px; }
+  .contact-layout { grid-template-columns: 1fr; gap: 35px; }
+  .contact-layout h2 { font-size: 48px; }
+  .contact-actions { gap: 13px; }
+  .contact-bottom { flex-wrap: wrap; margin-top: 36px; }
+  .site-footer { flex-wrap: wrap; padding-bottom: 100px; font-size: 8px; }
+  .chat-launcher { right: 15px; bottom: 14px; }
+  .chat-panel { right: 10px; bottom: 72px; width: calc(100vw - 20px); height: min(600px, calc(100dvh - 95px)); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .reveal { opacity: 1; transform: none; }
+}

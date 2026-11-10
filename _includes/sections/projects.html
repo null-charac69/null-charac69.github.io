@@ -1,0 +1,84 @@
+<section class="work-section" id="work">
+  <div class="section-shell">
+    <div class="section-heading work-heading reveal">
+      <div><p class="section-kicker">02 / SELECTED ENGINEERING WORK</p><h2>Built, broken down<br><em>and made better.</em></h2></div>
+      <div class="work-aside"><span class="live-dot"></span><span>Repository details refresh from GitHub</span><span class="repo-sync" id="repoSync">Connecting…</span></div>
+    </div>
+
+    <div class="project-toolbar reveal">
+      <span>FILTER PROJECTS</span>
+      <div class="project-filters" role="group" aria-label="Filter projects">
+        <button type="button" class="filter-button is-active" data-project-filter="all" aria-pressed="true">All <span>03</span></button>
+        <button type="button" class="filter-button" data-project-filter="agentic" aria-pressed="false">Agentic AI</button>
+        <button type="button" class="filter-button" data-project-filter="retrieval" aria-pressed="false">Retrieval</button>
+        <button type="button" class="filter-button" data-project-filter="applied-ml" aria-pressed="false">Applied ML</button>
+      </div>
+    </div>
+
+    <div class="projects-grid">
+      <article class="project-card project-card-featured reveal" data-repo="agentos" data-category="agentic">
+        <div class="project-top"><span class="project-number">01 / MULTI-AGENT SYSTEMS</span><span class="project-type">FEATURED</span></div>
+        <div class="project-main">
+          <div class="project-copy">
+            <h3>AgentOS</h3>
+            <p class="project-summary">An autonomous research workflow that turns an open-ended question into a structured, cited report using a coordinated LangGraph pipeline.</p>
+            <ul class="project-points">
+              <li>Five specialist stages: planning, search, retrieval, code execution and critique.</li>
+              <li>Shared graph state with a critic-and-revision loop for report quality.</li>
+              <li>FastAPI streaming, Qdrant memory and Redis caching.</li>
+            </ul>
+            <div class="tag-list"><span>LangGraph</span><span>FastAPI</span><span>Qdrant</span><span>Redis</span><span>SSE</span></div>
+          </div>
+          <div class="architecture-card" aria-label="AgentOS workflow: question to planner, specialist agents, critic, and report">
+            <div class="architecture-label">WORKFLOW / OVERVIEW</div>
+            <div class="arch-node arch-start">RESEARCH QUESTION</div>
+            <div class="arch-connector"></div>
+            <div class="arch-node">PLANNER <span>01</span></div>
+            <div class="arch-split"><span>SEARCH</span><span>RETRIEVE</span><span>EXECUTE</span></div>
+            <div class="arch-connector"></div>
+            <div class="arch-node arch-critic">CRITIC <span>QUALITY LOOP</span></div>
+            <div class="arch-connector"></div>
+            <div class="arch-node arch-end">CITED REPORT</div>
+          </div>
+        </div>
+        <details class="project-detail">
+          <summary>Explore the design decisions <span aria-hidden="true">＋</span></summary>
+          <div class="project-detail-content"><p>LangGraph provides the control flow for a stateful pipeline with a bounded revision path. Retrieval supplies relevant prior context, search gathers evidence, and the critic checks the draft before the final report is returned. The repository documents an SSE API so clients can observe progress instead of waiting for a single final response.</p><p><strong>Engineering questions:</strong> state ownership, parallel tool execution, quality scoring, safe code execution and memory lifecycle.</p></div>
+        </details>
+        <div class="project-bottom"><a class="project-link" href="https://github.com/null-charac69/agentos" target="_blank" rel="noreferrer">Inspect repository <span aria-hidden="true">↗</span></a><span class="repo-meta" data-repo-meta>Public repository</span></div>
+      </article>
+
+      <article class="project-card reveal" data-repo="hrag-app" data-category="retrieval" data-reveal-delay="80">
+        <div class="project-top"><span class="project-number">02 / RETRIEVAL SYSTEMS</span><span class="project-type">RAG</span></div>
+        <div class="project-copy">
+          <h3>Hybrid RAG Pipeline</h3>
+          <p class="project-summary">A retrieval pipeline that combines dense semantic search and BM25, merges ranked results, reranks candidates and checks answer grounding.</p>
+          <ul class="project-points"><li>Dense + sparse retrieval with Reciprocal Rank Fusion.</li><li>Cross-encoder reranking and citation verification.</li><li>RAGAS evaluation, FastAPI services and conversation history.</li></ul>
+          <div class="tag-list"><span>Qdrant</span><span>BGE</span><span>BM25</span><span>RRF</span><span>RAGAS</span></div>
+        </div>
+        <details class="project-detail">
+          <summary>Explore the design decisions <span aria-hidden="true">＋</span></summary>
+          <div class="project-detail-content"><p>Dense retrieval captures semantic similarity while BM25 preserves lexical matching. Reciprocal Rank Fusion combines rankings without requiring score-scale normalization. A cross-encoder then reranks the shortlist, and citation checks plus RAGAS metrics provide quality signals beyond answer fluency.</p><p><strong>Engineering questions:</strong> chunking, retrieval recall, rank fusion, reranking cost and faithfulness evaluation.</p></div>
+        </details>
+        <div class="project-bottom"><a class="project-link" href="https://github.com/null-charac69/hrag-app" target="_blank" rel="noreferrer">Inspect repository <span aria-hidden="true">↗</span></a><span class="repo-meta" data-repo-meta>Public repository</span></div>
+      </article>
+
+      <article class="project-card reveal" data-repo="healthcare_analytics" data-category="applied-ml" data-reveal-delay="150">
+        <div class="project-top"><span class="project-number">03 / APPLIED MACHINE LEARNING</span><span class="project-type">HEALTHCARE</span></div>
+        <div class="project-copy">
+          <h3>Healthcare Analytics</h3>
+          <p class="project-summary">A healthcare analytics prototype covering medical-image workflows and patient-outcome prediction, with model interpretability as part of the product surface.</p>
+          <ul class="project-points"><li>Documented MRI and chest X-ray classification workflows.</li><li>Patient risk, length-of-stay and readmission prediction concepts.</li><li>React, FastAPI, PyTorch, MLflow and DVC in the documented stack.</li></ul>
+          <div class="tag-list"><span>PyTorch</span><span>FastAPI</span><span>MLflow</span><span>DVC</span></div>
+        </div>
+        <details class="project-detail">
+          <summary>Explore the design decisions <span aria-hidden="true">＋</span></summary>
+          <div class="project-detail-content"><p>The repository describes a product surface that connects image-classification workflows with downstream analytics and interpretability views. Healthcare ML requires particular attention to representative data, leakage prevention, calibration, class imbalance and clinical validation. The public README is a project description, not evidence of clinical readiness.</p><p><strong>Engineering questions:</strong> model evaluation, reproducible experiments, interpretability and responsible communication of results.</p></div>
+        </details>
+        <div class="project-bottom"><a class="project-link" href="https://github.com/null-charac69/healthcare_analytics" target="_blank" rel="noreferrer">Inspect repository <span aria-hidden="true">↗</span></a><span class="repo-meta" data-repo-meta>Public repository</span></div>
+      </article>
+    </div>
+    <p class="project-disclaimer">Project descriptions reflect public repository documentation. Performance figures are intentionally omitted where the repository does not publish enough benchmark detail to interpret them independently.</p>
+    <div class="all-work-row"><a class="button button-outline" href="https://github.com/null-charac69?tab=repositories" target="_blank" rel="noreferrer">Browse all repositories <span aria-hidden="true">↗</span></a></div>
+  </div>
+</section>

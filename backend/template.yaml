@@ -1,22 +1,22 @@
 AWSTemplateFormatVersion: "2010-09-09"
 Transform: AWS::Serverless-2016-10-31
-Description: Private Bedrock-backed portfolio chat API for Anant Kumar Thakur.
+Description: Amazon Bedrock chat API for Anant Kumar Thakur's portfolio.
 
 Parameters:
   AllowedOrigin:
     Type: String
     Default: https://null-charac69.github.io
-    Description: Exact origin allowed to call the public chat API.
+    Description: Exact browser origin allowed to call the public chat API.
   BedrockModelId:
     Type: String
     Default: apac.amazon.nova-lite-v1:0
-    Description: Amazon Bedrock APAC inference profile used by the chat endpoint.
+    Description: Foundation model ID or Bedrock inference profile ID.
 
 Globals:
   Function:
     Runtime: python3.12
     Handler: app.handler
-    Timeout: 25
+    Timeout: 28
     MemorySize: 512
     Architectures:
       - x86_64
@@ -61,7 +61,7 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
       Policies:
-        - PolicyName: InvokePortfolioChatModel
+        - PolicyName: InvokeConfiguredBedrockModel
           PolicyDocument:
             Version: "2012-10-17"
             Statement:
@@ -69,8 +69,9 @@ Resources:
                 Action:
                   - bedrock:InvokeModel
                 Resource:
-                  - !Sub "arn:${AWS::Partition}:bedrock:*::foundation-model/amazon.nova-lite-v1:0"
-                  - !Sub "arn:${AWS::Partition}:bedrock:*:${AWS::AccountId}:inference-profile/apac.amazon.nova-lite-v1:0"
+                  - !Sub "arn:${AWS::Partition}:bedrock:*::foundation-model/*"
+                  - !Sub "arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:inference-profile/*"
+                  - !Sub "arn:${AWS::Partition}:bedrock:${AWS::Region}:${AWS::AccountId}:application-inference-profile/*"
 
   PortfolioChatFunction:
     Type: AWS::Serverless::Function
@@ -78,11 +79,6 @@ Resources:
       FunctionName: anant-portfolio-api-chat
       CodeUri: src/
       Role: !GetAtt PortfolioChatExecutionRole.Arn
-      Environment:
-        Variables:
-          ALLOWED_ORIGIN: !Ref AllowedOrigin
-          BEDROCK_MODEL_ID: !Ref BedrockModelId
-          MAX_OUTPUT_TOKENS: "600"
       Events:
         Chat:
           Type: HttpApi

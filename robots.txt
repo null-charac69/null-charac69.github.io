@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://null-charac69.github.io/sitemap.xml

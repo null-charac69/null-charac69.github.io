@@ -1,0 +1,14 @@
+<!doctype html>
+<html lang="en">
+  {% include head.html %}
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <div class="reading-progress" id="readingProgress" aria-hidden="true"></div>
+    {% include site-header.html %}
+    <main id="main">{{ content }}</main>
+    {% include site-footer.html %}
+    {% include chat-widget.html %}
+    <script>window.PORTFOLIO_API_URL = "{{ site.portfolio_api_url | escape }}";</script>
+    <script type="module" src="{{ '/assets/js/app.js' | relative_url }}"></script>
+  </body>
+</html>

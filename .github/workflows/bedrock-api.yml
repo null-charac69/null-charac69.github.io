@@ -1,16 +1,10 @@
 name: Deploy Bedrock chat API
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "backend/**"
-      - ".github/workflows/bedrock-api.yml"
   workflow_dispatch:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: bedrock-api
@@ -19,31 +13,54 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      AWS_EC2_METADATA_DISABLED: "true"
     steps:
       - name: Check out source
         uses: actions/checkout@v4
 
-      - name: Validate deployment configuration
-        env:
-          AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
-          AWS_REGION: ${{ vars.AWS_REGION }}
-          BEDROCK_MODEL_ID: ${{ vars.BEDROCK_MODEL_ID }}
-        run: |
-          test -n "$AWS_ROLE_ARN" || { echo "::error::Set the AWS_ROLE_ARN repository secret."; exit 1; }
-          test -n "$AWS_REGION" || { echo "::error::Set the AWS_REGION repository variable."; exit 1; }
-          test -n "$BEDROCK_MODEL_ID" || { echo "::error::Set the BEDROCK_MODEL_ID repository variable."; exit 1; }
-
-      - name: Configure AWS credentials through GitHub OIDC
-        uses: aws-actions/configure-aws-credentials@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: backend/src/requirements.txt
+
+      - name: Install backend dependencies
+        run: python -m pip install -r backend/src/requirements.txt
+
+      - name: Run backend tests
+        env:
+          PYTHONPATH: backend/src
+        run: python -m unittest discover -s backend/tests -p "test_*.py" -v
 
       - name: Set up AWS SAM
         uses: aws-actions/setup-sam@v2
 
+      - name: Validate SAM template
+        run: sam validate --template-file backend/template.yaml
+
       - name: Build Lambda package
         run: sam build --template-file backend/template.yaml --build-dir .aws-sam/build
+
+      - name: Validate deployment configuration
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          BEDROCK_MODEL_ID: ${{ vars.BEDROCK_MODEL_ID }}
+        run: |
+          test -n "$AWS_ACCESS_KEY_ID" || { echo "::error::Set the AWS_ACCESS_KEY_ID repository secret."; exit 1; }
+          test -n "$AWS_SECRET_ACCESS_KEY" || { echo "::error::Set the AWS_SECRET_ACCESS_KEY repository secret."; exit 1; }
+          test -n "$AWS_REGION" || { echo "::error::Set the AWS_REGION repository variable."; exit 1; }
+          test -n "$BEDROCK_MODEL_ID" || { echo "::error::Set the BEDROCK_MODEL_ID repository variable."; exit 1; }
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ vars.AWS_REGION }}
 
       - name: Deploy API stack
         env:
@@ -79,8 +96,8 @@ jobs:
           {
             echo "### Bedrock API deployment"
             echo ""
-            echo "- Base URL: `$API_URL`"
-            echo "- Chat endpoint: `$CHAT_URL`"
+            echo "- Base URL: \`$API_URL\`"
+            echo "- Chat endpoint: \`$CHAT_URL\`"
             echo ""
-            echo "Set the repository variable `PORTFOLIO_API_URL` to the base URL, then rerun the Deploy portfolio workflow."
+            echo "Set portfolio_api_url in _config.yml to the base URL, commit, and push to update GitHub Pages."
           } >> "$GITHUB_STEP_SUMMARY"

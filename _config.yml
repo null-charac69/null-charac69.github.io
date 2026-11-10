@@ -1,0 +1,16 @@
+title: "Anant Kumar Thakur — AI/ML Engineer"
+description: "AI/ML engineer focused on Generative AI, retrieval systems and agentic applications."
+url: "https://null-charac69.github.io"
+baseurl: ""
+portfolio_api_url: ""
+markdown: kramdown
+permalink: pretty
+exclude:
+  - backend
+  - .github
+  - .gitignore
+  - README.md
+  - DEPLOYMENT.md
+  - LICENSE
+  - Gemfile
+  - Gemfile.lock
