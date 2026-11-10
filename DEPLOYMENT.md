@@ -82,7 +82,7 @@ The URL looks like:
 
     https://<api-id>.execute-api.<region>.amazonaws.com
 
-If the deployment fails with AccessDenied, check the deployment IAM user policy and the Lambda execution role's Bedrock permission. The workflow first runs unit tests, validates and builds the SAM template, verifies the AWS identity and retrieves the Bedrock inference profile. After deployment it runs a health check and a live chat request against Bedrock. If the model returns a validation or model-not-found error, confirm the model access and exact inference-profile ID in the Bedrock console.
+If the deployment fails with AccessDenied, check the deployment IAM user policy and the Lambda execution role's Bedrock permission. The workflow first runs backend unit tests, validates and builds the SAM template, and verifies the AWS identity. After deployment it runs a health check and a live chat request against Bedrock. If the model returns a validation or model-not-found error, confirm the model access and exact inference-profile ID in the Bedrock console.
 
 ## 8. Connect the website to the API
 

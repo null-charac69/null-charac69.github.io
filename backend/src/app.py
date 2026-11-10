@@ -14,6 +14,11 @@ LOG = logging.getLogger()
 LOG.setLevel(logging.INFO)
 
 MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "global.moonshotai.kimi-k3.1")
+AWS_REGION = (
+    os.environ.get("AWS_REGION")
+    or os.environ.get("AWS_DEFAULT_REGION")
+    or "ap-southeast-2"
+)
 ALLOWED_ORIGIN = os.environ.get("ALLOWED_ORIGIN", "https://null-charac69.github.io")
 MAX_OUTPUT_TOKENS = min(max(int(os.environ.get("MAX_OUTPUT_TOKENS", "600")), 128), 900)
 MAX_BODY_BYTES = 14_000
@@ -22,6 +27,7 @@ MAX_MESSAGE_CHARS = 1_800
 
 BEDROCK = boto3.client(
     "bedrock-runtime",
+    region_name=AWS_REGION,
     config=Config(
         connect_timeout=3,
         read_timeout=25,
@@ -132,7 +138,9 @@ def _normalise_messages(raw_messages: Any) -> list[dict[str, Any]]:
         else:
             messages.append({"role": role, "content": [{"text": content}]})
 
-    if not messages or messages[-1]["role"] != "user":
+    if not messages or messages[0]["role"] != "user":
+        raise ValueError("The conversation must start with a visitor message.")
+    if messages[-1]["role"] != "user":
         raise ValueError("The last message must be from the visitor.")
     return messages
 

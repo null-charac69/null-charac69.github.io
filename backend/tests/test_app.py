@@ -34,6 +34,25 @@ class PortfolioChatTests(unittest.TestCase):
         self.assertEqual(len(messages), 1)
         self.assertEqual(messages[0]["content"][0]["text"], "first\nsecond")
 
+    def test_normalise_messages_requires_user_to_start(self):
+        with self.assertRaisesRegex(ValueError, "start with a visitor"):
+            app._normalise_messages([
+                {"role": "assistant", "content": "Hello"},
+                {"role": "user", "content": "Hi"},
+            ])
+
+    def test_chat_rejects_malformed_json(self):
+        response = app.handler(
+            {
+                "headers": {"origin": app.ALLOWED_ORIGIN},
+                "requestContext": {"http": {"method": "POST"}},
+                "rawPath": "/chat",
+                "body": "{not-json",
+            },
+            None,
+        )
+        self.assertEqual(response["statusCode"], 400)
+
     def test_chat_uses_bedrock_converse(self):
         event = {
             "headers": {"origin": app.ALLOWED_ORIGIN},
@@ -53,6 +72,7 @@ class PortfolioChatTests(unittest.TestCase):
         self.assertEqual(response["statusCode"], 200)
         self.assertIn("AgentOS", json.loads(response["body"])["reply"])
         converse.assert_called_once()
+        self.assertEqual(converse.call_args.kwargs["modelId"], app.MODEL_ID)
 
 
 if __name__ == "__main__":

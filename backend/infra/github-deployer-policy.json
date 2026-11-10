@@ -2,14 +2,6 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "ReadBedrockInferenceProfile",
-      "Effect": "Allow",
-      "Action": [
-        "bedrock:GetInferenceProfile"
-      ],
-      "Resource": "*"
-    },
-    {
       "Sid": "ManagePortfolioCloudFormation",
       "Effect": "Allow",
       "Action": [
