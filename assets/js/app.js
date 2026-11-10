@@ -3,7 +3,6 @@ import { initNavigation } from "./modules/navigation.js";
 import { initReveal } from "./modules/reveal.js";
 import { initProjectFilters } from "./modules/project-filters.js";
 import { initGitHubRepositories } from "./modules/github-repositories.js";
-import { initPortfolioChat } from "./modules/chat.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   initTheme();
@@ -11,7 +10,9 @@ document.addEventListener("DOMContentLoaded", () => {
   initReveal();
   initProjectFilters();
   initGitHubRepositories();
-  initPortfolioChat();
+  import("./modules/chat.js")
+    .then(({ initPortfolioChat }) => initPortfolioChat())
+    .catch((error) => console.error("Portfolio chat failed to load:", error));
 
   const year = document.getElementById("currentYear");
   if (year) year.textContent = String(new Date().getFullYear());
