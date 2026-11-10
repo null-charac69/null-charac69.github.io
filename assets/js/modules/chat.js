@@ -1,3 +1,5 @@
+import { renderMarkdown } from "./markdown.js";
+
 const STORAGE_KEY = "anant-portfolio-chat-v1";
 const MAX_HISTORY = 12;
 
@@ -54,9 +56,16 @@ export function initPortfolioChat() {
     const label = document.createElement("span");
     label.className = "message-label";
     label.textContent = role === "user" ? "YOU" : "PORTFOLIO GUIDE";
-    const messageText = document.createElement("p");
-    messageText.textContent = content;
-    wrapper.append(label, messageText);
+    const messageContent = document.createElement("div");
+    messageContent.className = "message-content";
+    if (role === "assistant") {
+      renderMarkdown(messageContent, content);
+    } else {
+      const messageText = document.createElement("p");
+      messageText.textContent = content;
+      messageContent.append(messageText);
+    }
+    wrapper.append(label, messageContent);
     messagesEl.append(wrapper);
     messagesEl.scrollTop = messagesEl.scrollHeight;
 
