@@ -10,7 +10,6 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 concurrency:
   group: bedrock-api
@@ -25,18 +24,21 @@ jobs:
 
       - name: Validate deployment configuration
         env:
-          AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ vars.AWS_REGION }}
           BEDROCK_MODEL_ID: ${{ vars.BEDROCK_MODEL_ID }}
         run: |
-          test -n "$AWS_ROLE_ARN" || { echo "::error::Set the AWS_ROLE_ARN repository secret."; exit 1; }
+          test -n "$AWS_ACCESS_KEY_ID" || { echo "::error::Set the AWS_ACCESS_KEY_ID repository secret."; exit 1; }
+          test -n "$AWS_SECRET_ACCESS_KEY" || { echo "::error::Set the AWS_SECRET_ACCESS_KEY repository secret."; exit 1; }
           test -n "$AWS_REGION" || { echo "::error::Set the AWS_REGION repository variable."; exit 1; }
           test -n "$BEDROCK_MODEL_ID" || { echo "::error::Set the BEDROCK_MODEL_ID repository variable."; exit 1; }
 
-      - name: Configure AWS credentials through GitHub OIDC
+      - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ vars.AWS_REGION }}
 
       - name: Set up AWS SAM
@@ -79,8 +81,8 @@ jobs:
           {
             echo "### Bedrock API deployment"
             echo ""
-            echo "- Base URL: `$API_URL`"
-            echo "- Chat endpoint: `$CHAT_URL`"
+            echo "- Base URL: \`$API_URL\`"
+            echo "- Chat endpoint: \`$CHAT_URL\`"
             echo ""
-            echo "Set the repository variable `PORTFOLIO_API_URL` to the base URL, then rerun the Deploy portfolio workflow."
+            echo "Set portfolio_api_url in _config.yml to the base URL, commit, and push to update GitHub Pages."
           } >> "$GITHUB_STEP_SUMMARY"

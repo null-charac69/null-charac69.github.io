@@ -1,4 +1,4 @@
-"""Small, stateless chat API using Amazon Bedrock Converse."""
+"""Stateless portfolio chat API backed by Amazon Bedrock Converse."""
 
 import base64
 import json
@@ -24,7 +24,7 @@ BEDROCK = boto3.client(
     "bedrock-runtime",
     config=Config(
         connect_timeout=3,
-        read_timeout=24,
+        read_timeout=25,
         retries={"max_attempts": 2, "mode": "standard"},
     ),
 )
@@ -95,7 +95,7 @@ def _response(status_code: int, payload: dict[str, Any], origin: str | None):
         "Cache-Control": "no-store",
         "Vary": "Origin",
     }
-    if origin and origin == ALLOWED_ORIGIN:
+    if origin == ALLOWED_ORIGIN:
         headers["Access-Control-Allow-Origin"] = ALLOWED_ORIGIN
     return {
         "statusCode": status_code,
@@ -107,11 +107,9 @@ def _response(status_code: int, payload: dict[str, Any], origin: str | None):
 def _normalise_messages(raw_messages: Any) -> list[dict[str, Any]]:
     if not isinstance(raw_messages, list) or not raw_messages:
         raise ValueError("Send a non-empty messages array.")
-    if len(raw_messages) > MAX_MESSAGES:
-        raw_messages = raw_messages[-MAX_MESSAGES:]
 
     messages: list[dict[str, Any]] = []
-    for item in raw_messages:
+    for item in raw_messages[-MAX_MESSAGES:]:
         if not isinstance(item, dict):
             raise ValueError("Each message must be an object.")
         role = item.get("role")
@@ -120,17 +118,16 @@ def _normalise_messages(raw_messages: Any) -> list[dict[str, Any]]:
             raise ValueError("Message role must be user or assistant.")
         if not isinstance(content, str):
             raise ValueError("Message content must be text.")
+
         content = content.strip()
         if not content or len(content) > MAX_MESSAGE_CHARS:
             raise ValueError("Each message must contain 1–1,800 characters.")
 
-        # Bedrock Converse expects alternating user/assistant turns. Merge adjacent
-        # same-role entries, which can occur when an earlier network request failed.
+        # Bedrock Converse expects alternating user and assistant turns.
+        # Merge adjacent same-role entries after a previous failed request.
         if messages and messages[-1]["role"] == role:
             previous = messages[-1]["content"][0]["text"]
-            combined = previous + "\n" + content
-            if len(combined) > MAX_MESSAGE_CHARS:
-                combined = combined[-MAX_MESSAGE_CHARS:]
+            combined = (previous + "\n" + content)[-MAX_MESSAGE_CHARS:]
             messages[-1]["content"][0]["text"] = combined
         else:
             messages.append({"role": role, "content": [{"text": content}]})
@@ -142,11 +139,7 @@ def _normalise_messages(raw_messages: Any) -> list[dict[str, Any]]:
 
 def handler(event: dict[str, Any], _context: Any):
     headers = event.get("headers") or {}
-    request_origin = headers.get("origin") or headers.get("Origin")
-
-    if request_origin != ALLOWED_ORIGIN:
-        return _response(403, {"error": "Origin not allowed."}, None)
-
+    origin = headers.get("origin") or headers.get("Origin")
     method = (
         (event.get("requestContext") or {}).get("http", {}).get("method")
         or event.get("httpMethod")
@@ -154,27 +147,32 @@ def handler(event: dict[str, Any], _context: Any):
     )
     path = (event.get("rawPath") or event.get("path") or "").rstrip("/")
 
+    # Health can be checked by a browser or curl without an Origin header.
     if method == "GET" and path.endswith("/health"):
-        return _response(200, {"status": "ok", "provider": "Amazon Bedrock"}, request_origin)
+        return _response(200, {"status": "ok", "provider": "Amazon Bedrock"}, origin)
 
     if method != "POST" or not path.endswith("/chat"):
-        return _response(404, {"error": "Route not found."}, request_origin)
+        return _response(404, {"error": "Route not found."}, origin)
+
+    # CORS is not authentication; this check is a browser-origin safeguard only.
+    if origin != ALLOWED_ORIGIN:
+        return _response(403, {"error": "Origin not allowed."}, None)
 
     raw_body = event.get("body") or ""
     if event.get("isBase64Encoded"):
         try:
             raw_body = base64.b64decode(raw_body, validate=True).decode("utf-8")
         except (ValueError, UnicodeDecodeError):
-            return _response(400, {"error": "Invalid request body."}, request_origin)
+            return _response(400, {"error": "Invalid request body."}, origin)
 
     if not isinstance(raw_body, str) or len(raw_body.encode("utf-8")) > MAX_BODY_BYTES:
-        return _response(413, {"error": "Request is too large."}, request_origin)
+        return _response(413, {"error": "Request is too large."}, origin)
 
     try:
         body = json.loads(raw_body or "{}")
         messages = _normalise_messages(body.get("messages"))
     except (json.JSONDecodeError, AttributeError, ValueError) as exc:
-        return _response(400, {"error": str(exc) or "Invalid request."}, request_origin)
+        return _response(400, {"error": str(exc) or "Invalid request."}, origin)
 
     try:
         result = BEDROCK.converse(
@@ -193,20 +191,22 @@ def handler(event: dict[str, Any], _context: Any):
             for block in blocks
             if isinstance(block, dict) and isinstance(block.get("text"), str)
         ).strip()
+
         if not reply:
             LOG.warning("Bedrock returned no text content.")
-            return _response(502, {"error": "The assistant returned no answer. Try again."}, request_origin)
-        return _response(200, {"reply": reply}, request_origin)
+            return _response(502, {"error": "The assistant returned no answer. Try again."}, origin)
+
+        return _response(200, {"reply": reply}, origin)
 
     except ClientError as exc:
         error_code = (exc.response.get("Error") or {}).get("Code", "BedrockError")
         LOG.warning("Bedrock request failed: %s", error_code)
         if error_code in ("ThrottlingException", "ServiceUnavailableException", "ModelNotReadyException"):
-            return _response(503, {"error": "The assistant is busy. Please try again shortly."}, request_origin)
-        return _response(502, {"error": "The assistant could not complete that request."}, request_origin)
+            return _response(503, {"error": "The assistant is busy. Please try again shortly."}, origin)
+        return _response(502, {"error": "The assistant could not complete that request."}, origin)
     except (BotoCoreError, TimeoutError):
         LOG.exception("Bedrock transport error.")
-        return _response(503, {"error": "The assistant is temporarily unavailable."}, request_origin)
+        return _response(503, {"error": "The assistant is temporarily unavailable."}, origin)
     except Exception:
         LOG.exception("Unexpected portfolio chat error.")
-        return _response(500, {"error": "An unexpected error occurred."}, request_origin)
+        return _response(500, {"error": "An unexpected error occurred."}, origin)

@@ -2,13 +2,12 @@
   "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "ManagePortfolioCloudFormationStack",
+      "Sid": "ManagePortfolioCloudFormation",
       "Effect": "Allow",
       "Action": [
         "cloudformation:CreateChangeSet",
         "cloudformation:CreateStack",
         "cloudformation:UpdateStack",
-        "cloudformation:DeleteStack",
         "cloudformation:DescribeStacks",
         "cloudformation:DescribeStackEvents",
         "cloudformation:DescribeChangeSet",
@@ -54,7 +53,7 @@
       "Resource": "arn:aws:lambda:<AWS_REGION>:<AWS_ACCOUNT_ID>:function:anant-portfolio-api-chat"
     },
     {
-      "Sid": "ManagePortfolioExecutionRole",
+      "Sid": "ManagePortfolioLambdaExecutionRole",
       "Effect": "Allow",
       "Action": [
         "iam:CreateRole",
@@ -81,7 +80,7 @@
       }
     },
     {
-      "Sid": "ManageSAMArtifacts",
+      "Sid": "ManageSAMArtifactBucket",
       "Effect": "Allow",
       "Action": [
         "s3:CreateBucket",

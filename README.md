@@ -4,38 +4,79 @@ Personal engineering portfolio for Anant Kumar Thakur, AI/ML and Generative AI E
 
 Live site: https://null-charac69.github.io/
 
-## What is included
+## Source structure
 
-- Editorial-style, responsive portfolio with accessible navigation and reduced-motion support.
-- Selected public engineering projects with repository metadata refreshed from the GitHub API.
-- Experience, education, technical focus and contact information.
-- Portfolio chat connected to Amazon Bedrock through a server-side API.
-- Browser-local chat history; no conversation database is provisioned.
-- GitHub Actions workflows for GitHub Pages and AWS SAM deployments.
+    .
+    ├── _config.yml
+    ├── _includes/
+    │   ├── sections/
+    │   ├── chat-widget.html
+    │   ├── head.html
+    │   ├── site-footer.html
+    │   └── site-header.html
+    ├── _layouts/
+    │   └── default.html
+    ├── assets/
+    │   ├── css/
+    │   │   ├── tokens.css
+    │   │   ├── base.css
+    │   │   ├── layout.css
+    │   │   ├── components.css
+    │   │   └── responsive.css
+    │   ├── js/
+    │   │   ├── app.js
+    │   │   └── modules/
+    │   └── profile.jpg
+    ├── backend/
+    │   ├── infra/
+    │   ├── src/
+    │   └── template.yaml
+    ├── .github/workflows/
+    │   └── bedrock-api.yml
+    ├── index.html
+    └── DEPLOYMENT.md
+
+Jekyll assembles the small root index.html from reusable layouts and section includes. JavaScript is split by feature, and CSS is split into design tokens, base rules, layout, components and responsive rules.
+
+## Features
+
+- Responsive editorial portfolio with paper/ink/cobalt light theme and matching navy dark theme.
+- Accessible mobile navigation, theme preference, reading progress and reduced-motion support.
+- Project filters and expandable architecture/design notes.
+- Dynamic public GitHub repository list with search and repository metadata.
+- Portfolio assistant powered by Amazon Bedrock through API Gateway and Lambda.
+- Browser-local chat history; the API does not persist conversation content.
+- GitHub Actions workflow for AWS SAM backend deployment.
 
 ## Architecture
 
-    Visitor browser
-      ├── GitHub Pages: HTML, CSS and JavaScript
-      ├── GitHub REST API: public repository metadata
-      └── HTTPS POST /chat
+    Browser
+      ├── GitHub Pages + Jekyll (frontend)
+      ├── GitHub REST API (public repository metadata)
+      └── POST /chat
             └── API Gateway HTTP API
-                  └── AWS Lambda (Python)
+                  └── AWS Lambda (Python 3.12)
                         └── Amazon Bedrock Converse API
 
-The browser never receives AWS credentials or a model-provider API key. The Lambda execution role has permission to invoke the configured Bedrock model. GitHub Actions authenticates to AWS using GitHub OIDC rather than long-lived AWS access keys.
+No model-provider keys or AWS credentials are sent to the browser. The Lambda execution role invokes Bedrock. GitHub Actions deployment credentials are stored as GitHub repository secrets.
 
-## Run locally
+## Run the frontend locally
 
-The frontend has no Node build step:
+The source is built by Jekyll. The simplest way to preview it locally is:
 
-    python3 -m http.server 8080
+    bundle install
+    bundle exec jekyll serve
 
-Open http://localhost:8080. The portfolio and GitHub project metadata work without AWS configuration. To enable chat locally, set the PORTFOLIO_API_URL value in runtime-config.js to the deployed API base URL.
+For a hosted preview, GitHub Pages automatically rebuilds the root Jekyll site from main.
 
 ## Deploy
 
-Read DEPLOYMENT.md for the AWS OIDC setup, Bedrock model configuration, GitHub repository variables/secrets and Pages settings.
+Follow DEPLOYMENT.md for:
+- GitHub Pages source configuration.
+- AWS IAM deployment-user permissions.
+- GitHub Actions repository secrets and variables.
+- Bedrock model ID configuration.
+- Updating the public API URL.
 
 ## Project sources
 
@@ -43,11 +84,11 @@ Read DEPLOYMENT.md for the AWS OIDC setup, Bedrock model configuration, GitHub r
 - Hybrid RAG Pipeline: https://github.com/null-charac69/hrag-app
 - Healthcare Analytics: https://github.com/null-charac69/healthcare_analytics
 
-Project copy is based on the public repository documentation. Unsupported outcome metrics are not presented as verified results.
+Project descriptions are grounded in public repository documentation. Unsupported performance figures are not presented as verified results.
 
 ## Operational notes
 
-- Chat is a public endpoint. API Gateway throttling and request validation are enabled; monitor usage and configure an AWS Budget before publishing the backend.
-- Conversation history is stored only in the visitor's browser localStorage and is sent with each chat request. It is not persisted by this backend.
-- Amazon Bedrock inference is billed by model and token usage. AWS Lambda and API Gateway may also incur charges.
-- The previous Gemini key was committed to the public repository. Revoke it; deleting the old file does not remove the credential from Git history.
+- Chat is a public API. API Gateway throttling and request validation are enabled; monitor usage and configure an AWS Budget before launch.
+- Conversation history is stored in the visitor's browser localStorage and included in each chat request. The backend does not persist it.
+- Amazon Bedrock, Lambda, API Gateway, CloudWatch and SAM artifact storage can incur charges.
+- A former Gemini key was committed to the public repository. Revoke it; removing the file does not remove it from Git history.

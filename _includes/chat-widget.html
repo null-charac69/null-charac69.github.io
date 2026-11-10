@@ -1,0 +1,24 @@
+<button class="chat-launcher" id="chatLauncher" type="button" aria-label="Open portfolio chat" aria-expanded="false" aria-controls="chatPanel">
+  <span class="launcher-mark">↗</span><span>Ask about my work</span>
+</button>
+<section class="chat-panel" id="chatPanel" role="dialog" aria-modal="false" aria-labelledby="chatTitle" hidden>
+  <div class="chat-header">
+    <div><div class="chat-header-kicker"><span class="live-dot"></span> PORTFOLIO ASSISTANT</div><h2 id="chatTitle">Talk through the work.</h2><p id="chatStatus">Grounded in published portfolio details.</p></div>
+    <button class="icon-button chat-close" id="chatClose" type="button" aria-label="Close chat">×</button>
+  </div>
+  <div class="chat-privacy-note">Your conversation stays in this browser. Messages are sent to the portfolio API when you chat.</div>
+  <div class="chat-messages" id="chatMessages" aria-live="polite" aria-relevant="additions">
+    <div class="chat-message assistant-message"><span class="message-label">PORTFOLIO GUIDE</span><p>Hello. Ask me about Anant’s projects, engineering experience or technical approach.</p></div>
+  </div>
+  <div class="chat-suggestions" id="chatSuggestions">
+    <button type="button" data-chat-prompt="Walk me through AgentOS and its architecture.">Explain AgentOS</button>
+    <button type="button" data-chat-prompt="How does the hybrid RAG pipeline work?">Explain the RAG pipeline</button>
+    <button type="button" data-chat-prompt="What kind of AI engineering work does Anant focus on?">Engineering focus</button>
+  </div>
+  <form class="chat-form" id="chatForm">
+    <label class="visually-hidden" for="chatInput">Write a message</label>
+    <textarea id="chatInput" rows="1" maxlength="1800" placeholder="Ask a question…" required></textarea>
+    <button class="chat-send" id="chatSend" type="submit" aria-label="Send message"><span aria-hidden="true">↑</span></button>
+  </form>
+  <div class="chat-footer"><span>AMAZON BEDROCK</span><span>Do not share sensitive information</span></div>
+</section>
