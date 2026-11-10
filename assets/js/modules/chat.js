@@ -6,7 +6,6 @@ const MAX_HISTORY = 12;
 export function initPortfolioChat() {
   const launcher = document.getElementById("chatLauncher");
   const panel = document.getElementById("chatPanel");
-  const closeButton = document.getElementById("chatClose");
   const form = document.getElementById("chatForm");
   const input = document.getElementById("chatInput");
   const sendButton = document.getElementById("chatSend");
@@ -97,27 +96,6 @@ export function initPortfolioChat() {
     sendButton.textContent = value ? "…" : "↑";
   }
 
-  function openChat() {
-    panel.hidden = false;
-    launcher.setAttribute("aria-expanded", "true");
-    window.setTimeout(() => input.focus(), 50);
-  }
-
-  function closeChat() {
-    panel.hidden = true;
-    launcher.setAttribute("aria-expanded", "false");
-    launcher.focus();
-  }
-
-  launcher.addEventListener("click", () => {
-    if (panel.hidden) openChat();
-    else closeChat();
-  });
-  closeButton?.addEventListener("click", closeChat);
-  document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && !panel.hidden) closeChat();
-  });
-
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
     await sendMessage(input.value);
@@ -136,7 +114,6 @@ export function initPortfolioChat() {
 
   suggestions?.querySelectorAll("[data-chat-prompt]").forEach((button) => {
     button.addEventListener("click", () => {
-      openChat();
       sendMessage(button.getAttribute("data-chat-prompt") || "");
     });
   });
