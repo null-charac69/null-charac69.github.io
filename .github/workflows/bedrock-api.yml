@@ -1,6 +1,11 @@
 name: Deploy Bedrock chat API
 
 on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/bedrock-api.yml"
   workflow_dispatch:
 
 permissions:
@@ -15,6 +20,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_EC2_METADATA_DISABLED: "true"
+      AWS_REGION: \${{ vars.AWS_REGION || 'ap-southeast-2' }}
+      BEDROCK_MODEL_ID: \${{ vars.BEDROCK_MODEL_ID || 'global.moonshotai.kimi-k3.1' }}
     steps:
       - name: Check out source
         uses: actions/checkout@v4
@@ -29,7 +36,7 @@ jobs:
       - name: Install backend dependencies
         run: python -m pip install -r backend/src/requirements.txt
 
-      - name: Run backend tests
+      - name: Run backend unit tests
         env:
           PYTHONPATH: backend/src
         run: python -m unittest discover -s backend/tests -p "test_*.py" -v
@@ -43,29 +50,40 @@ jobs:
       - name: Build Lambda package
         run: sam build --template-file backend/template.yaml --build-dir .aws-sam/build
 
-      - name: Validate deployment configuration
+      - name: Validate deployment credentials
         env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ vars.AWS_REGION }}
-          BEDROCK_MODEL_ID: ${{ vars.BEDROCK_MODEL_ID }}
+          AWS_ACCESS_KEY_ID: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
         run: |
-          test -n "$AWS_ACCESS_KEY_ID" || { echo "::error::Set the AWS_ACCESS_KEY_ID repository secret."; exit 1; }
-          test -n "$AWS_SECRET_ACCESS_KEY" || { echo "::error::Set the AWS_SECRET_ACCESS_KEY repository secret."; exit 1; }
-          test -n "$AWS_REGION" || { echo "::error::Set the AWS_REGION repository variable."; exit 1; }
-          test -n "$BEDROCK_MODEL_ID" || { echo "::error::Set the BEDROCK_MODEL_ID repository variable."; exit 1; }
+          test -n "$AWS_ACCESS_KEY_ID" || { echo "::error::Missing repository secret AWS_ACCESS_KEY_ID."; exit 1; }
+          test -n "$AWS_SECRET_ACCESS_KEY" || { echo "::error::Missing repository secret AWS_SECRET_ACCESS_KEY."; exit 1; }
+          echo "AWS deployment secrets are present."
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ vars.AWS_REGION }}
+          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: \${{ env.AWS_REGION }}
+
+      - name: Verify AWS identity and Bedrock model profile
+        run: |
+          aws sts get-caller-identity
+          aws bedrock get-inference-profile \
+            --inference-profile-identifier "$BEDROCK_MODEL_ID" \
+            > /tmp/bedrock-profile.json
+          python - <<'PY'
+          import json
+          with open("/tmp/bedrock-profile.json", encoding="utf-8") as profile_file:
+              profile = json.load(profile_file)
+          status = profile.get("status")
+          if status != "ACTIVE":
+              raise SystemExit(f"Bedrock inference profile is not ACTIVE: {status}")
+          print("Bedrock inference profile:", profile.get("inferenceProfileName"))
+          print("Bedrock profile status:", status)
+          PY
 
       - name: Deploy API stack
-        env:
-          AWS_REGION: ${{ vars.AWS_REGION }}
-          BEDROCK_MODEL_ID: ${{ vars.BEDROCK_MODEL_ID }}
         run: |
           sam deploy \
             --template-file .aws-sam/build/template.yaml \
@@ -77,27 +95,48 @@ jobs:
             --no-fail-on-empty-changeset \
             --parameter-overrides AllowedOrigin=https://null-charac69.github.io BedrockModelId="$BEDROCK_MODEL_ID"
 
-      - name: Print API endpoints
-        env:
-          AWS_REGION: ${{ vars.AWS_REGION }}
+      - name: Verify API health and run live Bedrock chat test
         run: |
           API_URL=$(aws cloudformation describe-stacks \
             --stack-name anant-portfolio-api \
             --region "$AWS_REGION" \
             --query "Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue" \
             --output text)
-          CHAT_URL=$(aws cloudformation describe-stacks \
-            --stack-name anant-portfolio-api \
-            --region "$AWS_REGION" \
-            --query "Stacks[0].Outputs[?OutputKey=='ChatEndpoint'].OutputValue" \
-            --output text)
-          echo "Portfolio API: $API_URL"
-          echo "Chat endpoint: $CHAT_URL"
+
+          echo "Testing API health endpoint..."
+          HEALTH_RESPONSE=$(curl --fail --silent --show-error --max-time 10 "$API_URL/health")
+          printf '%s' "$HEALTH_RESPONSE" | python -c '
+          import json, sys
+          result = json.load(sys.stdin)
+          assert result.get("status") == "ok", result
+          assert result.get("provider") == "Amazon Bedrock", result
+          print("Health check passed.")
+          '
+
+          echo "Testing live Bedrock chat endpoint..."
+          CHAT_RESPONSE=$(curl --fail --silent --show-error --max-time 32 \
+            -X POST "$API_URL/chat" \
+            -H "Origin: https://null-charac69.github.io" \
+            -H "Content-Type: application/json" \
+            --data-binary '{"messages":[{"role":"user","content":"In one concise sentence, what does Anant’s AgentOS project do?"}]}')
+
+          printf '%s' "$CHAT_RESPONSE" | python -c '
+          import json, sys
+          result = json.load(sys.stdin)
+          reply = result.get("reply")
+          if not isinstance(reply, str) or not reply.strip():
+              raise SystemExit("Bedrock chat smoke test failed: no reply was returned.")
+          print("Live Bedrock chat passed; response length:", len(reply), "characters.")
+          '
+
           {
             echo "### Bedrock API deployment"
             echo ""
-            echo "- Base URL: \`$API_URL\`"
-            echo "- Chat endpoint: \`$CHAT_URL\`"
+            echo "- Region: \`$AWS_REGION\`"
+            echo "- Model profile: \`$BEDROCK_MODEL_ID\`"
+            echo "- API base URL: \`$API_URL\`"
+            echo "- Health check: passed"
+            echo "- Live Bedrock chat: passed"
             echo ""
-            echo "Set portfolio_api_url in _config.yml to the base URL, commit, and push to update GitHub Pages."
+            echo "Add this base URL to \`portfolio_api_url\` in \`_config.yml\` and push to main to connect the public portfolio."
           } >> "$GITHUB_STEP_SUMMARY"
