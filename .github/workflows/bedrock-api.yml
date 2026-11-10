@@ -20,11 +20,33 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AWS_EC2_METADATA_DISABLED: "true"
-      AWS_REGION: \${{ vars.AWS_REGION || 'ap-southeast-2' }}
-      BEDROCK_MODEL_ID: \${{ vars.BEDROCK_MODEL_ID || 'global.moonshotai.kimi-k3.1' }}
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ vars.AWS_REGION || 'ap-southeast-2' }}
+      AWS_DEFAULT_REGION: ${{ vars.AWS_REGION || 'ap-southeast-2' }}
+      BEDROCK_MODEL_ID: ${{ vars.BEDROCK_MODEL_ID || 'global.moonshotai.kimi-k3.1' }}
     steps:
       - name: Check out source
         uses: actions/checkout@v4
+
+      - name: Confirm runner and AWS CLI
+        run: |
+          echo "Runner started successfully."
+          aws --version
+          python3 --version
+
+      - name: Validate deployment configuration
+        run: |
+          test -n "$AWS_ACCESS_KEY_ID" || { echo "::error::Missing repository secret AWS_ACCESS_KEY_ID."; exit 1; }
+          test -n "$AWS_SECRET_ACCESS_KEY" || { echo "::error::Missing repository secret AWS_SECRET_ACCESS_KEY."; exit 1; }
+          test -n "$AWS_REGION" || { echo "::error::AWS_REGION is empty."; exit 1; }
+          test -n "$BEDROCK_MODEL_ID" || { echo "::error::BEDROCK_MODEL_ID is empty."; exit 1; }
+          echo "Region: $AWS_REGION"
+          echo "Bedrock model: $BEDROCK_MODEL_ID"
+          echo "Both AWS repository secrets are present."
+
+      - name: Verify AWS identity
+        run: aws sts get-caller-identity
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -33,55 +55,25 @@ jobs:
           cache: pip
           cache-dependency-path: backend/src/requirements.txt
 
-      - name: Install backend dependencies
-        run: python -m pip install -r backend/src/requirements.txt
+      - name: Install backend and SAM dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r backend/src/requirements.txt
+          if ! command -v sam >/dev/null 2>&1; then
+            python -m pip install aws-sam-cli
+            echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          fi
 
       - name: Run backend unit tests
         env:
           PYTHONPATH: backend/src
         run: python -m unittest discover -s backend/tests -p "test_*.py" -v
 
-      - name: Set up AWS SAM
-        uses: aws-actions/setup-sam@v2
-
       - name: Validate SAM template
         run: sam validate --template-file backend/template.yaml
 
       - name: Build Lambda package
         run: sam build --template-file backend/template.yaml --build-dir .aws-sam/build
-
-      - name: Validate deployment credentials
-        env:
-          AWS_ACCESS_KEY_ID: \${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        run: |
-          test -n "$AWS_ACCESS_KEY_ID" || { echo "::error::Missing repository secret AWS_ACCESS_KEY_ID."; exit 1; }
-          test -n "$AWS_SECRET_ACCESS_KEY" || { echo "::error::Missing repository secret AWS_SECRET_ACCESS_KEY."; exit 1; }
-          echo "AWS deployment secrets are present."
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v4
-        with:
-          aws-access-key-id: \${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: \${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: \${{ env.AWS_REGION }}
-
-      - name: Verify AWS identity and Bedrock model profile
-        run: |
-          aws sts get-caller-identity
-          aws bedrock get-inference-profile \
-            --inference-profile-identifier "$BEDROCK_MODEL_ID" \
-            > /tmp/bedrock-profile.json
-          python - <<'PY'
-          import json
-          with open("/tmp/bedrock-profile.json", encoding="utf-8") as profile_file:
-              profile = json.load(profile_file)
-          status = profile.get("status")
-          if status != "ACTIVE":
-              raise SystemExit(f"Bedrock inference profile is not ACTIVE: {status}")
-          print("Bedrock inference profile:", profile.get("inferenceProfileName"))
-          print("Bedrock profile status:", status)
-          PY
 
       - name: Deploy API stack
         run: |
