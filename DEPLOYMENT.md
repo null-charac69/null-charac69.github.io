@@ -1,6 +1,6 @@
 # Direct deployment guide
 
-The portfolio frontend is published from the `main` branch through GitHub Pages/Jekyll. The chat API is a separate AWS SAM stack. The backend no longer uses a GitHub Actions workflow.
+The portfolio frontend is published from the `main` branch through GitHub Pages/Jekyll. The chat API is a separate AWS SAM stack. The backend does not use GitHub Actions.
 
 ## 1. Security
 
@@ -9,8 +9,6 @@ The former public repository contained a Gemini API key in its Git history. Revo
 Do not put AWS credentials or Bedrock keys in frontend code, repository files, chat messages, or command output. The API invokes Bedrock using the Lambda execution role.
 
 ## 2. Model configuration
-
-The backend is configured for:
 
 | Setting | Value |
 |---|---|
@@ -24,7 +22,7 @@ The model ID is configuration, not a secret.
 
 ## 3. Obtain an AWS CLI identity
 
-Run the deployment from AWS CloudShell or a trusted local machine with AWS CLI v2 and AWS SAM CLI installed. CloudShell uses the identity signed in to the AWS console; on a local machine, use an IAM role, IAM Identity Center, or a dedicated IAM deployment user.
+Run the deployment from AWS CloudShell or a trusted local machine with AWS CLI v2, AWS SAM CLI, and Python 3.12 installed. CloudShell uses the identity signed in to the AWS console; on a local machine, use an IAM role, IAM Identity Center, or a dedicated IAM deployment user.
 
 Do not use root access keys. The deployment identity needs permission to manage the SAM CloudFormation stack, API Gateway, the named Lambda function, its execution role, the SAM artifact bucket, and the Lambda log group. A starting least-privilege policy is in `backend/infra/sam-deployer-policy.json`; replace its account and region placeholders before attaching it to a dedicated IAM user.
 
@@ -33,102 +31,47 @@ Verify the identity before making changes:
 ```bash
 aws sts get-caller-identity
 aws configure set region ap-southeast-2
-aws configure set output json
 sam --version
-python3 --version
+python3.12 --version
 ```
 
 The STS command must return the AWS account and principal you intend to deploy with. Do not proceed if it returns the wrong account or role.
 
-## 4. Test, validate, build and deploy
+## 4. Run the deployment
 
-From the repository root:
-
-```bash
-cd backend
-
-python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install --upgrade pip
-python -m pip install -r src/requirements.txt
-
-PYTHONPATH=src python -m unittest discover -s tests -p 'test_*.py' -v
-
-sam validate --lint --template-file template.yaml
-sam build --template-file template.yaml
-
-sam deploy \
-  --template-file .aws-sam/build/template.yaml \
-  --stack-name anant-portfolio-api \
-  --resolve-s3 \
-  --capabilities CAPABILITY_IAM \
-  --region ap-southeast-2 \
-  --no-confirm-changeset \
-  --no-fail-on-empty-changeset \
-  --parameter-overrides \
-    AllowedOrigin=https://null-charac69.github.io \
-    BedrockModelId=global.moonshotai.kimi-k3.1
-```
-
-The deployment creates an HTTP API, a Python Lambda function, a Lambda execution role scoped to the configured Kimi inference profile/model, and a CloudWatch log group. SAM uploads the deployment artifact to its managed S3 bucket.
-
-## 5. Verify the deployed API and make a live Bedrock request
-
-Still from the same authenticated shell:
+Clone or update the repository, then run the one-shot script from the repository root:
 
 ```bash
-API_URL=$(aws cloudformation describe-stacks \
-  --stack-name anant-portfolio-api \
-  --region ap-southeast-2 \
-  --query "Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue" \
-  --output text)
-
-test -n "$API_URL" && test "$API_URL" != "None"
-
-curl --fail --silent --show-error "$API_URL/health"
+bash backend/deploy.sh
 ```
 
-Expected health response:
+The script performs these operations in order:
 
-```json
-{"status":"ok","provider":"Amazon Bedrock"}
-```
+1. Verifies AWS credentials using STS.
+2. Creates a Python 3.12 virtual environment and installs the backend dependency.
+3. Runs all backend unit tests.
+4. Runs `sam validate --lint`.
+5. Builds the Lambda package with `sam build`.
+6. Deploys API Gateway, Lambda, the execution role and log group with `sam deploy`.
+7. Checks `GET /health`, sends a real prompt through `POST /chat`, and verifies that Bedrock returned non-empty text.
 
-Then send a real prompt through API Gateway to the Lambda/Bedrock Converse path:
+The script only writes the API base URL into the local `_config.yml` after the health check and live model request both succeed. It does not push to GitHub automatically.
+
+## 5. Publish the API URL to the frontend
+
+After the deployment script succeeds, inspect the changed `_config.yml`. It should contain the deployed API base URL under `portfolio_api_url` (without a trailing `/chat`).
+
+Commit and push that one config change to `main`:
 
 ```bash
-CHAT_RESPONSE=$(curl --fail --silent --show-error --max-time 35 \
-  -X POST "$API_URL/chat" \
-  -H "Origin: https://null-charac69.github.io" \
-  -H "Content-Type: application/json" \
-  --data-binary '{"messages":[{"role":"user","content":"In one concise sentence, what does Anant’s AgentOS project do?"}]}')
-
-CHAT_RESPONSE="$CHAT_RESPONSE" python3 - <<'PY'
-import json
-import os
-
-result = json.loads(os.environ["CHAT_RESPONSE"])
-reply = result.get("reply")
-if not isinstance(reply, str) or not reply.strip():
-    raise SystemExit("Live Bedrock test failed: API returned no non-empty reply.")
-print("Live Bedrock test passed.")
-print("Response:", reply)
-PY
+git add _config.yml
+git commit -m "Connect portfolio chat API"
+git push origin main
 ```
 
-A successful health response only proves the HTTP API and Lambda health route are reachable. The second test is required to prove the configured Bedrock model can return a non-empty answer. If it fails, inspect the Lambda log group `/aws/lambda/anant-portfolio-api-chat` and check Bedrock model access, inference-profile permissions, and the IAM role policy.
+GitHub Pages will rebuild the frontend. The chat widget then calls `POST /chat` on API Gateway.
 
-## 6. Connect the public portfolio
-
-After both API checks pass, copy the API base URL printed below (it will resemble `https://<api-id>.execute-api.ap-southeast-2.amazonaws.com`). Edit `_config.yml`:
-
-```yaml
-portfolio_api_url: "https://<api-id>.execute-api.ap-southeast-2.amazonaws.com"
-```
-
-Use the base URL only; do not append `/chat`. Commit and push the change to `main`. GitHub Pages will rebuild the frontend, and the chat widget will call `POST /chat`.
-
-## 7. Cost and data handling
+## 6. Cost and data handling
 
 - Bedrock inference is metered. Lambda, API Gateway, CloudWatch Logs and the SAM S3 artifact bucket can also incur charges. Configure an AWS Budget before enabling public chat.
 - API Gateway throttling is set to 3 requests/second with a burst limit of 8. This is not user authentication; a public API can also be called outside a browser.
