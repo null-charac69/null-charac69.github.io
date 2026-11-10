@@ -1,0 +1,11 @@
+[project]
+name = "anant-portfolio-bedrock-api"
+version = "1.0.0"
+description = "Portfolio chat API backed by Amazon Bedrock Kimi K3.1"
+requires-python = ">=3.12"
+dependencies = [
+  "boto3>=1.35.0,<2.0.0",
+]
+
+[tool.vercel]
+entrypoint = "api.index:handler"
