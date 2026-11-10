@@ -31,8 +31,6 @@ Live site: https://null-charac69.github.io/
     │   ├── infra/
     │   ├── src/
     │   └── template.yaml
-    ├── .github/workflows/
-    │   └── bedrock-api.yml
     ├── index.html
     └── DEPLOYMENT.md
 
@@ -46,7 +44,6 @@ Jekyll assembles the small root index.html from reusable layouts and section inc
 - Dynamic public GitHub repository list with search and repository metadata.
 - Portfolio assistant powered by Amazon Bedrock through API Gateway and Lambda.
 - Browser-local chat history; the API does not persist conversation content.
-- GitHub Actions workflow for AWS SAM backend deployment.
 
 ## Architecture
 
@@ -58,25 +55,23 @@ Jekyll assembles the small root index.html from reusable layouts and section inc
                   └── AWS Lambda (Python 3.12)
                         └── Amazon Bedrock Converse API
 
-No model-provider keys or AWS credentials are sent to the browser. The Lambda execution role invokes Bedrock. GitHub Actions deployment credentials are stored as GitHub repository secrets.
+No model-provider keys or AWS credentials are sent to the browser. The Lambda execution role invokes Bedrock. The API stack is deployed directly with AWS SAM from an authenticated AWS CLI/CloudShell session; GitHub Actions is not required for the backend.
 
 ## Run the frontend locally
-
-The source is built by Jekyll. The simplest way to preview it locally is:
 
     bundle install
     bundle exec jekyll serve
 
-For a hosted preview, GitHub Pages automatically rebuilds the root Jekyll site from main.
+For a hosted preview, GitHub Pages rebuilds the root Jekyll site from main.
 
 ## Deploy
 
 Follow DEPLOYMENT.md for:
-- GitHub Pages source configuration.
-- AWS IAM deployment-user permissions.
-- GitHub Actions repository secrets and variables.
-- Bedrock model ID configuration.
-- Updating the public API URL.
+- AWS identity verification with STS.
+- Backend unit tests and SAM template validation.
+- Lambda packaging and direct SAM deployment.
+- Health endpoint and live Bedrock smoke tests.
+- Connecting the API base URL to the public chat widget.
 
 ## Project sources
 
@@ -88,7 +83,7 @@ Project descriptions are grounded in public repository documentation. Unsupporte
 
 ## Operational notes
 
-- Chat is a public API. API Gateway throttling and request validation are enabled; monitor usage and configure an AWS Budget before launch.
+- Chat is a public API. API Gateway throttling and request validation are enabled; configure an AWS Budget before launch.
 - Conversation history is stored in the visitor's browser localStorage and included in each chat request. The backend does not persist it.
 - Amazon Bedrock, Lambda, API Gateway, CloudWatch and SAM artifact storage can incur charges.
 - A former Gemini key was committed to the public repository. Revoke it; removing the file does not remove it from Git history.
