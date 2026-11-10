@@ -1,11 +1,6 @@
 name: Deploy Bedrock chat API
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "backend/**"
-      - ".github/workflows/bedrock-api.yml"
   workflow_dispatch:
 
 permissions:
