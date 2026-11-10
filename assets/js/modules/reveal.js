@@ -16,4 +16,5 @@ export function initReveal() {
   }, { threshold: 0.12, rootMargin: "0px 0px -30px 0px" });
 
   items.forEach((item) => observer.observe(item));
+  document.documentElement.classList.add("js-reveal");
 }
