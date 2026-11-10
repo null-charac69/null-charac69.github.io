@@ -1,11 +1,11 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/chat", "destination": "/api/chat" },
-    { "source": "/health", "destination": "/api/health" }
+    { "source": "/chat", "destination": "/api/index" },
+    { "source": "/health", "destination": "/api/index" }
   ],
   "functions": {
-    "api/**/*.py": {
+    "api/index.py": {
       "maxDuration": 60
     }
   }
