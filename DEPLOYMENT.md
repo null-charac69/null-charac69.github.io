@@ -56,22 +56,20 @@ Create these two secrets:
 
 Paste the values directly into GitHub's secret form. Do not send them in chat, commit them into files, or put them in GitHub Variables.
 
-## 6. Store non-secret configuration in GitHub Variables
+## 6. Region and model configuration
 
-In **Settings → Secrets and variables → Actions → Repository variables**, create:
+The deployment workflow is configured directly with:
 
-| Variable name | Example value | Notes |
-|---|---|---|
-| AWS_REGION | ap-southeast-2 | Sydney; source region for the global inference profile |
-| BEDROCK_MODEL_ID | global.moonshotai.kimi-k3.1 | Kimi K3.1 Pro - Highspeed global inference profile |
+| Setting | Value |
+|---|---|
+| AWS_REGION | ap-southeast-2 |
+| BEDROCK_MODEL_ID | global.moonshotai.kimi-k3.1 |
 
-Do not add quotes around values in GitHub.
+These values are not credentials, so they do not need to be stored as GitHub secrets or variables. The workflow ignores any old repository variables and uses the region/model specified above.
 
 ## 7. Deploy the Bedrock API
 
-The deployment workflow defaults to ap-southeast-2 and global.moonshotai.kimi-k3.1 if the two optional repository variables are not created. If you already have repository variables with different values, change them to the values above before deploying.
-
-After adding the two secrets and confirming the two variables:
+After adding the two repository secrets:
 
 1. Open **Actions → Deploy Bedrock chat API**.
 2. Select **Run workflow → Run workflow**.

@@ -22,9 +22,9 @@ jobs:
       AWS_EC2_METADATA_DISABLED: "true"
       AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      AWS_REGION: ${{ vars.AWS_REGION || 'ap-southeast-2' }}
-      AWS_DEFAULT_REGION: ${{ vars.AWS_REGION || 'ap-southeast-2' }}
-      BEDROCK_MODEL_ID: ${{ vars.BEDROCK_MODEL_ID || 'global.moonshotai.kimi-k3.1' }}
+      AWS_REGION: ap-southeast-2
+      AWS_DEFAULT_REGION: ap-southeast-2
+      BEDROCK_MODEL_ID: global.moonshotai.kimi-k3.1
     steps:
       - name: Check out source
         uses: actions/checkout@v4
