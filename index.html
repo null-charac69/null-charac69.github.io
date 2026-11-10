@@ -1,390 +1,330 @@
-<!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
-
+<!doctype html>
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anant Kumar Thakur - AI & Generative AI Specialist</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: #0a192f;
-            color: #ccd6f6;
-        }
-
-        .font-playfair {
-            font-family: 'Playfair Display', serif;
-        }
-
-        .glass-effect {
-            background: rgba(23, 42, 70, 0.6);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .neon-text {
-            color: #64ffda;
-            text-shadow:
-                0 0 5px #64ffda,
-                0 0 10px #64ffda,
-                0 0 20px #64ffda,
-                0 0 40px #0fa,
-                0 0 80px #0fa,
-                0 0 90px #0fa,
-                0 0 100px #0fa,
-                0 0 150px #0fa;
-        }
-
-        .skill-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgba(100, 255, 218, 0.1), 0 10px 10px -5px rgba(100, 255, 218, 0.04);
-        }
-
-        .project-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(45deg, rgba(100, 255, 218, 0.1), rgba(100, 255, 218, 0) 70%);
-            opacity: 0;
-            transition: opacity 0.4s ease-in-out;
-            z-index: 1;
-        }
-
-        .project-card:hover::before {
-            opacity: 1;
-        }
-
-        .project-content {
-            z-index: 2;
-        }
-
-        #signature-path {
-            stroke-dasharray: 1500;
-            stroke-dashoffset: 1500;
-            animation: draw 5s forwards;
-        }
-        
-        @keyframes draw {
-            to {
-                stroke-dashoffset: 0;
-            }
-        }
-        
-        .fade-in {
-            opacity: 0;
-            transform: translateY(30px);
-            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-        }
-
-        .fade-in.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Modal Styles */
-        .modal-overlay {
-            transition: opacity 0.3s ease;
-        }
-        .modal-content {
-            transition: transform 0.3s ease;
-        }
-
-        /* Chat Styles */
-        .chat-bubble-user {
-            background-color: #0c2d57;
-            align-self: flex-end;
-        }
-        .chat-bubble-ai {
-            background-color: #113c6e;
-            align-self: flex-start;
-        }
-        
-        /* Loading Spinner */
-        .loader {
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid #64ffda;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Typing indicator */
-        .typing-indicator span {
-            height: 8px;
-            width: 8px;
-            float: left;
-            margin: 0 1px;
-            background-color: #64ffda;
-            display: block;
-            border-radius: 50%;
-            opacity: 0.4;
-            animation: an-typing 1s infinite ease-in-out;
-        }
-        .typing-indicator span:nth-of-type(1) { animation-delay: -0.4s; }
-        .typing-indicator span:nth-of-type(2) { animation-delay: -0.2s; }
-        @keyframes an-typing {
-            50% { opacity: 1; }
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding-left: 1rem;
-                padding-right: 1rem;
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3f3ee">
+  <meta name="description" content="Anant Kumar Thakur is an AI/ML engineer focused on Generative AI, retrieval systems, and agentic applications.">
+  <meta name="author" content="Anant Kumar Thakur">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Anant Kumar Thakur — AI/ML Engineer">
+  <meta property="og:description" content="Building AI systems that are grounded, measurable and maintainable.">
+  <meta property="og:url" content="https://null-charac69.github.io/">
+  <meta property="og:image" content="https://null-charac69.github.io/assets/profile.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="canonical" href="https://null-charac69.github.io/">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="stylesheet" href="styles.css">
+  <title>Anant Kumar Thakur — AI/ML Engineer</title>
+  <script src="runtime-config.js"></script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Anant Kumar Thakur",
+    "jobTitle": "AI/ML Engineer",
+    "url": "https://null-charac69.github.io/",
+    "email": "mailto:anant.thakur2000@gmail.com",
+    "sameAs": [
+      "https://github.com/null-charac69",
+      "https://www.linkedin.com/in/anant-kumar-b12976178/"
+    ],
+    "alumniOf": {
+      "@type": "CollegeOrUniversity",
+      "name": "National Institute of Technology Srinagar"
+    }
+  }
+  </script>
 </head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <div class="reading-progress" id="readingProgress" aria-hidden="true"></div>
 
-<body class="antialiased">
-    <!-- Canvas for background animation -->
-    <canvas id="constellation-canvas" class="fixed top-0 left-0 w-full h-full z-0"></canvas>
-
-    <div class="relative z-10">
-        <!-- Header -->
-        <header id="header" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
-            <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
-                <a href="#" class="text-2xl font-bold text-white tracking-wider">AK.</a>
-                <div class="hidden md:flex space-x-8 items-center">
-                    <a href="#about" class="text-gray-300 hover:text-cyan-400 transition duration-300">About</a>
-                    <a href="#experience" class="text-gray-300 hover:text-cyan-400 transition duration-300">Experience</a>
-                    <a href="#skills" class="text-gray-300 hover:text-cyan-400 transition duration-300">Skills</a>
-                    <a href="#projects" class="text-gray-300 hover:text-cyan-400 transition duration-300">Projects</a>
-                    <a href="#ai-chat" class="text-gray-300 hover:text-cyan-400 transition duration-300">AI Chat</a>
-                    <a href="#contact" class="border border-cyan-400 text-cyan-400 px-4 py-2 rounded-md hover:bg-cyan-400 hover:text-slate-900 transition duration-300">Contact</a>
-                </div>
-                <div class="md:hidden">
-                    <button id="mobile-menu-button" class="text-white focus:outline-none">
-                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
-                        </svg>
-                    </button>
-                </div>
-            </nav>
-            <div id="mobile-menu" class="hidden md:hidden bg-slate-800">
-                <a href="#about" class="block py-2 px-4 text-sm text-gray-300 hover:bg-slate-700">About</a>
-                <a href="#experience" class="block py-2 px-4 text-sm text-gray-300 hover:bg-slate-700">Experience</a>
-                <a href="#skills" class="block py-2 px-4 text-sm text-gray-300 hover:bg-slate-700">Skills</a>
-                <a href="#projects" class="block py-2 px-4 text-sm text-gray-300 hover:bg-slate-700">Projects</a>
-                <a href="#ai-chat" class="block py-2 px-4 text-sm text-gray-300 hover:bg-slate-700">AI Chat</a>
-                <a href="#contact" class="block py-2 px-4 text-sm text-gray-300 hover:bg-slate-700">Contact</a>
-            </div>
-        </header>
-
-        <main class="container mx-auto px-6">
-            <!-- Hero Section -->
-            <section id="hero" class="min-h-screen flex flex-col justify-center items-start">
-                <div class="max-w-4xl">
-                    <p class="text-cyan-400 text-lg mb-4 fade-in animate-pulse">Greetings, my name is</p>
-                    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-bold text-slate-100 mb-4 fade-in bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent" style="transition-delay: 100ms;">Anant Kumar Thakur.</h1>
-                    <h2 class="text-4xl sm:text-6xl lg:text-7xl font-bold text-slate-400 mb-8 fade-in hover:text-cyan-400 transition-colors duration-300" style="transition-delay: 200ms;">I craft intelligent solutions.</h2>
-                    <p class="text-slate-400 max-w-xl mb-12 fade-in" style="transition-delay: 300ms;">
-                        As a distinguished AI/ML & Generative AI Engineer at <span class="text-cyan-400">TATA ELXSI LTD.</span>, I specialize in designing and implementing cutting-edge AI solutions. With over 2+ years of hands-on experience, I transform complex challenges into groundbreaking solutions that set new industry benchmarks.
-                    </p>
-                    <a href="#projects" class="fade-in border-2 border-cyan-400 text-cyan-400 px-8 py-4 rounded-lg text-lg font-medium hover:bg-cyan-400 hover:text-slate-900 transition-all duration-300 transform hover:scale-105" style="transition-delay: 400ms;">
-                        Explore My Innovations
-                    </a>
-                </div>
-            </section>
-
-            <!-- About Section -->
-            <section id="about" class="py-12 fade-in">
-                <h2 class="text-3xl font-bold text-slate-100 mb-12 text-center font-playfair"><span class="text-cyan-400">01.</span> About Me</h2>
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-12 items-center">
-                    <div class="md:col-span-3 text-slate-400 space-y-4 text-lg">
-                        <p>
-                            Since my first encounter with neural networks, I recognized that AI wasn't just another technological advancement—it was the cornerstone of future innovation. At TATA ELXSI, I've dedicated myself to pushing the boundaries of what's possible with artificial intelligence, developing solutions that not only meet current needs but anticipate future challenges.
-                        </p>
-                        <p>
-                            My approach combines deep technical expertise with strategic thinking. I specialize in developing end-to-end AI solutions, from conceptualization to deployment, with a particular focus on Generative AI and Large Language Models. My work spans across computer vision, natural language processing, and predictive analytics, always aiming to deliver solutions that drive real business value.
-                        </p>
-                        <p>
-                            I pride myself on staying at the cutting edge of AI advancement, constantly exploring new technologies and methodologies to enhance my toolkit and deliver more sophisticated solutions to complex problems.
-                        </p>
-                    </div>
-                    <div class="md:col-span-2 flex justify-center">
-                        <div class="w-64 h-64 relative group">
-                            <div class="absolute inset-0 bg-cyan-400/30 rounded-lg transform -rotate-6 transition-all duration-300 group-hover:rotate-0 group-hover:scale-105" style="z-index: 1;"></div>
-                            <img src="assets/profile.jpg" alt="Anant Kumar Thakur" class="relative w-full h-full object-cover rounded-lg shadow-2xl transition-all duration-300 group-hover:scale-105" style="z-index: 2;">
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Experience Section -->
-            <section id="experience" class="py-24 fade-in">
-                <h2 class="text-3xl font-bold text-slate-100 mb-12 text-center font-playfair"><span class="text-cyan-400">02.</span> Professional Journey</h2>
-                <div class="max-w-3xl mx-auto">
-                    <div class="glass-effect rounded-lg p-8 shadow-2xl">
-                        <h3 class="text-xl font-bold text-slate-100">AI/ML & Generative AI Engineer</h3>
-                        <p class="text-cyan-400 mb-4 text-lg">TATA ELXSI LTD.</p>
-                        <p class="text-slate-500 mb-6">2022 - Present</p>
-                        <ul class="space-y-3 text-slate-400 list-disc list-inside">
-                            <li>Led the development and deployment of enterprise-scale Generative AI solutions, implementing state-of-the-art Large Language Models that achieved breakthrough performance metrics.</li>
-                            <li>Architected and optimized deep learning models for complex computer vision tasks, achieving exceptional accuracy rates in production environments.</li>
-                            <li>Pioneered the implementation of advanced RAG (Retrieval-Augmented Generation) systems, significantly enhancing the contextual understanding of AI models.</li>
-                            <li>Established robust MLOps practices, streamlining the model development lifecycle and reducing deployment times by 70%.</li>
-                            <li>Developed innovative AI solutions for automotive and healthcare sectors, directly contributing to multi-million dollar revenue generation.</li>
-                        </ul>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Skills Section -->
-            <section id="skills" class="py-24 fade-in">
-                <h2 class="text-3xl font-bold text-slate-100 mb-12 text-center font-playfair"><span class="text-cyan-400">03.</span> Technical Expertise</h2>
-                <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
-                        <h3 class="text-lg font-bold text-slate-100">AI/ML Foundations</h3>
-                        <p class="text-slate-400 text-sm mt-2">Deep expertise in TensorFlow, PyTorch, Scikit-learn, and Neural Network architectures</p>
-                    </div>
-                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
-                        <h3 class="text-lg font-bold text-slate-100">Generative AI & LLMs</h3>
-                        <p class="text-slate-400 text-sm mt-2">Advanced experience with transformers, BERT, GPT, and custom LLM development</p>
-                    </div>
-                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
-                        <h3 class="text-lg font-bold text-slate-100">Computer Vision</h3>
-                        <p class="text-slate-400 text-sm mt-2">Mastery in OpenCV, YOLO, CNN architectures, and image processing</p>
-                    </div>
-                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
-                        <h3 class="text-lg font-bold text-slate-100">NLP & Text Analytics</h3>
-                        <p class="text-slate-400 text-sm mt-2">Proficient in NLTK, SpaCy, transformers, and advanced text processing</p>
-                    </div>
-                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
-                        <h3 class="text-lg font-bold text-slate-100">MLOps & Deployment</h3>
-                        <p class="text-slate-400 text-sm mt-2">Expert in MLflow, Docker, Kubernetes, and CI/CD pipelines</p>
-                    </div>
-                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
-                        <h3 class="text-lg font-bold text-slate-100">Cloud Platforms</h3>
-                        <p class="text-slate-400 text-sm mt-2">Extensive experience with AWS, Azure, and GCP AI services</p>
-                    </div>
-                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
-                        <h3 class="text-lg font-bold text-slate-100">Programming</h3>
-                        <p class="text-slate-400 text-sm mt-2">Python, Java, C++, SQL, and modern development practices</p>
-                    </div>
-                    <div class="skill-card glass-effect rounded-lg p-6 text-center transition-all duration-300">
-                        <h3 class="text-lg font-bold text-slate-100">Big Data & Analytics</h3>
-                        <p class="text-slate-400 text-sm mt-2">Proficient in Spark, Hadoop, and distributed computing</p>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Projects Section -->
-            <section id="projects" class="py-24 fade-in">
-                <h2 class="text-3xl font-bold text-slate-100 mb-12 text-center font-playfair"><span class="text-cyan-400">04.</span> Featured Projects</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Project 1 -->
-                    <div class="project-card glass-effect rounded-lg p-6 relative overflow-hidden flex flex-col justify-between">
-                        <div class="project-content">
-                            <h3 class="text-xl font-bold text-slate-100 mb-2">AI-Powered Healthcare Analytics</h3>
-                            <p class="text-slate-400 mb-4">Developed an advanced healthcare analytics platform using deep learning for medical image analysis and patient outcome prediction, achieving 95% accuracy in early disease detection.</p>
-                            <div class="text-cyan-400 font-mono text-sm mb-4">
-                                PyTorch • Computer Vision • MLOps • Healthcare AI
-                            </div>
-                            <button class="expand-ai-btn text-sm text-cyan-400 border border-cyan-400 rounded-full px-4 py-1 hover:bg-cyan-400 hover:text-slate-900 transition duration-300">✨ Expand with AI</button>
-                        </div>
-                    </div>
-                    <!-- Project 2 -->
-                    <div class="project-card glass-effect rounded-lg p-6 relative overflow-hidden flex flex-col justify-between">
-                        <div class="project-content">
-                            <h3 class="text-xl font-bold text-slate-100 mb-2">Autonomous Quality Control</h3>
-                            <p class="text-slate-400 mb-4">Engineered an end-to-end computer vision system for automotive manufacturing, reducing defect detection time by 80% and improving accuracy to 99.9%.</p>
-                            <div class="text-cyan-400 font-mono text-sm mb-4">
-                                TensorFlow • OpenCV • Edge AI • Industrial IoT
-                            </div>
-                            <button class="expand-ai-btn text-sm text-cyan-400 border border-cyan-400 rounded-full px-4 py-1 hover:bg-cyan-400 hover:text-slate-900 transition duration-300">✨ Expand with AI</button>
-                        </div>
-                    </div>
-                    <!-- Project 3 -->
-                    <div class="project-card glass-effect rounded-lg p-6 relative overflow-hidden flex flex-col justify-between">
-                        <div class="project-content">
-                            <h3 class="text-xl font-bold text-slate-100 mb-2">Enterprise Knowledge AI</h3>
-                            <p class="text-slate-400 mb-4">Created a custom LLM-powered knowledge management system with advanced RAG capabilities, improving information retrieval accuracy by 200%.</p>
-                            <div class="text-cyan-400 font-mono text-sm mb-4">
-                                LangChain • Transformers • Vector DB • AWS
-                            </div>
-                            <button class="expand-ai-btn text-sm text-cyan-400 border border-cyan-400 rounded-full px-4 py-1 hover:bg-cyan-400 hover:text-slate-900 transition duration-300">✨ Expand with AI</button>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- AI Chat Section -->
-            <section id="ai-chat" class="py-24 fade-in">
-                <h2 class="text-3xl font-bold text-slate-100 mb-6 text-center font-playfair"><span class="text-cyan-400">05.</span> Engage with My AI Persona</h2>
-                <p class="text-slate-400 max-w-2xl mx-auto mb-10 text-center">Have questions about my experience or skills? Ask my digital twin, an AI powered by the Gemini model, trained on my portfolio data. This is a demonstration of my ability to build advanced conversational agents.</p>
-                <div class="max-w-2xl mx-auto glass-effect rounded-lg p-6 shadow-2xl">
-                    <div id="chat-window" class="h-80 overflow-y-auto mb-4 p-4 space-y-4 flex flex-col bg-slate-900/50 rounded-lg">
-                       <div class="chat-bubble-ai rounded-lg p-3 max-w-md text-sm">
-                           <p>Hello. I am the AI persona of Anant Kumar Thakur. Feel free to ask me anything about his qualifications, projects, or technical expertise.</p>
-                       </div>
-                    </div>
-                    <div id="typing-indicator" class="hidden h-8 items-center">
-                        <div class="typing-indicator"><span></span><span></span><span></span></div>
-                    </div>
-                    <form id="chat-form" class="flex gap-4">
-                        <input type="text" id="chat-input" placeholder="Ask about a project or skill..." class="flex-grow bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-slate-300 focus:outline-none focus:ring-2 focus:ring-cyan-400">
-                        <button type="submit" class="bg-cyan-400 text-slate-900 font-bold px-6 py-2 rounded-lg hover:bg-cyan-300 transition-colors duration-300">Send</button>
-                    </form>
-                </div>
-            </section>
-
-            <!-- Contact Section -->
-            <section id="contact" class="py-24 text-center fade-in">
-                <h2 class="text-3xl font-bold text-slate-100 mb-4 font-playfair">Let's Connect</h2>
-                <p class="text-slate-400 max-w-2xl mx-auto mb-12">
-                    I'm always interested in challenging AI projects and innovative collaborations. Whether you're looking to implement cutting-edge AI solutions or discuss the future of technology, I'd love to hear from you.
-                </p>
-                <a href="mailto:anant.thakur2000@gmail.com" class="border-2 border-cyan-400 text-cyan-400 text-xl font-medium px-10 py-5 rounded-lg hover:bg-cyan-400 hover:text-slate-900 transition-all duration-300 transform hover:scale-105">
-                    Get In Touch
-                </a>
-                
-                <!-- Signature -->
-                <div class="mt-24">
-                    <svg id="signature-svg" class="w-64 mx-auto" viewBox="0 0 500 150">
-                        <path id="signature-path" d="M20,80 C40,40 80,40 100,80 S160,120 180,80 C200,40 240,40 260,80 S320,120 340,80 C360,40 400,40 420,80 C440,120 480,120 500,80" stroke="#64FFDA" stroke-width="3" fill="none" />
-                    </svg>
-                    <p class="text-slate-100 font-playfair text-2xl mt-2">Anant Kumar Thakur</p>
-                </div>
-            </section>
-        </main>
-
-        <!-- Footer -->
-        <footer class="py-8 text-center text-slate-500">
-            <p>&copy; 2025 Anant Kumar Thakur. All rights reserved. Designed & Built with Excellence.</p>
-        </footer>
+  <header class="site-header" id="siteHeader">
+    <div class="nav-wrap">
+      <a class="wordmark" href="#home" aria-label="Anant Kumar Thakur, home">
+        <span class="wordmark-mark">AK</span>
+        <span class="wordmark-name">ANANT KUMAR THAKUR</span>
+      </a>
+      <nav class="desktop-nav" aria-label="Primary navigation">
+        <a href="#about">About</a>
+        <a href="#work">Selected work</a>
+        <a href="#experience">Experience</a>
+        <a href="#toolkit">Toolkit</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="icon-button theme-toggle" id="themeToggle" type="button" aria-label="Switch colour theme" title="Switch colour theme">
+          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42"></path></svg>
+        </button>
+        <a class="nav-cta" href="#contact">Get in touch <span aria-hidden="true">↗</span></a>
+        <button class="icon-button menu-toggle" id="menuToggle" type="button" aria-label="Open navigation" aria-expanded="false" aria-controls="mobileNav">
+          <span></span><span></span>
+        </button>
+      </div>
     </div>
+    <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation" hidden>
+      <a href="#about">About</a>
+      <a href="#work">Selected work</a>
+      <a href="#experience">Experience</a>
+      <a href="#toolkit">Toolkit</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
 
-    <!-- Modal for AI Project Summary -->
-    <div id="ai-summary-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-70 p-4 modal-overlay hidden opacity-0">
-        <div class="glass-effect rounded-lg shadow-2xl p-8 max-w-2xl w-full modal-content transform scale-95">
-            <div class="flex justify-between items-center mb-4">
-                <h3 id="modal-title" class="text-2xl font-bold text-slate-100">AI-Generated Summary</h3>
-                <button id="modal-close-btn" class="text-slate-400 hover:text-white">&times;</button>
-            </div>
-            <div id="modal-body" class="text-slate-300">
-                <div class="flex justify-center items-center h-48">
-                    <div class="loader"></div>
-                </div>
-            </div>
+  <main id="main">
+    <section class="hero section-shell" id="home">
+      <div class="hero-copy reveal">
+        <div class="eyebrow"><span class="eyebrow-rule"></span> AI/ML ENGINEER <span class="eyebrow-divider">/</span> GENERATIVE AI</div>
+        <h1>Building AI systems that work <em> beyond the demo.</em></h1>
+        <p class="hero-intro">I’m Anant — an AI/ML engineer at <strong>Tata Elxsi</strong>, working across LLM applications, retrieval systems and agentic workflows. I care about the engineering around the model: reliable data, clear interfaces, useful evaluation and deployment.</p>
+        <div class="hero-actions">
+          <a class="button button-dark" href="#work">Explore selected work <span aria-hidden="true">↓</span></a>
+          <button class="button button-outline" type="button" data-chat-open>Ask about my work <span aria-hidden="true">↗</span></button>
         </div>
-    </div>
+        <div class="hero-links">
+          <a href="https://github.com/null-charac69" target="_blank" rel="noreferrer">GitHub <span aria-hidden="true">↗</span></a>
+          <a href="https://www.linkedin.com/in/anant-kumar-b12976178/" target="_blank" rel="noreferrer">LinkedIn <span aria-hidden="true">↗</span></a>
+          <a href="mailto:anant.thakur2000@gmail.com">Email <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
 
-    <script src="js/main.js"></script>
-    <script src="js/ai-features.js"></script>
-    <script src="js/config.js"></script>
+      <div class="hero-side reveal" data-reveal-delay="120">
+        <div class="portrait-card">
+          <div class="portrait-topline"><span>PROFILE / 01</span><span>INDIA</span></div>
+          <div class="portrait-image-wrap">
+            <img src="assets/profile.jpg" alt="Portrait of Anant Kumar Thakur" fetchpriority="high">
+          </div>
+          <div class="portrait-caption">
+            <div><span class="caption-label">CURRENT ROLE</span><strong>AI/ML Engineer</strong></div>
+            <div class="caption-company">Tata Elxsi</div>
+          </div>
+        </div>
+        <div class="signal-card">
+          <div class="signal-heading"><span class="signal-dot"></span> AREAS OF WORK <span class="signal-count">01—04</span></div>
+          <div class="signal-line"><span>01</span><strong>Generative AI & LLMs</strong><span class="signal-arrow">↗</span></div>
+          <div class="signal-line"><span>02</span><strong>Retrieval & RAG</strong><span class="signal-arrow">↗</span></div>
+          <div class="signal-line"><span>03</span><strong>Agentic workflows</strong><span class="signal-arrow">↗</span></div>
+          <div class="signal-line"><span>04</span><strong>ML systems & APIs</strong><span class="signal-arrow">↗</span></div>
+        </div>
+      </div>
+
+      <div class="hero-index" aria-hidden="true">01 <span>—</span> 06</div>
+    </section>
+
+    <section class="intro-strip" aria-label="Professional summary">
+      <div class="section-shell intro-strip-inner">
+        <p>THREE YEARS IN AI/ML ENGINEERING</p>
+        <span class="strip-mark">✳</span>
+        <p>MECHANICAL ENGINEERING → AI</p>
+        <span class="strip-mark">✳</span>
+        <p>NIT SRINAGAR</p>
+        <span class="strip-mark">✳</span>
+        <p>PUNE, INDIA</p>
+      </div>
+    </section>
+
+    <section class="content-section section-shell about-section" id="about">
+      <div class="section-heading reveal">
+        <p class="section-kicker">01 / THE PERSON BEHIND THE SYSTEMS</p>
+        <h2>Good AI engineering is<br><em>more than a good prompt.</em></h2>
+      </div>
+      <div class="about-grid">
+        <div class="about-copy reveal">
+          <p class="lead-copy">I work at the point where model capability meets software engineering. My focus is turning promising AI ideas into systems that can be understood, evaluated and operated.</p>
+          <p>My work centres on Generative AI and LLM-based applications — especially retrieval, orchestration and the services that make them useful in real workflows. I move between experimentation and implementation, paying attention to the details that decide whether a prototype can become a dependable product.</p>
+          <p>I started out in Mechanical Engineering at NIT Srinagar. That background still shapes how I approach software: understand the constraints, reason about the whole system, and validate the result rather than relying on assumptions.</p>
+          <a class="text-link" href="https://www.linkedin.com/in/anant-kumar-b12976178/" target="_blank" rel="noreferrer">More about my professional journey <span aria-hidden="true">↗</span></a>
+        </div>
+        <div class="principles reveal" data-reveal-delay="100">
+          <div class="principle">
+            <span class="principle-number">01</span>
+            <div><h3>Ground before you generate.</h3><p>Retrieval, source quality and context design are first-class parts of an LLM system.</p></div>
+          </div>
+          <div class="principle">
+            <span class="principle-number">02</span>
+            <div><h3>Evaluate what matters.</h3><p>Use task-specific checks and measurable baselines; avoid treating a fluent answer as a correct one.</p></div>
+          </div>
+          <div class="principle">
+            <span class="principle-number">03</span>
+            <div><h3>Design for the real world.</h3><p>Think about latency, failure modes, observability, cost and maintainability from the beginning.</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="work-section" id="work">
+      <div class="section-shell">
+        <div class="section-heading work-heading reveal">
+          <div><p class="section-kicker">02 / SELECTED ENGINEERING WORK</p><h2>Built, broken down<br><em>and made better.</em></h2></div>
+          <div class="work-aside"><span class="live-dot"></span><span>Repository details refresh from GitHub</span><span class="repo-sync" id="repoSync">Connecting…</span></div>
+        </div>
+
+        <div class="projects-grid">
+          <article class="project-card project-card-featured reveal" data-repo="agentos">
+            <div class="project-top"><span class="project-number">01 / MULTI-AGENT SYSTEMS</span><span class="project-type">FEATURED</span></div>
+            <div class="project-main">
+              <div class="project-copy">
+                <h3>AgentOS</h3>
+                <p class="project-summary">An autonomous research workflow that turns an open-ended question into a structured, cited report using a coordinated LangGraph pipeline.</p>
+                <ul class="project-points">
+                  <li>Five specialist stages: planning, search, retrieval, code execution and critique.</li>
+                  <li>Shared graph state with a critic-and-revision loop for report quality.</li>
+                  <li>FastAPI streaming, Qdrant memory and Redis caching.</li>
+                </ul>
+                <div class="tag-list"><span>LangGraph</span><span>FastAPI</span><span>Qdrant</span><span>Redis</span><span>SSE</span></div>
+              </div>
+              <div class="architecture-card" aria-label="AgentOS workflow: question to planner, specialist agents, critic, and report">
+                <div class="architecture-label">WORKFLOW / OVERVIEW</div>
+                <div class="arch-node arch-start">RESEARCH QUESTION</div>
+                <div class="arch-connector"></div>
+                <div class="arch-node">PLANNER <span>01</span></div>
+                <div class="arch-split"><span>SEARCH</span><span>RETRIEVE</span><span>EXECUTE</span></div>
+                <div class="arch-connector"></div>
+                <div class="arch-node arch-critic">CRITIC <span>QUALITY LOOP</span></div>
+                <div class="arch-connector"></div>
+                <div class="arch-node arch-end">CITED REPORT</div>
+              </div>
+            </div>
+            <div class="project-bottom">
+              <a class="project-link" href="https://github.com/null-charac69/agentos" target="_blank" rel="noreferrer">Inspect repository <span aria-hidden="true">↗</span></a>
+              <span class="repo-meta" data-repo-meta>Public repository</span>
+            </div>
+          </article>
+
+          <article class="project-card reveal" data-repo="hrag-app" data-reveal-delay="80">
+            <div class="project-top"><span class="project-number">02 / RETRIEVAL SYSTEMS</span><span class="project-type">RAG</span></div>
+            <div class="project-copy">
+              <h3>Hybrid RAG Pipeline</h3>
+              <p class="project-summary">A retrieval pipeline that combines dense semantic search and BM25, merges ranked results, reranks candidates and checks answer grounding.</p>
+              <ul class="project-points">
+                <li>Dense + sparse retrieval with Reciprocal Rank Fusion.</li>
+                <li>Cross-encoder reranking and citation verification.</li>
+                <li>RAGAS evaluation, FastAPI services and conversation history.</li>
+              </ul>
+              <div class="tag-list"><span>Qdrant</span><span>BGE</span><span>BM25</span><span>RRF</span><span>RAGAS</span></div>
+            </div>
+            <div class="project-bottom">
+              <a class="project-link" href="https://github.com/null-charac69/hrag-app" target="_blank" rel="noreferrer">Inspect repository <span aria-hidden="true">↗</span></a>
+              <span class="repo-meta" data-repo-meta>Public repository</span>
+            </div>
+          </article>
+
+          <article class="project-card reveal" data-repo="healthcare_analytics" data-reveal-delay="150">
+            <div class="project-top"><span class="project-number">03 / APPLIED MACHINE LEARNING</span><span class="project-type">HEALTHCARE</span></div>
+            <div class="project-copy">
+              <h3>Healthcare Analytics</h3>
+              <p class="project-summary">A healthcare analytics prototype covering medical-image workflows and patient-outcome prediction, with model interpretability as part of the product surface.</p>
+              <ul class="project-points">
+                <li>Documented MRI and chest X-ray classification workflows.</li>
+                <li>Patient risk, length-of-stay and readmission prediction concepts.</li>
+                <li>React, FastAPI, PyTorch, MLflow and DVC in the documented stack.</li>
+              </ul>
+              <div class="tag-list"><span>PyTorch</span><span>FastAPI</span><span>MLflow</span><span>DVC</span></div>
+            </div>
+            <div class="project-bottom">
+              <a class="project-link" href="https://github.com/null-charac69/healthcare_analytics" target="_blank" rel="noreferrer">Inspect repository <span aria-hidden="true">↗</span></a>
+              <span class="repo-meta" data-repo-meta>Public repository</span>
+            </div>
+          </article>
+        </div>
+        <p class="project-disclaimer">Project descriptions reflect the public repository documentation. Performance figures are intentionally omitted where the repository does not publish enough benchmark detail to independently interpret them.</p>
+        <div class="all-work-row"><a class="button button-outline" href="https://github.com/null-charac69?tab=repositories" target="_blank" rel="noreferrer">Browse all repositories <span aria-hidden="true">↗</span></a></div>
+      </div>
+    </section>
+
+    <section class="content-section section-shell experience-section" id="experience">
+      <div class="section-heading reveal">
+        <p class="section-kicker">03 / EXPERIENCE & EDUCATION</p>
+        <h2>A foundation in engineering.<br><em>A focus on intelligent systems.</em></h2>
+      </div>
+      <div class="timeline">
+        <article class="timeline-item reveal">
+          <div class="timeline-marker"><span></span></div>
+          <div class="timeline-date">PROFESSIONAL EXPERIENCE</div>
+          <div class="timeline-content">
+            <div class="timeline-title-row"><h3>AI/ML & Generative AI Engineer</h3><span class="timeline-status">CURRENT</span></div>
+            <p class="timeline-org">Tata Elxsi</p>
+            <p>Working across AI/ML and Generative AI solutions, with a focus on LLM-based applications and the engineering needed to move from exploration to implementation. Specific client work and internal deliverables are kept confidential.</p>
+          </div>
+        </article>
+        <article class="timeline-item reveal">
+          <div class="timeline-marker"><span></span></div>
+          <div class="timeline-date">EDUCATION</div>
+          <div class="timeline-content">
+            <h3>B.Tech — Mechanical Engineering</h3>
+            <p class="timeline-org">National Institute of Technology Srinagar</p>
+            <p>An engineering foundation built around analytical problem-solving, systems thinking and working within real constraints.</p>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="toolkit-section" id="toolkit">
+      <div class="section-shell">
+        <div class="section-heading reveal">
+          <p class="section-kicker">04 / TECHNICAL TOOLKIT</p>
+          <h2>The tools behind<br><em>the implementation.</em></h2>
+        </div>
+        <div class="toolkit-grid">
+          <article class="toolkit-card reveal"><span class="toolkit-index">01</span><h3>Generative AI</h3><p>LLM applications, prompt and context design, structured outputs, agent workflows and conversational interfaces.</p><div class="tag-list"><span>LangGraph</span><span>LLM APIs</span><span>RAG</span></div></article>
+          <article class="toolkit-card reveal" data-reveal-delay="60"><span class="toolkit-index">02</span><h3>Retrieval & evaluation</h3><p>Hybrid search, embedding-based retrieval, ranking, grounding checks and task-specific evaluation.</p><div class="tag-list"><span>Qdrant</span><span>BM25</span><span>RRF</span><span>RAGAS</span></div></article>
+          <article class="toolkit-card reveal" data-reveal-delay="120"><span class="toolkit-index">03</span><h3>Backend engineering</h3><p>API design, async workflows, streaming responses, application state and service integration.</p><div class="tag-list"><span>Python</span><span>FastAPI</span><span>Redis</span><span>SQL</span></div></article>
+          <article class="toolkit-card reveal" data-reveal-delay="180"><span class="toolkit-index">04</span><h3>ML & delivery</h3><p>Model development, computer vision workflows, containers, experiment tracking and cloud deployment.</p><div class="tag-list"><span>PyTorch</span><span>Docker</span><span>MLflow</span><span>AWS</span></div></article>
+        </div>
+        <div class="toolkit-footnote"><span class="footnote-mark">↳</span> I keep the list focused on technologies used in my work and public projects—not a catalogue of everything I have tried.</div>
+      </div>
+    </section>
+
+    <section class="content-section section-shell contact-section" id="contact">
+      <div class="contact-panel reveal">
+        <div class="contact-overline">05 / START A CONVERSATION</div>
+        <div class="contact-layout">
+          <div><h2>Have a real problem<br>worth <em>solving?</em></h2><p>I’m interested in thoughtful engineering conversations, challenging AI problems and useful products.</p></div>
+          <div class="contact-actions">
+            <a class="button button-lime" href="mailto:anant.thakur2000@gmail.com">Email Anant <span aria-hidden="true">↗</span></a>
+            <a href="https://www.linkedin.com/in/anant-kumar-b12976178/" target="_blank" rel="noreferrer">Connect on LinkedIn <span aria-hidden="true">↗</span></a>
+            <a href="https://github.com/null-charac69" target="_blank" rel="noreferrer">Explore GitHub <span aria-hidden="true">↗</span></a>
+          </div>
+        </div>
+        <div class="contact-bottom"><span>ANANT KUMAR THAKUR</span><span>PUNE, INDIA</span><span>AI/ML · GENERATIVE AI · SYSTEMS</span></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer section-shell">
+    <span>© <span id="currentYear"></span> Anant Kumar Thakur</span>
+    <span>Built with care. Maintained with intent.</span>
+    <a href="#home">Back to top ↑</a>
+  </footer>
+
+  <button class="chat-launcher" id="chatLauncher" type="button" aria-label="Open portfolio chat" aria-expanded="false" aria-controls="chatPanel">
+    <span class="launcher-mark">↗</span><span>Ask about my work</span>
+  </button>
+
+  <section class="chat-panel" id="chatPanel" role="dialog" aria-modal="false" aria-labelledby="chatTitle" hidden>
+    <div class="chat-header">
+      <div><div class="chat-header-kicker"><span class="live-dot"></span> PORTFOLIO ASSISTANT</div><h2 id="chatTitle">Talk through the work.</h2><p id="chatStatus">Grounded in published portfolio details.</p></div>
+      <button class="icon-button chat-close" id="chatClose" type="button" aria-label="Close chat">×</button>
+    </div>
+    <div class="chat-privacy-note">Your conversation is kept in this browser. Messages are sent to the portfolio API when you chat.</div>
+    <div class="chat-messages" id="chatMessages" aria-live="polite" aria-relevant="additions">
+      <div class="chat-message assistant-message"><span class="message-label">PORTFOLIO GUIDE</span><p>Hello. Ask me about Anant’s projects, engineering experience or technical approach.</p></div>
+    </div>
+    <div class="chat-suggestions" id="chatSuggestions">
+      <button type="button" data-chat-prompt="Walk me through AgentOS and its architecture.">Explain AgentOS</button>
+      <button type="button" data-chat-prompt="How does the hybrid RAG pipeline work?">Explain the RAG pipeline</button>
+      <button type="button" data-chat-prompt="What kind of AI engineering work does Anant focus on?">Engineering focus</button>
+    </div>
+    <form class="chat-form" id="chatForm">
+      <label class="visually-hidden" for="chatInput">Write a message</label>
+      <textarea id="chatInput" rows="1" maxlength="1800" placeholder="Ask a question…" required></textarea>
+      <button class="chat-send" id="chatSend" type="submit" aria-label="Send message"><span aria-hidden="true">↑</span></button>
+    </form>
+    <div class="chat-footer"><span>AMAZON BEDROCK</span><span>Do not share sensitive information</span></div>
+  </section>
+
+  <script src="js/portfolio-data.js" defer></script>
+  <script src="js/app.js" defer></script>
+  <script src="js/chat.js" defer></script>
 </body>
 </html>

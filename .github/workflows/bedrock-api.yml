@@ -1,0 +1,86 @@
+name: Deploy Bedrock chat API
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - ".github/workflows/bedrock-api.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: bedrock-api
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Validate deployment configuration
+        env:
+          AWS_ROLE_ARN: ${{ secrets.AWS_ROLE_ARN }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          BEDROCK_MODEL_ID: ${{ vars.BEDROCK_MODEL_ID }}
+        run: |
+          test -n "$AWS_ROLE_ARN" || { echo "::error::Set the AWS_ROLE_ARN repository secret."; exit 1; }
+          test -n "$AWS_REGION" || { echo "::error::Set the AWS_REGION repository variable."; exit 1; }
+          test -n "$BEDROCK_MODEL_ID" || { echo "::error::Set the BEDROCK_MODEL_ID repository variable."; exit 1; }
+
+      - name: Configure AWS credentials through GitHub OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+
+      - name: Set up AWS SAM
+        uses: aws-actions/setup-sam@v2
+
+      - name: Build Lambda package
+        run: sam build --template-file backend/template.yaml --build-dir .aws-sam/build
+
+      - name: Deploy API stack
+        env:
+          AWS_REGION: ${{ vars.AWS_REGION }}
+          BEDROCK_MODEL_ID: ${{ vars.BEDROCK_MODEL_ID }}
+        run: |
+          sam deploy \
+            --template-file .aws-sam/build/template.yaml \
+            --stack-name anant-portfolio-api \
+            --resolve-s3 \
+            --capabilities CAPABILITY_IAM \
+            --region "$AWS_REGION" \
+            --no-confirm-changeset \
+            --no-fail-on-empty-changeset \
+            --parameter-overrides AllowedOrigin=https://null-charac69.github.io BedrockModelId="$BEDROCK_MODEL_ID"
+
+      - name: Print API endpoints
+        env:
+          AWS_REGION: ${{ vars.AWS_REGION }}
+        run: |
+          API_URL=$(aws cloudformation describe-stacks \
+            --stack-name anant-portfolio-api \
+            --region "$AWS_REGION" \
+            --query "Stacks[0].Outputs[?OutputKey=='ApiUrl'].OutputValue" \
+            --output text)
+          CHAT_URL=$(aws cloudformation describe-stacks \
+            --stack-name anant-portfolio-api \
+            --region "$AWS_REGION" \
+            --query "Stacks[0].Outputs[?OutputKey=='ChatEndpoint'].OutputValue" \
+            --output text)
+          echo "Portfolio API: $API_URL"
+          echo "Chat endpoint: $CHAT_URL"
+          {
+            echo "### Bedrock API deployment"
+            echo ""
+            echo "- Base URL: `$API_URL`"
+            echo "- Chat endpoint: `$CHAT_URL`"
+            echo ""
+            echo "Set the repository variable `PORTFOLIO_API_URL` to the base URL, then rerun the Deploy portfolio workflow."
+          } >> "$GITHUB_STEP_SUMMARY"
