@@ -10,16 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
   initReveal();
   initProjectFilters();
   initGitHubRepositories();
-  import("./modules/chat.js")
-    .then(({ initPortfolioChat }) => initPortfolioChat())
-    .catch((error) => console.error("Portfolio chat failed to load:", error));
-
   const year = document.getElementById("currentYear");
   if (year) year.textContent = String(new Date().getFullYear());
 
-  document.querySelectorAll("[data-chat-open]").forEach((button) => {
-    button.addEventListener("click", () => {
-      document.getElementById("chatLauncher")?.click();
-    });
-  });
 });
