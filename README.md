@@ -12,29 +12,28 @@ Live site: https://null-charac69.github.io/
     │   ├── sections/
     │   ├── chat-widget.html
     │   ├── head.html
-    │   ├── site-footer.html
-    │   └── site-header.html
-    ├── _layouts/
-    │   └── default.html
+    │   └── site-header.html / site-footer.html
+    ├── _layouts/default.html
     ├── assets/
     │   ├── css/
-    │   │   ├── tokens.css
-    │   │   ├── base.css
-    │   │   ├── layout.css
-    │   │   ├── components.css
-    │   │   └── responsive.css
-    │   ├── js/
-    │   │   ├── app.js
-    │   │   └── modules/
-    │   └── profile.jpg
-    ├── backend/
-    │   ├── infra/
-    │   ├── src/
-    │   └── template.yaml
-    ├── index.html
-    └── DEPLOYMENT.md
+    │   └── js/modules/
+    ├── bedrock-api/
+    │   ├── api/index.py
+    │   ├── core.py
+    │   ├── pyproject.toml
+    │   └── vercel.json
+    └── index.html
 
-Jekyll assembles the small root index.html from reusable layouts and section includes. JavaScript is split by feature, and CSS is split into design tokens, base rules, layout, components and responsive rules.
+## Architecture
+
+    Browser
+      ├── GitHub Pages + Jekyll (portfolio frontend)
+      └── POST /chat
+            └── Vercel Python Function
+                  └── Amazon Bedrock Converse API
+                        └── global.moonshotai.kimi-k3.1
+
+The Vercel API uses server-side AWS credentials from encrypted environment variables. No AWS credentials or model-provider keys are included in frontend code. The API is deployed separately from the static GitHub Pages site.
 
 ## Features
 
@@ -42,36 +41,22 @@ Jekyll assembles the small root index.html from reusable layouts and section inc
 - Accessible mobile navigation, theme preference, reading progress and reduced-motion support.
 - Project filters and expandable architecture/design notes.
 - Dynamic public GitHub repository list with search and repository metadata.
-- Portfolio assistant powered by Amazon Bedrock through API Gateway and Lambda.
+- Portfolio assistant powered by Kimi K3.1 on Amazon Bedrock.
 - Browser-local chat history; the API does not persist conversation content.
 
-## Architecture
+## Chat API
 
-    Browser
-      ├── GitHub Pages + Jekyll (frontend)
-      ├── GitHub REST API (public repository metadata)
-      └── POST /chat
-            └── API Gateway HTTP API
-                  └── AWS Lambda (Python 3.12)
-                        └── Amazon Bedrock Converse API
+The API is hosted at:
 
-No model-provider keys or AWS credentials are sent to the browser. The Lambda execution role invokes Bedrock. The API stack is deployed directly with AWS SAM from an authenticated AWS CLI/CloudShell session; GitHub Actions is not required for the backend.
+- Health: https://anant-portfolio-bedrock-api.vercel.app/health
+- Chat: https://anant-portfolio-bedrock-api.vercel.app/chat
+
+The Bedrock model is `global.moonshotai.kimi-k3.1` in `ap-southeast-2`. AWS access key credentials must be configured as encrypted Vercel Production environment variables before inference can run. See DEPLOYMENT.md.
 
 ## Run the frontend locally
 
     bundle install
     bundle exec jekyll serve
-
-For a hosted preview, GitHub Pages rebuilds the root Jekyll site from main.
-
-## Deploy
-
-Follow DEPLOYMENT.md for:
-- AWS identity verification with STS.
-- Backend unit tests and SAM template validation.
-- Lambda packaging and direct SAM deployment.
-- Health endpoint and live Bedrock smoke tests.
-- Connecting the API base URL to the public chat widget.
 
 ## Project sources
 
@@ -83,7 +68,8 @@ Project descriptions are grounded in public repository documentation. Unsupporte
 
 ## Operational notes
 
-- Chat is a public API. API Gateway throttling and request validation are enabled; configure an AWS Budget before launch.
+- Chat is a public API. CORS restricts browser access to the portfolio origin but is not authentication.
+- Bedrock inference is metered. Review AWS Bedrock pricing and configure an AWS Budget before public launch.
 - Conversation history is stored in the visitor's browser localStorage and included in each chat request. The backend does not persist it.
-- Amazon Bedrock, Lambda, API Gateway, CloudWatch and SAM artifact storage can incur charges.
+- Do not invite visitors to submit credentials or sensitive information.
 - A former Gemini key was committed to the public repository. Revoke it; removing the file does not remove it from Git history.
