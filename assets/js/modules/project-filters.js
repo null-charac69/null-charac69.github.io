@@ -14,9 +14,8 @@ export function initProjectFilters() {
       });
 
       cards.forEach((card) => {
-        const existsOnGitHub = card.getAttribute("data-repo-missing") !== "true";
         const matches = filter === "all" || card.getAttribute("data-category") === filter;
-        card.hidden = !existsOnGitHub || !matches;
+        card.hidden = !matches;
       });
     });
   });
