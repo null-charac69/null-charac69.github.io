@@ -1,7 +1,6 @@
 const USERNAME = "null-charac69";
-const CACHE_KEY = "portfolio-github-repositories-v1";
-const CACHE_TTL = 10 * 60 * 1000;
 const FEATURED_REPOS = new Set(["agentos", "hrag-app", "healthcare_analytics", "null-charac69.github.io"]);
+const PAGE_SIZE = 100;
 
 export async function initGitHubRepositories() {
   const grid = document.getElementById("repoGrid");
@@ -11,18 +10,38 @@ export async function initGitHubRepositories() {
   if (!grid || !summary) return;
 
   try {
+    // Always fetch the current public repository state. Do not use persistent
+    // browser caches: deletions and edits must be reflected on a page reload.
     const repositories = await getRepositories();
+    const byName = new Map(repositories.map((repo) => [repo.name.toLowerCase(), repo]));
+
+    // The three editorial case studies are curated separately. Keep them only
+    // while their source repositories still exist, and keep their links current.
+    document.querySelectorAll("[data-repo][data-repo-meta]").forEach((card) => {
+      const repoName = card.getAttribute("data-repo");
+      const liveRepo = byName.get(String(repoName).toLowerCase());
+      if (!liveRepo) {
+        card.remove();
+        return;
+      }
+
+      const meta = card.querySelector("[data-repo-meta]");
+      if (meta) meta.textContent = describeRepository(liveRepo);
+
+      const link = card.querySelector(".project-link");
+      if (link) {
+        link.href = liveRepo.html_url;
+        link.textContent = "Inspect repository ↗";
+      }
+    });
+
+    const remainingFeaturedCount = document.querySelectorAll(".project-card[data-category]").length;
+    const allFilterCount = document.querySelector('[data-project-filter="all"] span');
+    if (allFilterCount) allFilterCount.textContent = String(remainingFeaturedCount).padStart(2, "0");
+
     const publicRepos = repositories
       .filter((repo) => !repo.fork && !FEATURED_REPOS.has(repo.name.toLowerCase()))
       .sort((a, b) => new Date(b.pushed_at || b.updated_at) - new Date(a.pushed_at || a.updated_at));
-
-    document.querySelectorAll("[data-repo][data-repo-meta]").forEach((card) => {
-      const repoName = card.getAttribute("data-repo");
-      const repo = repositories.find((item) => item.name.toLowerCase() === String(repoName).toLowerCase());
-      const meta = card.querySelector("[data-repo-meta]");
-      if (!repo || !meta) return;
-      meta.textContent = describeRepository(repo);
-    });
 
     summary.replaceChildren();
     const dot = document.createElement("span");
@@ -42,7 +61,7 @@ export async function initGitHubRepositories() {
       if (!matches.length) {
         const empty = document.createElement("div");
         empty.className = "repo-empty";
-        empty.textContent = query ? "No repositories match that search." : "No public repositories to display right now.";
+        empty.textContent = query ? "No repositories match that search." : "No other public repositories to display right now.";
         grid.append(empty);
         return;
       }
@@ -57,34 +76,40 @@ export async function initGitHubRepositories() {
     grid.replaceChildren();
     const fallback = document.createElement("div");
     fallback.className = "repo-empty";
-    fallback.textContent = "You can still explore all repositories directly on GitHub.";
+    fallback.textContent = "Live repository data could not be loaded. Explore the GitHub profile directly for the current list.";
     grid.append(fallback);
-    if (syncLabel) syncLabel.textContent = "Repository links available";
+    if (syncLabel) syncLabel.textContent = "GitHub sync unavailable";
   }
 }
 
 async function getRepositories() {
-  try {
-    const cached = JSON.parse(sessionStorage.getItem(CACHE_KEY) || "null");
-    if (cached && Date.now() - cached.savedAt < CACHE_TTL && Array.isArray(cached.items)) {
-      return cached.items;
-    }
-  } catch {
-    // Continue to the network request if browser storage is unavailable.
+  const repositories = [];
+  const seenIds = new Set();
+  let page = 1;
+
+  while (true) {
+    const url = "https://api.github.com/users/" + USERNAME +
+      "/repos?type=owner&sort=updated&per_page=" + PAGE_SIZE + "&page=" + page;
+    const response = await fetch(url, {
+      headers: { Accept: "application/vnd.github+json" },
+      cache: "no-store"
+    });
+    if (!response.ok) throw new Error("GitHub API returned " + response.status + " on page " + page);
+
+    const batch = await response.json();
+    if (!Array.isArray(batch)) throw new Error("GitHub returned an invalid repository list");
+
+    batch.forEach((repo) => {
+      if (!seenIds.has(repo.id)) {
+        seenIds.add(repo.id);
+        repositories.push(repo);
+      }
+    });
+
+    if (batch.length < PAGE_SIZE) break;
+    page += 1;
   }
 
-  const response = await fetch("https://api.github.com/users/" + USERNAME + "/repos?sort=updated&per_page=100", {
-    headers: { Accept: "application/vnd.github+json" },
-    cache: "no-store"
-  });
-  if (!response.ok) throw new Error("GitHub API returned " + response.status);
-  const repositories = await response.json();
-
-  try {
-    sessionStorage.setItem(CACHE_KEY, JSON.stringify({ savedAt: Date.now(), items: repositories }));
-  } catch {
-    // Dynamic listing still works without session storage.
-  }
   return repositories;
 }
 
