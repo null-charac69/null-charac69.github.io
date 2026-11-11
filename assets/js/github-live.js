@@ -124,8 +124,10 @@
 
         document.querySelectorAll("[data-repo][data-repo-meta]").forEach((card) => {
           const live = byName.get(card.getAttribute("data-repo").toLowerCase());
-          card.hidden = !live;
-          card.setAttribute("data-repo-missing", String(!live));
+          // Featured case studies are curated portfolio content, not a live
+          // mirror of GitHub. Keep them visible even if the API omits a repo.
+          card.hidden = false;
+          card.removeAttribute("data-repo-missing");
           if (!live) return;
           const meta = card.querySelector("[data-repo-meta]");
           if (meta) {
@@ -144,8 +146,7 @@
           }
         });
 
-        const featuredCount = Array.from(document.querySelectorAll(".project-card[data-category]"))
-          .filter((card) => card.getAttribute("data-repo-missing") !== "true").length;
+        const featuredCount = document.querySelectorAll(".project-card[data-category]").length;
         const filterCount = document.querySelector('[data-project-filter="all"] span');
         if (filterCount) filterCount.textContent = String(featuredCount).padStart(2, "0");
 
