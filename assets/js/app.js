@@ -2,7 +2,6 @@ import { initTheme } from "./modules/theme.js";
 import { initNavigation } from "./modules/navigation.js";
 import { initReveal } from "./modules/reveal.js";
 import { initProjectFilters } from "./modules/project-filters.js";
-import { initGitHubRepositories } from "./modules/github-repositories.js?v=20261111-sync-init-fix";
 
 function initializeFeature(name, initializer) {
   try {
@@ -18,7 +17,6 @@ function initializeFeature(name, initializer) {
 document.addEventListener("DOMContentLoaded", () => {
   // Start repository sync first. A failure in an unrelated visual component
   // must never prevent the GitHub status and manual refresh control from working.
-  initializeFeature("GitHub repositories", initGitHubRepositories);
   initializeFeature("Theme", initTheme);
   initializeFeature("Navigation", initNavigation);
   initializeFeature("Reveal animations", initReveal);
