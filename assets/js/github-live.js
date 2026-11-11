@@ -81,13 +81,22 @@
       const all = [];
       const seen = new Set();
       for (let page = 1; ; page += 1) {
+        // The user-repositories endpoint already returns repositories owned by
+        // this account. Avoid the optional "type" filter for broader API compatibility.
         const url = "https://api.github.com/users/" + USERNAME +
-          "/repos?type=owner&sort=updated&per_page=" + PAGE_SIZE + "&page=" + page;
+          "/repos?sort=updated&per_page=" + PAGE_SIZE + "&page=" + page;
         const response = await fetch(url, {
           headers: { Accept: "application/vnd.github+json" },
           cache: "no-store"
         });
-        if (!response.ok) throw new Error("GitHub API returned HTTP " + response.status);
+        if (!response.ok) {
+          let detail = "";
+          try {
+            const payload = await response.json();
+            detail = payload.message ? ": " + payload.message : "";
+          } catch (_) {}
+          throw new Error("GitHub API HTTP " + response.status + detail);
+        }
         const batch = await response.json();
         if (!Array.isArray(batch)) throw new Error("GitHub returned an invalid repository response");
         batch.forEach((repo) => {
@@ -158,13 +167,13 @@
         console.error("[Portfolio] GitHub repository refresh failed:", error);
         status.textContent = lastSyncedAt
           ? "Refresh failed · last synced " + timestamp(lastSyncedAt)
-          : "GitHub sync unavailable · " + (error.message || "request failed");
+          : "Sync failed · " + (error.message || "network/CORS error");
         if (!lastSyncedAt) {
           summary.textContent = "Could not load live GitHub repositories.";
           grid.replaceChildren();
           const message = document.createElement("div");
           message.className = "repo-empty";
-          message.textContent = "GitHub's public API could not be reached. Open the GitHub profile to view repositories.";
+          message.textContent = "Live repository sync failed: " + (error.message || "network/CORS error") + ". Open the GitHub profile to view repositories.";
           grid.append(message);
         }
       } finally {
