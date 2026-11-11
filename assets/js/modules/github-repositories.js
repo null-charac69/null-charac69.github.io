@@ -1,6 +1,7 @@
 const USERNAME = "null-charac69";
 const FEATURED_REPOS = new Set(["agentos", "hrag-app", "healthcare_analytics", "null-charac69.github.io"]);
 const PAGE_SIZE = 100;
+const REFRESH_INTERVAL = 5 * 60 * 1000;
 
 export async function initGitHubRepositories() {
   const grid = document.getElementById("repoGrid");
@@ -9,76 +10,86 @@ export async function initGitHubRepositories() {
   const syncLabel = document.getElementById("repoSync");
   if (!grid || !summary) return;
 
-  try {
-    // Always fetch the current public repository state. Do not use persistent
-    // browser caches: deletions and edits must be reflected on a page reload.
-    const repositories = await getRepositories();
-    const byName = new Map(repositories.map((repo) => [repo.name.toLowerCase(), repo]));
+  let publicRepos = [];
+  const render = () => {
+    const query = (search?.value || "").trim().toLowerCase();
+    const matches = publicRepos.filter((repo) => {
+      const haystack = [repo.name, repo.description, repo.language, ...(repo.topics || [])].join(" ").toLowerCase();
+      return haystack.includes(query);
+    }).slice(0, 9);
 
-    // The three editorial case studies are curated separately. Keep them only
-    // while their source repositories still exist, and keep their links current.
-    document.querySelectorAll("[data-repo][data-repo-meta]").forEach((card) => {
-      const repoName = card.getAttribute("data-repo");
-      const liveRepo = byName.get(String(repoName).toLowerCase());
-      if (!liveRepo) {
-        card.remove();
-        return;
-      }
-
-      const meta = card.querySelector("[data-repo-meta]");
-      if (meta) meta.textContent = describeRepository(liveRepo);
-
-      const link = card.querySelector(".project-link");
-      if (link) {
-        link.href = liveRepo.html_url;
-        link.textContent = "Inspect repository ↗";
-      }
-    });
-
-    const remainingFeaturedCount = document.querySelectorAll(".project-card[data-category]").length;
-    const allFilterCount = document.querySelector('[data-project-filter="all"] span');
-    if (allFilterCount) allFilterCount.textContent = String(remainingFeaturedCount).padStart(2, "0");
-
-    const publicRepos = repositories
-      .filter((repo) => !repo.fork && !FEATURED_REPOS.has(repo.name.toLowerCase()))
-      .sort((a, b) => new Date(b.pushed_at || b.updated_at) - new Date(a.pushed_at || a.updated_at));
-
-    summary.replaceChildren();
-    const dot = document.createElement("span");
-    dot.className = "live-dot";
-    const label = document.createElement("span");
-    label.textContent = publicRepos.length + " other public repositories · Live from GitHub";
-    summary.append(dot, label);
-
-    const render = () => {
-      const query = (search?.value || "").trim().toLowerCase();
-      const matches = publicRepos.filter((repo) => {
-        const haystack = [repo.name, repo.description, repo.language, ...(repo.topics || [])].join(" ").toLowerCase();
-        return haystack.includes(query);
-      }).slice(0, 9);
-
-      grid.replaceChildren();
-      if (!matches.length) {
-        const empty = document.createElement("div");
-        empty.className = "repo-empty";
-        empty.textContent = query ? "No repositories match that search." : "No other public repositories to display right now.";
-        grid.append(empty);
-        return;
-      }
-      matches.forEach((repo) => grid.append(createRepositoryCard(repo)));
-    };
-
-    search?.addEventListener("input", render);
-    render();
-    if (syncLabel) syncLabel.textContent = "GitHub sync complete";
-  } catch (error) {
-    summary.textContent = "GitHub repository metadata is temporarily unavailable.";
     grid.replaceChildren();
-    const fallback = document.createElement("div");
-    fallback.className = "repo-empty";
-    fallback.textContent = "Live repository data could not be loaded. Explore the GitHub profile directly for the current list.";
-    grid.append(fallback);
-    if (syncLabel) syncLabel.textContent = "GitHub sync unavailable";
+    if (!matches.length) {
+      const empty = document.createElement("div");
+      empty.className = "repo-empty";
+      empty.textContent = query ? "No repositories match that search." : "No other public repositories to display right now.";
+      grid.append(empty);
+      return;
+    }
+    matches.forEach((repo) => grid.append(createRepositoryCard(repo)));
+  };
+
+  search?.addEventListener("input", render);
+
+  const refresh = async () => {
+    try {
+      // Always fetch the current public state. No persistent browser cache:
+      // deletions and metadata edits must be reflected on reload and polling.
+      const repositories = await getRepositories();
+      const byName = new Map(repositories.map((repo) => [repo.name.toLowerCase(), repo]));
+
+      document.querySelectorAll("[data-repo][data-repo-meta]").forEach((card) => {
+        const repoName = card.getAttribute("data-repo");
+        const liveRepo = byName.get(String(repoName).toLowerCase());
+        card.hidden = !liveRepo;
+        card.setAttribute("data-repo-missing", String(!liveRepo));
+        if (!liveRepo) return;
+
+        const meta = card.querySelector("[data-repo-meta]");
+        if (meta) meta.textContent = describeRepository(liveRepo);
+
+        const link = card.querySelector(".project-link");
+        if (link) {
+          link.href = liveRepo.html_url;
+          link.textContent = "Inspect repository ↗";
+        }
+      });
+
+      const visibleFeaturedCount = Array.from(document.querySelectorAll(".project-card[data-category]"))
+        .filter((card) => card.getAttribute("data-repo-missing") !== "true").length;
+      const allFilterCount = document.querySelector('[data-project-filter="all"] span');
+      if (allFilterCount) allFilterCount.textContent = String(visibleFeaturedCount).padStart(2, "0");
+
+      publicRepos = repositories
+        .filter((repo) => !repo.fork && !FEATURED_REPOS.has(repo.name.toLowerCase()))
+        .sort((a, b) => new Date(b.pushed_at || b.updated_at) - new Date(a.pushed_at || a.updated_at));
+
+      summary.replaceChildren();
+      const dot = document.createElement("span");
+      dot.className = "live-dot";
+      const label = document.createElement("span");
+      label.textContent = publicRepos.length + " other public repositories · Live from GitHub";
+      summary.append(dot, label);
+      render();
+      if (syncLabel) syncLabel.textContent = "GitHub sync · just now";
+    } catch (error) {
+      // Keep the last successful snapshot visible if a background refresh fails.
+      if (!publicRepos.length) {
+        summary.textContent = "GitHub repository metadata is temporarily unavailable.";
+        grid.replaceChildren();
+        const fallback = document.createElement("div");
+        fallback.className = "repo-empty";
+        fallback.textContent = "Live repository data could not be loaded. Explore the GitHub profile directly for the current list.";
+        grid.append(fallback);
+      }
+      if (syncLabel) syncLabel.textContent = "GitHub sync temporarily unavailable";
+    }
+  };
+
+  await refresh();
+  // Keep an already-open portfolio current without requiring a manual reload.
+  if (typeof window !== "undefined" && typeof window.setInterval === "function") {
+    window.setInterval(refresh, REFRESH_INTERVAL);
   }
 }
 
@@ -118,9 +129,7 @@ function describeRepository(repo) {
   if (repo.language) parts.push(repo.language);
   if (repo.stargazers_count) parts.push(repo.stargazers_count + (repo.stargazers_count === 1 ? " star" : " stars"));
   const pushed = repo.pushed_at || repo.updated_at;
-  if (pushed) {
-    parts.push("updated " + new Intl.DateTimeFormat("en-IN", { month: "short", year: "numeric" }).format(new Date(pushed)));
-  }
+  if (pushed) parts.push("updated " + new Intl.DateTimeFormat("en-IN", { month: "short", year: "numeric" }).format(new Date(pushed)));
   return parts.length ? parts.join(" · ") : "Public repository";
 }
 
