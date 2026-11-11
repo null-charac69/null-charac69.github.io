@@ -420,6 +420,28 @@
     });
   });
 
+  function buildApiHistory() {
+    const messages = history.slice(-10).map((message) => {
+      let content = String(message.content || "");
+      if (message.role === "assistant" && content.length > 1700) {
+        const note = "\n[Earlier assistant reply shortened for conversation context.]";
+        content = content.slice(0, 1700 - note.length) + note;
+      }
+      return { role: message.role, content };
+    });
+
+    const encoder = typeof TextEncoder === "function" ? new TextEncoder() : null;
+    const requestBody = () => JSON.stringify({ messages });
+    const byteLength = (value) => encoder ? encoder.encode(value).length : value.length * 4;
+
+    let body = requestBody();
+    while (messages.length > 1 && byteLength(body) > 12000) {
+      messages.shift();
+      body = requestBody();
+    }
+    return messages;
+  }
+
   async function sendMessage(value, restoreInputFocus) {
     const prompt = String(value || "").trim();
     if (!prompt || busy) return;
@@ -443,7 +465,7 @@
       const response = await fetch(API_BASE + "/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ messages: history.slice(-10) }),
+        body: JSON.stringify({ messages: buildApiHistory() }),
         signal: controller ? controller.signal : undefined
       });
       const result = await response.json().catch(() => ({}));
