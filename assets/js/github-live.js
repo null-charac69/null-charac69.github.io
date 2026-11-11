@@ -78,36 +78,18 @@
     };
 
     const loadAllRepos = async () => {
-      const all = [];
-      const seen = new Set();
-      for (let page = 1; ; page += 1) {
-        // The user-repositories endpoint already returns repositories owned by
-        // this account. Avoid the optional "type" filter for broader API compatibility.
-        const url = "https://api.github.com/users/" + USERNAME +
-          "/repos?sort=updated&per_page=" + PAGE_SIZE + "&page=" + page;
-        const response = await fetch(url, {
-          headers: { Accept: "application/vnd.github+json" },
-          cache: "no-store"
-        });
-        if (!response.ok) {
-          let detail = "";
-          try {
-            const payload = await response.json();
-            detail = payload.message ? ": " + payload.message : "";
-          } catch (_) {}
-          throw new Error("GitHub API HTTP " + response.status + detail);
-        }
-        const batch = await response.json();
-        if (!Array.isArray(batch)) throw new Error("GitHub returned an invalid repository response");
-        batch.forEach((repo) => {
-          if (!seen.has(repo.id)) {
-            seen.add(repo.id);
-            all.push(repo);
-          }
-        });
-        if (batch.length < PAGE_SIZE) break;
+      // This file is generated during the GitHub Pages build using the
+      // workflow's authenticated GITHUB_TOKEN. Visitors never call api.github.com.
+      const response = await fetch("/public-repos.json?refresh=" + Date.now(), {
+        headers: { Accept: "application/json" },
+        cache: "no-store"
+      });
+      if (!response.ok) throw new Error("Repository data HTTP " + response.status);
+      const payload = await response.json();
+      if (!payload || !Array.isArray(payload.repositories)) {
+        throw new Error("Repository data is missing or invalid");
       }
-      return all;
+      return payload;
     };
 
     const refresh = async () => {
@@ -119,7 +101,8 @@
       status.textContent = "Checking GitHub…";
 
       try {
-        const allRepos = await loadAllRepos();
+        const payload = await loadAllRepos();
+        const allRepos = payload.repositories;
         const byName = new Map(allRepos.map((repo) => [repo.name.toLowerCase(), repo]));
 
         document.querySelectorAll("[data-repo][data-repo-meta]").forEach((card) => {
@@ -158,12 +141,12 @@
         const dot = document.createElement("span");
         dot.className = "live-dot";
         const label = document.createElement("span");
-        label.textContent = repos.length + " other public repositories · Live from GitHub";
+        label.textContent = repos.length + " other public repositories · Synced from GitHub";
         summary.append(dot, label);
         render();
 
         lastSyncedAt = new Date();
-        status.textContent = "Last synced " + timestamp(lastSyncedAt);
+        status.textContent = "Updated " + timestamp(new Date(payload.generatedAt || Date.now()));
       } catch (error) {
         console.error("[Portfolio] GitHub repository refresh failed:", error);
         status.textContent = lastSyncedAt
