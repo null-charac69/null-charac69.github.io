@@ -78,18 +78,14 @@
     };
 
     const loadAllRepos = async () => {
-      // This file is generated during the GitHub Pages build using the
-      // workflow's authenticated GITHUB_TOKEN. Visitors never call api.github.com.
-      const response = await fetch("/public-repos.json?refresh=" + Date.now(), {
-        headers: { Accept: "application/json" },
-        cache: "no-store"
-      });
-      if (!response.ok) throw new Error("Repository data HTTP " + response.status);
+      // Static same-origin index: no visitor-side GitHub API calls or tokens.
+      const response = await fetch("/public-repos.json", { cache: "no-store" });
+      if (!response.ok) throw new Error("Repository index HTTP " + response.status);
       const payload = await response.json();
       if (!payload || !Array.isArray(payload.repositories)) {
-        throw new Error("Repository data is missing or invalid");
+        throw new Error("Repository index is invalid");
       }
-      return payload;
+      return payload.repositories;
     };
 
     const refresh = async () => {
@@ -171,7 +167,6 @@
     search.addEventListener("input", render);
     button.addEventListener("click", refresh);
     refresh();
-    window.setInterval(refresh, REFRESH_INTERVAL);
   }
 
   if (document.readyState === "loading") {
