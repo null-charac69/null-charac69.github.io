@@ -295,15 +295,15 @@
 
     setBusy(true);
     showTyping();
-    const controller = new AbortController();
-    const timeoutId = window.setTimeout(() => controller.abort(), 35000);
+    const controller = typeof AbortController === "function" ? new AbortController() : null;
+    const timeoutId = controller ? window.setTimeout(() => controller.abort(), 35000) : null;
 
     try {
       const response = await fetch(API_BASE + "/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages: history.slice(-10) }),
-        signal: controller.signal
+        signal: controller ? controller.signal : undefined
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) {
@@ -324,7 +324,7 @@
         addMessage("assistant", error?.message || "The chat service is temporarily unavailable. Please try again.", false);
       }
     } finally {
-      window.clearTimeout(timeoutId);
+      if (timeoutId !== null) window.clearTimeout(timeoutId);
       setBusy(false);
       if (restoreInputFocus && !panel.hidden) input.focus();
     }
