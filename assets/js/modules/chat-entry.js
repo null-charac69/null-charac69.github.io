@@ -31,7 +31,9 @@ if (launcher && panel) {
   });
 }
 
-import("./chat.js")
+// Keep this import versioned as well as the entry script. Otherwise a cached chat.js
+// can retain the old launcher listeners and undo the independent launcher's click.
+import("./chat.js?v=20261111-chat-fix1")
   .then(({ initPortfolioChat }) => initPortfolioChat())
   .catch((error) => {
     console.error("Portfolio chat failed to initialize:", error);
