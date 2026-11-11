@@ -1,0 +1,98 @@
+name: Build and deploy portfolio
+
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: "17 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate public repository data
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          node <<'NODE'
+          const fs = require("node:fs");
+          const username = "null-charac69";
+          const token = process.env.GITHUB_TOKEN;
+          async function main() {
+            const repositories = [];
+            for (let page = 1; ; page += 1) {
+              const url = `https://api.github.com/users/${username}/repos?sort=updated&per_page=100&page=${page}`;
+              const response = await fetch(url, {
+                headers: {
+                  Accept: "application/vnd.github+json",
+                  Authorization: `Bearer ${token}`,
+                  "X-GitHub-Api-Version": "2022-11-28"
+                }
+              });
+              if (!response.ok) {
+                const detail = await response.text();
+                throw new Error(`GitHub API returned ${response.status}: ${detail}`);
+              }
+              const batch = await response.json();
+              if (!Array.isArray(batch)) throw new Error("GitHub returned an invalid repository list");
+              repositories.push(...batch.map(repo => ({
+                id: repo.id,
+                name: repo.name,
+                description: repo.description,
+                language: repo.language,
+                topics: repo.topics || [],
+                html_url: repo.html_url,
+                stargazers_count: repo.stargazers_count,
+                pushed_at: repo.pushed_at,
+                updated_at: repo.updated_at,
+                fork: repo.fork,
+                archived: repo.archived
+              })));
+              if (batch.length < 100) break;
+            }
+            fs.writeFileSync("public-repos.json", JSON.stringify({
+              generatedAt: new Date().toISOString(),
+              repositories
+            }, null, 2));
+            console.log(`Generated data for ${repositories.length} public repositories.`);
+          }
+          main().catch(error => { console.error(error); process.exit(1); });
+          NODE
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+
+      - name: Build Jekyll site
+        uses: actions/jekyll-build-pages@v1
+        with:
+          source: ./
+          destination: ./_site
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./_site
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
