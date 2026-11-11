@@ -89,25 +89,123 @@
     const fragment = document.createDocumentFragment();
     let index = 0;
 
+    function readListMarker(line) {
+      const match = line.match(/^(\s{0,3})([-+*]|\d+[.)])(?:[ \t]+(.*))?$/);
+      if (!match) return null;
+      return {
+        indent: match[1].length,
+        marker: match[2],
+        ordered: /^\d/.test(match[2]),
+        start: /^\d/.test(match[2]) ? Number.parseInt(match[2], 10) : 1,
+        text: (match[3] || "").trim()
+      };
+    }
+
+    function isHorizontalRule(line) {
+      return /^\s{0,3}(?:(?:\*\s*){3,}|(?:-\s*){3,}|(?:_\s*){3,})$/.test(line);
+    }
+
+    function isTableStart(at) {
+      return at + 1 < lines.length &&
+        lines[at].includes("|") &&
+        /^\s*\|?\s*:?-{3,}:?\s*(?:\|\s*:?-{3,}:?\s*)+\|?\s*$/.test(lines[at + 1]);
+    }
+
+    function isBlockStart(line, at) {
+      return /^\s{0,3}(?:\x60{3,}|~{3,}|#{1,5}\s|>)/.test(line) ||
+        isHorizontalRule(line) ||
+        Boolean(readListMarker(line)) ||
+        isTableStart(at);
+    }
+
+    function splitTableRow(line) {
+      let value = line.trim();
+      if (value.startsWith("|")) value = value.slice(1);
+      if (value.endsWith("|")) value = value.slice(0, -1);
+      const cells = [];
+      let cell = "";
+      let escaped = false;
+      for (const character of value) {
+        if (character === "|" && !escaped) {
+          cells.push(cell.trim());
+          cell = "";
+        } else if (character === "\\" && !escaped) {
+          escaped = true;
+        } else {
+          cell += character;
+          escaped = false;
+        }
+      }
+      cells.push(cell.trim());
+      return cells;
+    }
+
+    function renderTable() {
+      const headers = splitTableRow(lines[index]);
+      const alignments = splitTableRow(lines[index + 1]).map((cell) => {
+        const left = cell.startsWith(":");
+        const right = cell.endsWith(":");
+        if (left && right) return "center";
+        if (right) return "right";
+        return "left";
+      });
+
+      const wrap = document.createElement("div");
+      wrap.className = "chat-table-wrap";
+      const table = document.createElement("table");
+      table.className = "chat-markdown-table";
+      const thead = document.createElement("thead");
+      const headerRow = document.createElement("tr");
+
+      headers.forEach((value, column) => {
+        const cell = document.createElement("th");
+        cell.style.textAlign = alignments[column] || "left";
+        appendInline(cell, value);
+        headerRow.append(cell);
+      });
+      thead.append(headerRow);
+      table.append(thead);
+
+      const tbody = document.createElement("tbody");
+      index += 2;
+      while (index < lines.length && lines[index].trim() && lines[index].includes("|")) {
+        const values = splitTableRow(lines[index]);
+        const row = document.createElement("tr");
+        headers.forEach((_, column) => {
+          const cell = document.createElement("td");
+          cell.style.textAlign = alignments[column] || "left";
+          appendInline(cell, values[column] || "");
+          row.append(cell);
+        });
+        tbody.append(row);
+        index += 1;
+      }
+      table.append(tbody);
+      wrap.append(table);
+      fragment.append(wrap);
+    }
+
     while (index < lines.length) {
       const line = lines[index];
+
       if (!line.trim()) {
         index += 1;
         continue;
       }
 
-      const fence = line.match(/^\s*\x60{3,}([\w+-]*)\s*$/);
+      const fence = line.match(/^\s{0,3}(\x60{3,}|~{3,})([\w+-]*)\s*$/);
       if (fence) {
+        const fenceChar = fence[1][0];
         const codeLines = [];
         index += 1;
-        while (index < lines.length && !/^\s*\x60{3,}\s*$/.test(lines[index])) {
+        while (index < lines.length && !new RegExp("^\\s{0,3}" + (fenceChar === "\x60" ? "\\x60" : "~") + "{" + fence[1].length + ",}\\s*$").test(lines[index])) {
           codeLines.push(lines[index]);
           index += 1;
         }
         if (index < lines.length) index += 1;
         const pre = document.createElement("pre");
         const code = document.createElement("code");
-        if (fence[1]) code.className = "language-" + fence[1];
+        if (fence[2]) code.className = "language-" + fence[2];
         code.textContent = codeLines.join("\n");
         pre.append(code);
         fragment.append(pre);
@@ -123,9 +221,14 @@
         continue;
       }
 
-      if (/^\s{0,3}(?:(?:\*\s*){3,}|(?:-\s*){3,}|(?:_\s*){3,})$/.test(line)) {
+      if (isHorizontalRule(line)) {
         fragment.append(document.createElement("hr"));
         index += 1;
+        continue;
+      }
+
+      if (isTableStart(index)) {
+        renderTable();
         continue;
       }
 
@@ -141,27 +244,65 @@
         continue;
       }
 
-      const listMatch = line.match(/^\s{0,3}([-+*]|\d+[.)])\s+(.+)$/);
-      if (listMatch) {
-        const ordered = /^\d/.test(listMatch[1]);
-        const list = document.createElement(ordered ? "ol" : "ul");
+      const firstMarker = readListMarker(line);
+      if (firstMarker) {
+        const list = document.createElement(firstMarker.ordered ? "ol" : "ul");
+        if (firstMarker.ordered && firstMarker.start > 1) list.setAttribute("start", String(firstMarker.start));
+
         while (index < lines.length) {
-          const itemMatch = lines[index].match(/^\s{0,3}([-+*]|\d+[.)])\s+(.+)$/);
-          if (!itemMatch || /^\d/.test(itemMatch[1]) !== ordered) break;
-          const item = document.createElement("li");
-          appendInline(item, itemMatch[2]);
-          list.append(item);
+          const marker = readListMarker(lines[index]);
+          if (!marker || marker.ordered !== firstMarker.ordered) break;
+
+          let itemText = marker.text;
           index += 1;
+
+          if (!itemText) {
+            // Accept the model's occasional split form: a bare "1." followed by its text.
+            let lookAhead = index;
+            while (lookAhead < lines.length && !lines[lookAhead].trim()) lookAhead += 1;
+            if (lookAhead < lines.length && !readListMarker(lines[lookAhead]) && !isBlockStart(lines[lookAhead], lookAhead)) {
+              index = lookAhead;
+              const continuation = [];
+              while (index < lines.length && lines[index].trim() &&
+                !readListMarker(lines[index]) && !isBlockStart(lines[index], index)) {
+                continuation.push(lines[index].trim());
+                index += 1;
+              }
+              itemText = continuation.join(" ");
+            } else {
+              index = lookAhead;
+            }
+          } else {
+            const continuation = [];
+            while (index < lines.length && lines[index].trim() &&
+              !readListMarker(lines[index]) && !isBlockStart(lines[index], index)) {
+              continuation.push(lines[index].trim());
+              index += 1;
+            }
+            if (continuation.length) itemText += " " + continuation.join(" ");
+          }
+
+          const item = document.createElement("li");
+          if (itemText) appendInline(item, itemText);
+          list.append(item);
+
+          // Blank lines between list items are allowed; blank lines before a paragraph are not swallowed.
+          const afterItem = index;
+          while (index < lines.length && !lines[index].trim()) index += 1;
+          const nextMarker = index < lines.length ? readListMarker(lines[index]) : null;
+          if (!nextMarker || nextMarker.ordered !== firstMarker.ordered) {
+            index = afterItem;
+            break;
+          }
         }
+
         fragment.append(list);
         continue;
       }
 
       const paragraphLines = [line.trim()];
       index += 1;
-      while (index < lines.length &&
-        lines[index].trim() &&
-        !/^\s*(?:\x60{3,}|#{1,5}\s|>|[-+*]\s|\d+[.)]\s)/.test(lines[index])) {
+      while (index < lines.length && lines[index].trim() && !isBlockStart(lines[index], index)) {
         paragraphLines.push(lines[index].trim());
         index += 1;
       }
@@ -296,7 +437,7 @@
     setBusy(true);
     showTyping();
     const controller = typeof AbortController === "function" ? new AbortController() : null;
-    const timeoutId = controller ? window.setTimeout(() => controller.abort(), 35000) : null;
+    const timeoutId = controller ? window.setTimeout(() => controller.abort(), 55000) : null;
 
     try {
       const response = await fetch(API_BASE + "/chat", {

@@ -14,7 +14,7 @@ LOG = logging.getLogger(__name__)
 MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "global.moonshotai.kimi-k3.1")
 AWS_REGION = os.environ.get("AWS_REGION", "ap-southeast-2")
 ALLOWED_ORIGIN = os.environ.get("ALLOWED_ORIGIN", "https://null-charac69.github.io")
-MAX_OUTPUT_TOKENS = min(max(int(os.environ.get("MAX_OUTPUT_TOKENS", "600")), 128), 900)
+MAX_OUTPUT_TOKENS = min(max(int(os.environ.get("MAX_OUTPUT_TOKENS", "131072")), 128), 131072)
 MAX_BODY_BYTES = 14_000
 MAX_MESSAGES = 10
 MAX_MESSAGE_CHARS = 1_800
@@ -53,17 +53,38 @@ employment dates or unpublished details.
 """.strip()
 
 SYSTEM_PROMPT = """You are the portfolio guide for Anant Kumar Thakur.
-Answer visitor questions using only the portfolio context below for claims about Anant.
+
+GROUNDING AND ACCURACY
+Answer visitor questions using only the PORTFOLIO CONTEXT below for claims about Anant.
 Distinguish documented project design from independently validated results. Do not invent
-employers, clients, dates, performance figures, awards, certifications or skills.
-For confidential work, say that the public portfolio does not disclose details.
-Use clear, direct language. You are not Anant and must not claim to be him.
-For questions outside the published professional context, say so and point visitors to
-the relevant public links or contact details.
+employers, clients, dates, performance figures, awards, certifications, skills or outcomes.
+For confidential work, say that the public portfolio does not disclose details. You are a
+portfolio assistant, not Anant himself; never claim to be him. If the question is outside
+the published professional context, say so and redirect to relevant public links or contact
+details.
+
+RESPONSE STRUCTURE AND FORMATTING
+Return clean, valid GitHub-Flavoured Markdown. Never return raw HTML.
+- Answer the question directly in the opening sentence or short paragraph.
+- For multi-part or technical answers, use concise level-3 headings (###) to separate
+  meaningful sections. Do not add headings to a short, straightforward answer.
+- Keep paragraphs focused, usually 2–4 sentences. Avoid one long wall of text.
+- Use bullet lists with "- Item" and numbered steps with "1. Item". The marker and its
+  text MUST be on the same line. Never place a bare "-", "1." or other list marker on a
+  line by itself, and never put a blank line between a list marker and its text.
+- Put a blank line before and after headings, lists, tables and fenced code blocks.
+- Keep each list item self-contained; do not split its content into separate paragraphs.
+- Use **bold** sparingly for key terms and labels. Use inline code for identifiers,
+  commands, filenames and API fields.
+- Use fenced code blocks with an appropriate language label for multi-line code.
+- Use tables only for compact, directly comparable information. Keep cells brief.
+- Avoid excessive blank lines, repeated headings, decorative separators and unrequested
+  introductions or conclusions.
+- Keep answers proportional to the question. Be concise by default; expand when the
+  visitor explicitly asks for depth or a detailed walkthrough.
 
 PORTFOLIO CONTEXT:
 """ + PORTFOLIO_CONTEXT
-
 
 def _normalise_messages(raw_messages: Any) -> list[dict[str, Any]]:
     if not isinstance(raw_messages, list) or not raw_messages:
@@ -116,7 +137,7 @@ def chat(payload: dict[str, Any]) -> tuple[int, dict[str, Any]]:
             region_name=AWS_REGION,
             config=Config(
                 connect_timeout=4,
-                read_timeout=28,
+                read_timeout=55,
                 retries={"max_attempts": 2, "mode": "standard"},
             ),
         )
