@@ -8,6 +8,7 @@ export async function initGitHubRepositories() {
   const summary = document.getElementById("repoSummary");
   const search = document.getElementById("repoSearch");
   const syncLabel = document.getElementById("repoSync");
+  const refreshButton = document.getElementById("repoRefresh");
   if (!grid || !summary) return;
 
   let publicRepos = [];
@@ -31,7 +32,21 @@ export async function initGitHubRepositories() {
 
   search?.addEventListener("input", render);
 
+  let refreshing = false;
+  let lastSyncedAt = null;
+  const formatSyncTime = (date) => new Intl.DateTimeFormat("en-IN", {
+    day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit"
+  }).format(date);
+
   const refresh = async () => {
+    if (refreshing) return;
+    refreshing = true;
+    if (refreshButton) {
+      refreshButton.disabled = true;
+      refreshButton.setAttribute("aria-busy", "true");
+      refreshButton.innerHTML = '<span aria-hidden="true">↻</span> Refreshing…';
+    }
+    if (syncLabel) syncLabel.textContent = "Checking GitHub…";
     try {
       // Always fetch the current public state. No persistent browser cache:
       // deletions and metadata edits must be reflected on reload and polling.
@@ -71,7 +86,8 @@ export async function initGitHubRepositories() {
       label.textContent = publicRepos.length + " other public repositories · Live from GitHub";
       summary.append(dot, label);
       render();
-      if (syncLabel) syncLabel.textContent = "GitHub sync · just now";
+      lastSyncedAt = new Date();
+      if (syncLabel) syncLabel.textContent = "Last synced " + formatSyncTime(lastSyncedAt);
     } catch (error) {
       // Keep the last successful snapshot visible if a background refresh fails.
       if (!publicRepos.length) {
@@ -82,10 +98,22 @@ export async function initGitHubRepositories() {
         fallback.textContent = "Live repository data could not be loaded. Explore the GitHub profile directly for the current list.";
         grid.append(fallback);
       }
-      if (syncLabel) syncLabel.textContent = "GitHub sync temporarily unavailable";
+      if (syncLabel) {
+        syncLabel.textContent = lastSyncedAt
+          ? "Refresh failed · last synced " + formatSyncTime(lastSyncedAt)
+          : "GitHub sync unavailable";
+      }
+    } finally {
+      refreshing = false;
+      if (refreshButton) {
+        refreshButton.disabled = false;
+        refreshButton.removeAttribute("aria-busy");
+        refreshButton.innerHTML = '<span aria-hidden="true">↻</span> Refresh';
+      }
     }
   };
 
+  refreshButton?.addEventListener("click", refresh);
   await refresh();
   // Keep an already-open portfolio current without requiring a manual reload.
   if (typeof window !== "undefined" && typeof window.setInterval === "function") {

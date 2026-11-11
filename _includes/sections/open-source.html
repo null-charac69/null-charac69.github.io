@@ -3,7 +3,15 @@
     <div><p class="section-kicker">05 / BEYOND THE CASE STUDIES</p><h2>More from the<br><em>workbench.</em></h2></div>
     <div class="repo-controls"><label class="search-label" for="repoSearch">FIND A REPOSITORY</label><input id="repoSearch" type="search" placeholder="Search my public repositories…" autocomplete="off"></div>
   </div>
-  <div class="repo-summary" id="repoSummary" aria-live="polite"><span class="live-dot"></span><span>Loading public GitHub repositories…</span></div>
+  <div class="repo-live-row">
+    <div class="repo-summary" id="repoSummary" aria-live="polite"><span class="live-dot"></span><span>Loading public GitHub repositories…</span></div>
+    <div class="repo-sync-controls">
+      <span class="repo-sync-time" id="repoSync" aria-live="polite">Not synced yet</span>
+      <button class="repo-refresh-button" id="repoRefresh" type="button" aria-label="Refresh GitHub repositories">
+        <span aria-hidden="true">↻</span> Refresh
+      </button>
+    </div>
+  </div>
   <div class="repo-grid" id="repoGrid">
     <div class="repo-skeleton"></div><div class="repo-skeleton"></div><div class="repo-skeleton"></div>
   </div>
