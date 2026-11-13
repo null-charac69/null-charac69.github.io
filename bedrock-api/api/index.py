@@ -10,7 +10,7 @@ from ratelimit import RateLimiter
 # Best-effort, per warm instance: serverless instances do not share memory, so
 # this blunts casual abuse but is not a hard quota. Set a monthly AWS Budget
 # alert as the real backstop.
-LIMITER = RateLimiter(max_requests=10, window_seconds=600, global_max=300)
+LIMITER = RateLimiter(max_requests=20, window_seconds=600, global_max=300)
 
 
 class handler(BaseHTTPRequestHandler):

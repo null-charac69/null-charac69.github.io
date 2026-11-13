@@ -15,9 +15,12 @@ function run(name, task) {
   }
 }
 
+// Reuse app.js's ?v=<build> so lazily loaded modules are cache-busted too.
+const VERSION = new URL(import.meta.url).search;
+
 function lazy(name, path, exportName) {
   // Dynamic imports keep a broken optional module from blocking the page.
-  import(path)
+  import(path + VERSION)
     .then((module) => (exportName ? module[exportName]() : undefined))
     .catch((error) => console.error("[Portfolio] " + name + " failed:", error));
 }

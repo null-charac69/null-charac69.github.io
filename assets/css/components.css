@@ -153,6 +153,10 @@ h1 em, h2 em { color: var(--accent); font-style: normal; }
 .chat-header-kicker { display: flex; align-items: center; gap: 8px; color: #aebbd0; font-size: 10px; }
 .chat-header h2 { margin: 10px 0 1px; font-size: 20px; line-height: 1.25; letter-spacing: -.04em; }
 .chat-header p { margin: 0; color: #aebbd0; font-size: 10px; }
+.chat-header-actions { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+.chat-clear { min-height: 30px; padding: 0 10px; border: 1px solid rgba(255,255,255,.2); border-radius: 15px; background: transparent; color: #e7eef9; font: 11px var(--mono); cursor: pointer; }
+.chat-clear:hover { background: rgba(255,255,255,.1); }
+.chat-clear:disabled { opacity: .45; cursor: not-allowed; }
 .chat-close { width: 30px; height: 30px; color: #e7eef9; border-color: rgba(255,255,255,.2); font-size: 18px; }
 .chat-privacy-note { padding: 8px 20px; border-bottom: 1px solid var(--line); background: var(--surface-soft); color: var(--muted); font-size: 10px; }
 .chat-messages { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 12px; overflow-y: auto; padding: 16px 16px 10px; overscroll-behavior: contain; }

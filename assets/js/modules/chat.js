@@ -54,7 +54,8 @@
     while ((match = pattern.exec(value)) !== null) {
       if (match.index > cursor) parent.append(document.createTextNode(value.slice(cursor, match.index)));
 
-      if (match[1]) {
+      // Group 1 is the whole alternation; 2/3 are the link label and URL.
+      if (match[2] !== undefined && match[3] !== undefined) {
         const link = document.createElement("a");
         link.href = match[3];
         link.target = "_blank";
@@ -364,6 +365,7 @@
   function setBusy(value) {
     busy = value;
     sendButton.disabled = value;
+    if (clearButton) clearButton.disabled = value;
     input.disabled = value;
     if (suggestions) {
       suggestions.querySelectorAll("[data-chat-prompt]").forEach((button) => {
@@ -390,6 +392,21 @@
     else closeChat();
   });
   closeButton.addEventListener("click", closeChat);
+
+  const GREETING = messagesEl.firstElementChild ? messagesEl.firstElementChild.cloneNode(true) : null;
+  const clearButton = document.getElementById("chatClear");
+  clearButton?.addEventListener("click", () => {
+    if (busy) return;
+    history = [];
+    try {
+      localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      // Nothing to clear if storage is unavailable.
+    }
+    messagesEl.replaceChildren(...(GREETING ? [GREETING.cloneNode(true)] : []));
+    if (suggestions) suggestions.hidden = false;
+    input.focus();
+  });
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !panel.hidden) closeChat();
   });

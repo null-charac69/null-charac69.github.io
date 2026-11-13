@@ -27,7 +27,41 @@ class NormaliseMessagesTests(unittest.TestCase):
             core._normalise_messages([{"role": "user", "content": "x" * (core.MAX_MESSAGE_CHARS + 1)}])
 
     def test_output_tokens_are_capped(self):
-        self.assertLessEqual(core.MAX_OUTPUT_TOKENS, 2048)
+        self.assertLessEqual(core.MAX_OUTPUT_TOKENS, 8192)
+        self.assertGreaterEqual(core.MAX_OUTPUT_TOKENS, 512)
+
+    def test_long_assistant_history_is_truncated_not_rejected(self):
+        out = core._normalise_messages([
+            {"role": "user", "content": "a"},
+            {"role": "assistant", "content": "x" * 5000},
+            {"role": "user", "content": "b"},
+        ])
+        self.assertEqual(len(out[1]["content"][0]["text"]), core.MAX_MESSAGE_CHARS)
+
+
+class ChatReplyTests(unittest.TestCase):
+    def _chat(self, response):
+        from unittest import mock
+        client = mock.Mock()
+        client.converse.return_value = response
+        with mock.patch.dict("os.environ", {"AWS_ACCESS_KEY_ID": "x", "AWS_SECRET_ACCESS_KEY": "y"}), \
+                mock.patch.object(core.boto3, "client", return_value=client):
+            return core.chat({"messages": [{"role": "user", "content": "hi"}]})
+
+    def test_ignores_reasoning_blocks(self):
+        status, body = self._chat({"stopReason": "end_turn", "output": {"message": {"content": [
+            {"reasoningContent": {"reasoningText": {"text": "thinking"}}}, {"text": "Answer"}]}}})
+        self.assertEqual((status, body["reply"]), (200, "Answer"))
+
+    def test_truncated_reply_is_flagged(self):
+        status, body = self._chat({"stopReason": "max_tokens", "output": {"message": {"content": [{"text": "Partial"}]}}})
+        self.assertEqual(status, 200)
+        self.assertIn("cut short", body["reply"])
+
+    def test_all_reasoning_truncation_is_an_error(self):
+        status, body = self._chat({"stopReason": "max_tokens", "output": {"message": {"content": [
+            {"reasoningContent": {"reasoningText": {"text": "thinking"}}}]}}})
+        self.assertEqual(status, 502)
 
 
 class RateLimiterTests(unittest.TestCase):
