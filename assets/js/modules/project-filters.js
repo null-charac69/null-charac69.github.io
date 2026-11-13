@@ -3,6 +3,9 @@ export function initProjectFilters() {
   const cards = Array.from(document.querySelectorAll(".project-card[data-category]"));
   if (!buttons.length || !cards.length) return;
 
+  const total = document.querySelector('[data-project-filter="all"] span');
+  if (total) total.textContent = String(cards.length).padStart(2, "0");
+
   buttons.forEach((button) => {
     button.addEventListener("click", () => {
       const filter = button.getAttribute("data-project-filter") || "all";

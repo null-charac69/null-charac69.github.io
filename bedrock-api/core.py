@@ -14,7 +14,9 @@ LOG = logging.getLogger(__name__)
 MODEL_ID = os.environ.get("BEDROCK_MODEL_ID", "global.moonshotai.kimi-k3.1")
 AWS_REGION = os.environ.get("AWS_REGION", "ap-southeast-2")
 ALLOWED_ORIGIN = os.environ.get("ALLOWED_ORIGIN", "https://null-charac69.github.io")
-MAX_OUTPUT_TOKENS = min(max(int(os.environ.get("MAX_OUTPUT_TOKENS", "131072")), 128), 131072)
+# Output tokens are what Bedrock bills for. A portfolio answer rarely needs more
+# than ~1k, so keep the default (and the ceiling) low to bound the cost per call.
+MAX_OUTPUT_TOKENS = min(max(int(os.environ.get("MAX_OUTPUT_TOKENS", "1024")), 128), 2048)
 MAX_BODY_BYTES = 14_000
 MAX_MESSAGES = 10
 MAX_MESSAGE_CHARS = 1_800

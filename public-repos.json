@@ -1,29 +1,108 @@
 {
-  "generatedAt": "2026-11-11T17:19:37.520Z",
+  "generatedAt": "2026-11-13T13:14:41Z",
   "repositories": [
     {
-      "name": "null-charac69",
-      "html_url": "https://github.com/null-charac69/null-charac69"
-    },
-    {
-      "name": "alexa-bot",
-      "html_url": "https://github.com/null-charac69/alexa-bot"
-    },
-    {
-      "name": "learningBuddy-GenAI",
-      "html_url": "https://github.com/null-charac69/learningBuddy-GenAI"
-    },
-    {
-      "name": "movie-picker",
-      "html_url": "https://github.com/null-charac69/movie-picker"
-    },
-    {
-      "name": "neura-dynamics-chatbot",
-      "html_url": "https://github.com/null-charac69/neura-dynamics-chatbot"
+      "name": "null-charac69.github.io",
+      "html_url": "https://github.com/null-charac69/null-charac69.github.io",
+      "description": "🚀 Welcome to my digital playground! This portfolio showcases my creative work, skills, and journey in tech. Built with modern web technologies, it represents both my professional achievements and my passion for clean, elegant design. Feel free to explore and get to know my work better!  ✨ Live at: null-charac69.github.io",
+      "language": "JavaScript",
+      "stargazers_count": 0,
+      "pushed_at": "2026-11-11T17:23:21Z",
+      "topics": [],
+      "fork": false
     },
     {
       "name": "thecut",
-      "html_url": "https://github.com/null-charac69/thecut"
+      "html_url": "https://github.com/null-charac69/thecut",
+      "description": null,
+      "language": "JavaScript",
+      "stargazers_count": 0,
+      "pushed_at": "2026-11-10T16:52:05Z",
+      "topics": [],
+      "fork": false
+    },
+    {
+      "name": "hrag-app",
+      "html_url": "https://github.com/null-charac69/hrag-app",
+      "description": "RAG Pipeline with hybrid search - Dense vectors + BM25 + reranking + citation verification",
+      "language": "Python",
+      "stargazers_count": 0,
+      "pushed_at": "2026-06-28T19:40:11Z",
+      "topics": [],
+      "fork": false
+    },
+    {
+      "name": "agentos",
+      "html_url": "https://github.com/null-charac69/agentos",
+      "description": "AgentOS is an autonomous research pipeline built on Langgraph state graphs. It accepts open-ended research questions and orchestrates five specialist sub-agents that collaborate to produce a structured, cited Markdown report complete with a self-consistency critic loop that improves quality before delivery.",
+      "language": "Python",
+      "stargazers_count": 0,
+      "pushed_at": "2026-05-31T17:50:41Z",
+      "topics": [],
+      "fork": false
+    },
+    {
+      "name": "neura-dynamics-chatbot",
+      "html_url": "https://github.com/null-charac69/neura-dynamics-chatbot",
+      "description": null,
+      "language": "Python",
+      "stargazers_count": 0,
+      "pushed_at": "2025-12-03T18:08:33Z",
+      "topics": [],
+      "fork": false
+    },
+    {
+      "name": "movie-picker",
+      "html_url": "https://github.com/null-charac69/movie-picker",
+      "description": null,
+      "language": "HTML",
+      "stargazers_count": 0,
+      "pushed_at": "2025-11-06T16:33:04Z",
+      "topics": [],
+      "fork": false
+    },
+    {
+      "name": "learningBuddy-GenAI",
+      "html_url": "https://github.com/null-charac69/learningBuddy-GenAI",
+      "description": null,
+      "language": null,
+      "stargazers_count": 0,
+      "pushed_at": "2025-11-01T20:39:08Z",
+      "topics": [],
+      "fork": false
+    },
+    {
+      "name": "healthcare_analytics",
+      "html_url": "https://github.com/null-charac69/healthcare_analytics",
+      "description": null,
+      "language": "JavaScript",
+      "stargazers_count": 0,
+      "pushed_at": "2025-10-18T18:23:49Z",
+      "topics": [],
+      "fork": false
+    },
+    {
+      "name": "alexa-bot",
+      "html_url": "https://github.com/null-charac69/alexa-bot",
+      "description": "NA",
+      "language": "Python",
+      "stargazers_count": 0,
+      "pushed_at": "2024-12-25T11:22:36Z",
+      "topics": [],
+      "fork": false
+    },
+    {
+      "name": "null-charac69",
+      "html_url": "https://github.com/null-charac69/null-charac69",
+      "description": "Config files for my GitHub profile.",
+      "language": null,
+      "stargazers_count": 0,
+      "pushed_at": "2024-10-14T10:04:55Z",
+      "topics": [
+        "config",
+        "github-config"
+      ],
+      "fork": false
     }
   ]
 }

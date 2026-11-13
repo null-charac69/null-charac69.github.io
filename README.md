@@ -7,22 +7,15 @@ Live site: https://null-charac69.github.io/
 ## Source structure
 
     .
-    ├── _config.yml
-    ├── _includes/
-    │   ├── sections/
-    │   ├── chat-widget.html
-    │   ├── head.html
-    │   └── site-header.html / site-footer.html
-    ├── _layouts/default.html
+    ├── _config.yml              # site config, portfolio_api_url, resume_url
+    ├── _includes/ _layouts/     # Jekyll templates and sections
     ├── assets/
-    │   ├── css/
-    │   └── js/modules/
-    ├── bedrock-api/
-    │   ├── api/index.py
-    │   ├── core.py
-    │   ├── pyproject.toml
-    │   └── vercel.json
-    └── index.html
+    │   ├── css/ fonts/ js/      # self-hosted fonts, ES-module JS
+    │   └── og-card.png          # 1200x630 social card
+    ├── bedrock-api/             # Vercel Python chat API (Bedrock Converse)
+    ├── .github/                 # daily repo-index workflow + script
+    ├── public-repos.json        # generated snapshot of public repos
+    └── index.html, 404.html
 
 ## Architecture
 
@@ -37,10 +30,11 @@ The Vercel API uses server-side AWS credentials from encrypted environment varia
 
 ## Features
 
+- Self-hosted fonts, system-aware light/dark theme, WCAG-AA muted text.
 - Responsive editorial portfolio with paper/ink/cobalt light theme and matching navy dark theme.
 - Accessible mobile navigation, theme preference, reading progress and reduced-motion support.
 - Project filters and expandable architecture/design notes.
-- Dynamic public GitHub repository list with search and repository metadata.
+- Public repository list with search, generated daily into `public-repos.json` by a GitHub Action (visitors never call the GitHub API).
 - Portfolio assistant powered by Kimi K3.1 on Amazon Bedrock.
 - Browser-local chat history; the API does not persist conversation content.
 
@@ -73,3 +67,11 @@ Project descriptions are grounded in public repository documentation. Unsupporte
 - Conversation history is stored in the visitor's browser localStorage and included in each chat request. The backend does not persist it.
 - Do not invite visitors to submit credentials or sensitive information.
 - A former Gemini key was committed to the public repository. Revoke it; removing the file does not remove it from Git history.
+
+## Résumé
+
+Upload the PDF to `assets/` and set `resume_url` in `_config.yml`. Until then the contact section shows a "coming soon" placeholder.
+
+## Chat API tests
+
+    cd bedrock-api && pip install boto3 && python -m unittest tests/test_api.py

@@ -4,7 +4,13 @@ from http.server import BaseHTTPRequestHandler
 import json
 from urllib.parse import urlparse
 
-from core import ALLOWED_ORIGIN, chat
+from core import ALLOWED_ORIGIN, MAX_BODY_BYTES, chat
+from ratelimit import RateLimiter
+
+# Best-effort, per warm instance: serverless instances do not share memory, so
+# this blunts casual abuse but is not a hard quota. Set a monthly AWS Budget
+# alert as the real backstop.
+LIMITER = RateLimiter(max_requests=10, window_seconds=600, global_max=300)
 
 
 class handler(BaseHTTPRequestHandler):
@@ -41,13 +47,18 @@ class handler(BaseHTTPRequestHandler):
             self._send(403, {"error": "Origin not allowed."}, cors=False)
             return
 
+        client_ip = (self.headers.get("X-Forwarded-For", "") or self.client_address[0]).split(",")[0].strip()
+        if not LIMITER.allow(client_ip):
+            self._send(429, {"error": "Too many requests. Please try again in a few minutes."})
+            return
+
         try:
             length = int(self.headers.get("Content-Length", "0"))
         except ValueError:
             self._send(400, {"error": "Invalid Content-Length."})
             return
-        if length <= 0 or length > 14000:
-            self._send(413 if length > 14000 else 400, {"error": "Request is empty or too large."})
+        if length <= 0 or length > MAX_BODY_BYTES:
+            self._send(413 if length > MAX_BODY_BYTES else 400, {"error": "Request is empty or too large."})
             return
 
         try:

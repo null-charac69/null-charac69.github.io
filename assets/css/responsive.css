@@ -13,7 +13,7 @@
 @media (max-width: 760px) {
   :root { --header-height: 66px; }
   .nav-wrap, .section-shell { width: min(calc(100% - 36px), var(--page-width)); }
-  .wordmark-name { font-size: 9px; letter-spacing: .09em; }
+  .wordmark-name { font-size: 10px; letter-spacing: .09em; }
   .desktop-nav, .nav-cta { display: none; }
   .menu-toggle { display: grid; }
   .mobile-nav:not([hidden]) { display: grid; gap: 0; padding: 4px 18px 16px; border-top: 1px solid var(--line); background: var(--bg); }
@@ -22,13 +22,13 @@
   .hero h1 { font-size: clamp(46px, 13vw, 68px); }
   .hero-intro { margin-top: 21px; font-size: 13px; }
   .hero-actions { margin-top: 25px; }
-  .button { min-height: 44px; padding-inline: 14px; font-size: 10px; }
+  .button { min-height: 44px; padding-inline: 14px; font-size: 11px; }
   .hero-links { margin-top: 30px; }
   .hero-side { width: min(100%, 390px); justify-self: center; }
   .portrait-image-wrap { height: 330px; }
   .hero-index { bottom: 20px; }
   .intro-strip-inner { justify-content: flex-start; overflow-x: auto; padding-block: 15px; }
-  .intro-strip p { white-space: nowrap; font-size: 8px; }
+  .intro-strip p { white-space: nowrap; font-size: 10px; }
   .strip-mark { flex: 0 0 auto; }
   .content-section, .toolkit-section { padding-block: 76px; }
   .section-heading { margin-bottom: 35px; }
@@ -40,7 +40,7 @@
   .work-aside { margin-top: 22px; }
   .project-toolbar { display: block; margin-top: 0; }
   .project-filters { margin-top: 9px; }
-  .filter-button { font-size: 8px; padding: 7px 8px; }
+  .filter-button { font-size: 10px; padding: 7px 8px; }
   .projects-grid, .repo-grid { grid-template-columns: 1fr; }
   .project-card, .project-card-featured { grid-column: auto; min-height: 0; padding: 20px; }
   .project-main { grid-template-columns: 1fr; gap: 28px; }
@@ -63,7 +63,7 @@
   .contact-layout h2 { font-size: 48px; }
   .contact-actions { gap: 13px; }
   .contact-bottom { flex-wrap: wrap; margin-top: 36px; }
-  .site-footer { flex-wrap: wrap; padding-bottom: 100px; font-size: 8px; }
+  .site-footer { flex-wrap: wrap; padding-bottom: 100px; font-size: 10px; }
   .chat-launcher { right: 15px; bottom: 14px; }
   .chat-panel { right: 10px; bottom: 72px; width: calc(100vw - 20px); height: min(600px, calc(100dvh - 95px)); }
 }
@@ -111,11 +111,11 @@
   .chat-messages { padding: 12px 11px 8px; }
   .chat-message { max-width: 94%; }
   .chat-suggestions { padding: 7px 10px 9px; }
-  .chat-suggestions button { min-height: 34px; font-size: 9px; }
+  .chat-suggestions button { min-height: 34px; font-size: 10px; }
   .chat-form { padding: 9px 10px; }
   .chat-form textarea { font-size: 16px; }
   .chat-send { width: 42px; height: 42px; flex-basis: 42px; }
-  .chat-footer { padding: 0 11px 9px; font-size: 7px; }
+  .chat-footer { padding: 0 11px 9px; font-size: 10px; }
 }
 @media (max-width: 360px) {
   .chat-panel {
@@ -125,8 +125,8 @@
   }
   .chat-header { gap: 8px; padding-inline: 12px; }
   .chat-close { flex: 0 0 30px; }
-  .chat-privacy-note { font-size: 8px; }
-  .chat-suggestions button { padding: 6px 7px; font-size: 8px; }
+  .chat-privacy-note { font-size: 10px; }
+  .chat-suggestions button { padding: 6px 7px; font-size: 10px; }
 }
 @media (max-width: 900px) and (max-height: 520px) {
   .chat-panel {
@@ -138,7 +138,7 @@
   }
   .chat-header { padding: 9px 13px 8px; }
   .chat-header h2 { margin-top: 5px; font-size: 17px; }
-  .chat-privacy-note { padding: 5px 13px; font-size: 8px; }
+  .chat-privacy-note { padding: 5px 13px; font-size: 10px; }
   .chat-messages { padding-block: 8px 5px; }
   .chat-suggestions { max-height: 66px; padding-block: 5px 6px; }
   .chat-form { padding-block: 7px; }

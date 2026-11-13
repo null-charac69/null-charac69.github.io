@@ -7,6 +7,11 @@
         <a href="mailto:anant.thakur2000@gmail.com">Email Anant <span aria-hidden="true">↗</span></a>
         <a href="https://www.linkedin.com/in/anant-kumar-b12976178/" target="_blank" rel="noreferrer">Connect on LinkedIn <span aria-hidden="true">↗</span></a>
         <a href="https://github.com/null-charac69" target="_blank" rel="noreferrer">Explore GitHub <span aria-hidden="true">↗</span></a>
+        {% if site.resume_url != "" %}
+        <a href="{{ site.resume_url | relative_url }}" download>Download résumé <span aria-hidden="true">↓</span></a>
+        {% else %}
+        <span class="contact-placeholder" aria-disabled="true">Résumé <small>COMING SOON</small></span>
+        {% endif %}
       </div>
     </div>
     <div class="contact-bottom"><span>ANANT KUMAR THAKUR</span><span>PUNE, INDIA</span><span>AI/ML · GENERATIVE AI · SYSTEMS</span></div>

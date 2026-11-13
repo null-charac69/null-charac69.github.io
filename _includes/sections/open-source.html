@@ -4,17 +4,11 @@
     <div class="repo-controls"><label class="search-label" for="repoSearch">FIND A REPOSITORY</label><input id="repoSearch" type="search" placeholder="Search my public repositories…" autocomplete="off"></div>
   </div>
   <div class="repo-live-row">
-    <div class="repo-summary" id="repoSummary" aria-live="polite"><span class="live-dot"></span><span>Loading public GitHub repositories…</span></div>
-    <div class="repo-sync-controls">
-      <span class="repo-sync-time" id="repoSync" aria-live="polite">Not synced yet</span>
-      <button class="repo-refresh-button" id="repoRefresh" type="button" aria-label="Refresh GitHub repositories">
-        <span aria-hidden="true">↻</span> Refresh
-      </button>
-    </div>
+    <div class="repo-summary" id="repoSummary" aria-live="polite"><span class="live-dot"></span><span>Loading public repositories…</span></div>
+    <span class="repo-sync-time" id="repoSync" aria-live="polite"></span>
   </div>
   <div class="repo-grid" id="repoGrid">
     <div class="repo-skeleton"></div><div class="repo-skeleton"></div><div class="repo-skeleton"></div>
   </div>
   <div class="all-work-row"><a class="text-link" href="https://github.com/null-charac69?tab=repositories" target="_blank" rel="noreferrer">View the complete GitHub profile <span aria-hidden="true">↗</span></a></div>
 </section>
-<script defer src="{{ '/assets/js/github-live.js' | relative_url }}?v=20261111-static-index2"></script>

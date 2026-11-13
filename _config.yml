@@ -3,15 +3,17 @@ description: "AI/ML engineer focused on Generative AI, retrieval systems and age
 url: "https://null-charac69.github.io"
 baseurl: ""
 portfolio_api_url: "https://anant-portfolio-bedrock-api.vercel.app"
+# Résumé: upload the PDF to assets/ and set its path here, e.g.
+#   resume_url: "/assets/Anant-Kumar-Thakur-Resume.pdf"
+# While empty, the site shows a "coming soon" placeholder.
+resume_url: ""
 markdown: kramdown
 permalink: pretty
 exclude:
-  - backend
   - bedrock-api
-  - .github
-  - .gitignore
-  - README.md
+  - CLAUDE.md
   - DEPLOYMENT.md
-  - LICENSE
   - Gemfile
   - Gemfile.lock
+  - LICENSE
+  - README.md

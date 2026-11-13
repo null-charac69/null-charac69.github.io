@@ -1,6 +1,6 @@
 # Chatbot setup — one-time phone configuration
 
-The portfolio frontend is on GitHub Pages. Its chat API is already deployed on Vercel and calls Kimi K3.1 through Amazon Bedrock. **You do not need AWS Console, a laptop, AWS SAM, or GitHub Actions for this setup.**
+The portfolio frontend is on GitHub Pages. Its chat API is already deployed on Vercel and calls Kimi K3.1 through Amazon Bedrock. **You do not need AWS SAM or a laptop for this setup.** The only workflow in this repo is the free daily repository-index refresh.
 
 ## 1. Add the two AWS keys to Vercel
 
@@ -48,4 +48,5 @@ A successful answer confirms the complete browser → Vercel → Bedrock → Kim
 - The API only accepts browser requests from `https://null-charac69.github.io`. CORS is not authentication, so the endpoint can still be called by non-browser clients.
 - Bedrock model inference is billed by AWS. Vercel's Python runtime is currently available in Beta on all plans; usage remains subject to the plan's limits.
 - The browser stores up to 12 recent messages in localStorage. The API does not persist conversation history or log visitor prompt contents.
+- Output is capped at 1,024 tokens per reply (`MAX_OUTPUT_TOKENS`, hard ceiling 2,048), and each warm Vercel instance limits a client IP to 10 chats per 10 minutes. This is best-effort, not a hard quota — create an **AWS Budget alert** (free) as the real backstop.
 - If these AWS keys were created only for the failed GitHub Actions setup, remove the old GitHub repository secrets when convenient and deactivate the unused key after verifying the Vercel chatbot works.
