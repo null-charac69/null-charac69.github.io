@@ -13,7 +13,7 @@ Live site: https://null-charac69.github.io/
     │   ├── css/ fonts/ js/      # self-hosted fonts, ES-module JS
     │   └── og-card.png          # 1200x630 social card
     ├── bedrock-api/             # Vercel Python chat API (Bedrock Converse)
-    ├── .github/                 # daily repo-index workflow + script
+    ├── .github/scripts/         # repo-index generator (run manually)
     ├── public-repos.json        # generated snapshot of public repos
     └── index.html, 404.html
 
@@ -34,7 +34,7 @@ The Vercel API uses server-side AWS credentials from encrypted environment varia
 - Responsive editorial portfolio with paper/ink/cobalt light theme and matching navy dark theme.
 - Accessible mobile navigation, theme preference, reading progress and reduced-motion support.
 - Project filters and expandable architecture/design notes.
-- Public repository list with search, generated daily into `public-repos.json` by a GitHub Action (visitors never call the GitHub API).
+- Public repository list with search, stored in `public-repos.json` (visitors never call the GitHub API). Refresh it with `python3 .github/scripts/update_repos.py`, then commit.
 - Portfolio assistant powered by Kimi K3.1 on Amazon Bedrock.
 - Browser-local chat history; the API does not persist conversation content.
 

@@ -1,6 +1,6 @@
 # Chatbot setup — one-time phone configuration
 
-The portfolio frontend is on GitHub Pages. Its chat API is already deployed on Vercel and calls Kimi K3.1 through Amazon Bedrock. **You do not need AWS SAM or a laptop for this setup.** The only workflow in this repo is the free daily repository-index refresh.
+The portfolio frontend is on GitHub Pages. Its chat API is already deployed on Vercel and calls Kimi K3.1 through Amazon Bedrock. **You do not need AWS SAM or a laptop for this setup.** There are no GitHub Actions workflows (the account's Actions are billing-locked); the repo index is refreshed manually.
 
 ## 1. Add the two AWS keys to Vercel
 
