@@ -1,84 +1,96 @@
-<section class="work-section" id="work">
-  <div class="section-shell">
-    <div class="section-heading work-heading reveal">
-      <div><p class="section-kicker">02 / SELECTED ENGINEERING WORK</p><h2>Built, broken down<br><em>and made better.</em></h2></div>
-      <div class="work-aside"><span class="live-dot"></span><span>Repository details sync daily from GitHub</span></div>
-    </div>
+<section class="section" id="work">
+  <div class="shell">
+    <header class="section-head">
+      <h2>Work</h2>
+      <p>Three personal projects. What I build at Tata Elxsi is client work under NDA, so none of it is here.</p>
+    </header>
 
-    <div class="project-toolbar reveal">
-      <span>FILTER PROJECTS</span>
-      <div class="project-filters" role="group" aria-label="Filter projects">
-        <button type="button" class="filter-button is-active" data-project-filter="all" aria-pressed="true">All <span>03</span></button>
-        <button type="button" class="filter-button" data-project-filter="agentic" aria-pressed="false">Agentic AI</button>
-        <button type="button" class="filter-button" data-project-filter="retrieval" aria-pressed="false">Retrieval</button>
-        <button type="button" class="filter-button" data-project-filter="applied-ml" aria-pressed="false">Applied ML</button>
+    <article class="project" data-repo="agentos">
+      <div class="project-text">
+        <p class="project-kind">Multi-agent research pipeline</p>
+        <h3>AgentOS</h3>
+        <p>You give it an open-ended research question and it hands back a structured Markdown report with citations. Underneath is a LangGraph state graph with five stages: a planner, web search, retrieval, a code executor and a critic.</p>
+        <p>The critic is the part I care about most. It reviews the draft and can send it back for another pass, with a cap so it can't loop forever. Progress streams to the client over server-sent events from FastAPI, Qdrant keeps memory of earlier runs, and Redis handles caching.</p>
+        <ul class="stack"><li>LangGraph</li><li>FastAPI</li><li>Qdrant</li><li>Redis</li><li>SSE</li></ul>
+        <p class="project-foot"><a class="project-link" href="https://github.com/null-charac69/agentos" target="_blank" rel="noreferrer">Code on GitHub</a><span class="repo-meta" data-repo-meta></span></p>
       </div>
-    </div>
-
-    <div class="projects-grid">
-      <article class="project-card project-card-featured reveal" data-repo="agentos" data-category="agentic">
-        <div class="project-top"><span class="project-number">01 / MULTI-AGENT SYSTEMS</span><span class="project-type">FEATURED</span></div>
-        <div class="project-main">
-          <div class="project-copy">
-            <h3>AgentOS</h3>
-            <p class="project-summary">An autonomous research workflow that turns an open-ended question into a structured, cited report using a coordinated LangGraph pipeline.</p>
-            <ul class="project-points">
-              <li>Five specialist stages: planning, search, retrieval, code execution and critique.</li>
-              <li>Shared graph state with a critic-and-revision loop for report quality.</li>
-              <li>FastAPI streaming, Qdrant memory and Redis caching.</li>
-            </ul>
-            <div class="tag-list"><span>LangGraph</span><span>FastAPI</span><span>Qdrant</span><span>Redis</span><span>SSE</span></div>
-          </div>
-          <div class="architecture-card" aria-label="AgentOS workflow: question to planner, specialist agents, critic, and report">
-            <div class="architecture-label">WORKFLOW / OVERVIEW</div>
-            <div class="arch-node arch-start">RESEARCH QUESTION</div>
-            <div class="arch-connector"></div>
-            <div class="arch-node">PLANNER <span>01</span></div>
-            <div class="arch-split"><span>SEARCH</span><span>RETRIEVE</span><span>EXECUTE</span></div>
-            <div class="arch-connector"></div>
-            <div class="arch-node arch-critic">CRITIC <span>QUALITY LOOP</span></div>
-            <div class="arch-connector"></div>
-            <div class="arch-node arch-end">CITED REPORT</div>
-          </div>
+      <figure class="diagram">
+        <div class="diagram-scroll">
+          <svg viewBox="0 0 640 270" role="img" aria-label="AgentOS flow: a question goes to the planner, fans out to search, retrieve and execute, merges at the critic, and ends in a report. The critic can send work back to the planner.">
+            <path class="d-wire" d="M104 145H566M236 145H262V65H428V145M236 145H262V225H428V145"/>
+            <path class="d-loop" d="M498 123V18H188V123"/>
+            <path class="d-signal" pathLength="100" d="M104 145H262V65H428V145H566"/>
+            <path class="d-signal" pathLength="100" d="M104 145H566"/>
+            <path class="d-signal" pathLength="100" d="M104 145H262V225H428V145H566"/>
+            <g class="d-node"><rect x="8" y="123" width="96" height="44"/><text x="56" y="150">QUESTION</text></g>
+            <g class="d-node"><rect x="140" y="123" width="96" height="44"/><text x="188" y="150">PLANNER</text></g>
+            <g class="d-node"><rect x="290" y="43" width="110" height="44"/><text x="345" y="62">SEARCH</text><text class="d-sub" x="345" y="77">web</text></g>
+            <g class="d-node"><rect x="290" y="123" width="110" height="44"/><text x="345" y="142">RETRIEVE</text><text class="d-sub" x="345" y="157">Qdrant memory</text></g>
+            <g class="d-node"><rect x="290" y="203" width="110" height="44"/><text x="345" y="222">EXECUTE</text><text class="d-sub" x="345" y="237">code</text></g>
+            <g class="d-node d-hot"><rect x="456" y="123" width="84" height="44"/><text x="498" y="150">CRITIC</text></g>
+            <g class="d-node"><rect x="566" y="123" width="66" height="44"/><text x="599" y="150">REPORT</text></g>
+            <text class="d-note" x="343" y="12">revise, capped</text>
+          </svg>
         </div>
-        <details class="project-detail">
-          <summary>Explore the design decisions <span aria-hidden="true">＋</span></summary>
-          <div class="project-detail-content"><p>LangGraph provides the control flow for a stateful pipeline with a bounded revision path. Retrieval supplies relevant prior context, search gathers evidence, and the critic checks the draft before the final report is returned. The repository documents an SSE API so clients can observe progress instead of waiting for a single final response.</p><p><strong>Engineering questions:</strong> state ownership, parallel tool execution, quality scoring, safe code execution and memory lifecycle.</p></div>
-        </details>
-        <div class="project-bottom"><a class="project-link" href="https://github.com/null-charac69/agentos" target="_blank" rel="noreferrer">Inspect repository <span aria-hidden="true">↗</span></a><span class="repo-meta" data-repo-meta>Public repository</span></div>
-      </article>
+        <figcaption>Fig. 2 &nbsp;Five stages on one shared state</figcaption>
+      </figure>
+    </article>
 
-      <article class="project-card reveal" data-repo="hrag-app" data-category="retrieval" data-reveal-delay="80">
-        <div class="project-top"><span class="project-number">02 / RETRIEVAL SYSTEMS</span><span class="project-type">RAG</span></div>
-        <div class="project-copy">
-          <h3>Hybrid RAG Pipeline</h3>
-          <p class="project-summary">A retrieval pipeline that combines dense semantic search and BM25, merges ranked results, reranks candidates and checks answer grounding.</p>
-          <ul class="project-points"><li>Dense + sparse retrieval with Reciprocal Rank Fusion.</li><li>Cross-encoder reranking and citation verification.</li><li>RAGAS evaluation, FastAPI services and conversation history.</li></ul>
-          <div class="tag-list"><span>Qdrant</span><span>BGE</span><span>BM25</span><span>RRF</span><span>RAGAS</span></div>
+    <article class="project" data-repo="hrag-app">
+      <div class="project-text">
+        <p class="project-kind">Retrieval</p>
+        <h3>Hybrid RAG</h3>
+        <p>Dense search is good at meaning and bad at exact terms. BM25 is the opposite. This pipeline runs both, BGE embeddings in Qdrant alongside BM25, and merges the two rankings with Reciprocal Rank Fusion, so the scores never have to share a scale.</p>
+        <p>A BGE cross-encoder reranks the shortlist before anything reaches the model. Each answer then goes through a citation check, and RAGAS scores the pipeline so I'm not judging it by how fluent the output sounds.</p>
+        <ul class="stack"><li>Qdrant</li><li>BGE</li><li>BM25</li><li>RRF</li><li>RAGAS</li><li>FastAPI</li></ul>
+        <p class="project-foot"><a class="project-link" href="https://github.com/null-charac69/hrag-app" target="_blank" rel="noreferrer">Code on GitHub</a><span class="repo-meta" data-repo-meta></span></p>
+      </div>
+      <figure class="diagram">
+        <div class="diagram-scroll">
+          <svg viewBox="0 0 640 270" role="img" aria-label="Hybrid RAG flow: a query goes to dense and sparse retrieval in parallel, the rankings are fused with RRF, reranked by a cross-encoder, and answered with a citation check. RAGAS evaluates the result.">
+            <path class="d-wire" d="M84 135H104V65H264V135H510M84 135H104V205H264V135"/>
+            <path class="d-loop" d="M571 157V203"/>
+            <path class="d-signal" pathLength="100" d="M84 135H104V65H264V135H510"/>
+            <path class="d-signal" pathLength="100" d="M84 135H104V205H264V135H510"/>
+            <g class="d-node"><rect x="8" y="113" width="76" height="44"/><text x="46" y="140">QUERY</text></g>
+            <g class="d-node"><rect x="124" y="43" width="120" height="44"/><text x="184" y="62">DENSE</text><text class="d-sub" x="184" y="77">BGE + Qdrant</text></g>
+            <g class="d-node"><rect x="124" y="183" width="120" height="44"/><text x="184" y="202">SPARSE</text><text class="d-sub" x="184" y="217">BM25</text></g>
+            <g class="d-node"><rect x="284" y="113" width="74" height="44"/><text x="321" y="132">RRF</text><text class="d-sub" x="321" y="147">fuse ranks</text></g>
+            <g class="d-node"><rect x="384" y="113" width="100" height="44"/><text x="434" y="132">RERANK</text><text class="d-sub" x="434" y="147">cross-encoder</text></g>
+            <g class="d-node d-hot"><rect x="510" y="113" width="122" height="44"/><text x="571" y="132">ANSWER</text><text class="d-sub" x="571" y="147">+ citation check</text></g>
+            <g class="d-node"><rect x="510" y="203" width="122" height="44"/><text x="571" y="222">RAGAS</text><text class="d-sub" x="571" y="237">evaluation</text></g>
+          </svg>
         </div>
-        <details class="project-detail">
-          <summary>Explore the design decisions <span aria-hidden="true">＋</span></summary>
-          <div class="project-detail-content"><p>Dense retrieval captures semantic similarity while BM25 preserves lexical matching. Reciprocal Rank Fusion combines rankings without requiring score-scale normalization. A cross-encoder then reranks the shortlist, and citation checks plus RAGAS metrics provide quality signals beyond answer fluency.</p><p><strong>Engineering questions:</strong> chunking, retrieval recall, rank fusion, reranking cost and faithfulness evaluation.</p></div>
-        </details>
-        <div class="project-bottom"><a class="project-link" href="https://github.com/null-charac69/hrag-app" target="_blank" rel="noreferrer">Inspect repository <span aria-hidden="true">↗</span></a><span class="repo-meta" data-repo-meta>Public repository</span></div>
-      </article>
+        <figcaption>Fig. 3 &nbsp;Two retrievers, one ranking</figcaption>
+      </figure>
+    </article>
 
-      <article class="project-card reveal" data-repo="healthcare_analytics" data-category="applied-ml" data-reveal-delay="150">
-        <div class="project-top"><span class="project-number">03 / APPLIED MACHINE LEARNING</span><span class="project-type">HEALTHCARE</span></div>
-        <div class="project-copy">
-          <h3>Healthcare Analytics</h3>
-          <p class="project-summary">A healthcare analytics prototype covering medical-image workflows and patient-outcome prediction, with model interpretability as part of the product surface.</p>
-          <ul class="project-points"><li>Documented MRI and chest X-ray classification workflows.</li><li>Patient risk, length-of-stay and readmission prediction concepts.</li><li>React, FastAPI, PyTorch, MLflow and DVC in the documented stack.</li></ul>
-          <div class="tag-list"><span>PyTorch</span><span>FastAPI</span><span>MLflow</span><span>DVC</span></div>
+    <article class="project" data-repo="healthcare_analytics">
+      <div class="project-text">
+        <p class="project-kind">Applied ML prototype</p>
+        <h3>Healthcare Analytics</h3>
+        <p>A prototype, and I'd rather call it that than oversell it. It covers two tracks: image classification for MRI and chest X-rays, and prediction models for patient risk, length of stay and readmission. The interface shows why a model said what it said, not only the result.</p>
+        <p>React on the front, FastAPI and PyTorch behind it, MLflow and DVC for tracking experiments and data. None of it has been clinically validated.</p>
+        <ul class="stack"><li>PyTorch</li><li>FastAPI</li><li>React</li><li>MLflow</li><li>DVC</li></ul>
+        <p class="project-foot"><a class="project-link" href="https://github.com/null-charac69/healthcare_analytics" target="_blank" rel="noreferrer">Code on GitHub</a><span class="repo-meta" data-repo-meta></span></p>
+      </div>
+      <figure class="diagram">
+        <div class="diagram-scroll">
+          <svg viewBox="0 0 640 270" role="img" aria-label="Healthcare Analytics flow: images go to a classifier and patient records go to prediction models. Both feed an interpretability layer and then a dashboard.">
+            <path class="d-wire" d="M128 65H333V135H518M128 205H333V135"/>
+            <path class="d-signal" pathLength="100" d="M128 65H333V135H518"/>
+            <path class="d-signal" pathLength="100" d="M128 205H333V135H518"/>
+            <g class="d-node"><rect x="8" y="43" width="120" height="44"/><text x="68" y="62">MRI / X-RAY</text><text class="d-sub" x="68" y="77">images</text></g>
+            <g class="d-node"><rect x="8" y="183" width="120" height="44"/><text x="68" y="202">PATIENT DATA</text><text class="d-sub" x="68" y="217">records</text></g>
+            <g class="d-node"><rect x="172" y="43" width="136" height="44"/><text x="240" y="62">CLASSIFIER</text><text class="d-sub" x="240" y="77">PyTorch</text></g>
+            <g class="d-node"><rect x="172" y="183" width="136" height="44"/><text x="240" y="202">PREDICTION</text><text class="d-sub" x="240" y="217">risk / stay / readmit</text></g>
+            <g class="d-node d-hot"><rect x="358" y="113" width="124" height="44"/><text x="420" y="132">EXPLAIN</text><text class="d-sub" x="420" y="147">interpretability</text></g>
+            <g class="d-node"><rect x="518" y="113" width="114" height="44"/><text x="575" y="132">DASHBOARD</text><text class="d-sub" x="575" y="147">React + FastAPI</text></g>
+            <text class="d-note" x="240" y="258">tracked with MLflow + DVC</text>
+          </svg>
         </div>
-        <details class="project-detail">
-          <summary>Explore the design decisions <span aria-hidden="true">＋</span></summary>
-          <div class="project-detail-content"><p>The repository describes a product surface that connects image-classification workflows with downstream analytics and interpretability views. Healthcare ML requires particular attention to representative data, leakage prevention, calibration, class imbalance and clinical validation. The public README is a project description, not evidence of clinical readiness.</p><p><strong>Engineering questions:</strong> model evaluation, reproducible experiments, interpretability and responsible communication of results.</p></div>
-        </details>
-        <div class="project-bottom"><a class="project-link" href="https://github.com/null-charac69/healthcare_analytics" target="_blank" rel="noreferrer">Inspect repository <span aria-hidden="true">↗</span></a><span class="repo-meta" data-repo-meta>Public repository</span></div>
-      </article>
-    </div>
-    <p class="project-disclaimer">Project descriptions reflect public repository documentation. Performance figures are intentionally omitted where the repository does not publish enough benchmark detail to interpret them independently.</p>
-    <div class="all-work-row"><a class="button button-outline" href="https://github.com/null-charac69?tab=repositories" target="_blank" rel="noreferrer">Browse all repositories <span aria-hidden="true">↗</span></a></div>
+        <figcaption>Fig. 4 &nbsp;Images and records, one dashboard</figcaption>
+      </figure>
+    </article>
   </div>
 </section>

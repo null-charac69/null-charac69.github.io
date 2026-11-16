@@ -1,5 +1,11 @@
-<footer class="site-footer section-shell">
-  <span>© <span id="currentYear"></span> Anant Kumar Thakur</span>
-  <span>Static site on GitHub Pages</span>
-  <a href="#home">Back to top ↑</a>
+<footer class="site-footer">
+  <div class="shell">
+    <dl class="title-block">
+      <div><dt>Drawn by</dt><dd>Anant Kumar Thakur</dd></div>
+      <div><dt>Sheet</dt><dd>1 of 1</dd></div>
+      <div><dt>Scale</dt><dd>Not to scale</dd></div>
+      <div><dt>Rev</dt><dd>{{ site.time | date: "%d %b %Y" }}</dd></div>
+    </dl>
+    <p class="footer-line"><span>© <span id="currentYear"></span> Anant Kumar Thakur. Jekyll on GitHub Pages, no trackers.</span><a href="#home">Back to top</a></p>
+  </div>
 </footer>

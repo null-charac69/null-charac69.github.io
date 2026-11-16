@@ -321,7 +321,7 @@
 
     const label = document.createElement("span");
     label.className = "message-label";
-    label.textContent = role === "user" ? "YOU" : "PORTFOLIO GUIDE";
+    label.textContent = role === "user" ? "You" : "Site";
 
     const messageContent = document.createElement("div");
     messageContent.className = "message-content";
@@ -412,6 +412,19 @@
   });
   document.querySelectorAll("[data-chat-open]").forEach((button) => {
     button.addEventListener("click", openChat);
+  });
+
+  // The question box in the hero: open the panel and send straight away.
+  // An empty box sends its placeholder, which is a real example question.
+  document.querySelectorAll("[data-chat-ask]").forEach((askForm) => {
+    askForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      const field = askForm.querySelector("input");
+      const question = field ? field.value.trim() || field.placeholder : "";
+      if (field) field.value = "";
+      openChat();
+      sendMessage(question, true);
+    });
   });
 
   form.addEventListener("submit", async (event) => {

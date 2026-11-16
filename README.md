@@ -30,11 +30,11 @@ The Vercel API uses server-side AWS credentials from encrypted environment varia
 
 ## Features
 
-- Self-hosted fonts, system-aware light/dark theme, WCAG-AA muted text.
-- Responsive editorial portfolio with paper/ink/cobalt light theme and matching navy dark theme.
-- Accessible mobile navigation, theme preference, reading progress and reduced-motion support.
-- Project filters and expandable architecture/design notes.
-- Public repository list with search, stored in `public-repos.json` (visitors never call the GitHub API). Refresh it with `python3 .github/scripts/update_repos.py`, then commit.
+- One page laid out like an engineering drawing sheet: figure captions, a dimension line, a parts list, a title block. Light (paper) and dark themes, one orange accent, system-aware.
+- Self-hosted variable fonts; the name in the hero reacts to the pointer by changing weight per letter. Reduced-motion is respected.
+- Inline SVG pipeline diagrams for each written-up project.
+- A question box in the hero that opens the chat and sends the question.
+- Other public repos listed from `public-repos.json` (visitors never call the GitHub API). Refresh it with `python3 .github/scripts/update_repos.py`, then commit.
 - Portfolio assistant powered by Kimi K3.1 on Amazon Bedrock.
 - Browser-local chat history; the API does not persist conversation content.
 

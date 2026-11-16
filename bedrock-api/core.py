@@ -48,25 +48,25 @@ A healthcare analytics prototype whose README describes MRI and chest X-ray
 classification workflows, patient-outcome prediction concepts and model interpretability.
 Do not claim independently validated clinical performance or production deployment.
 
-Technical toolkit (as published on the portfolio):
-- Generative AI: LLM applications, prompt and context design, structured outputs, agent
-  workflows, conversational interfaces; LangGraph, LLM APIs, RAG.
-- Retrieval and evaluation: hybrid search, embedding-based retrieval, ranking, grounding
-  checks, task-specific evaluation; Qdrant, BM25, RRF, RAGAS.
-- Backend engineering: API design, async workflows, streaming responses, application state,
-  service integration; Python, FastAPI, Redis, SQL.
-- ML and delivery: model development, computer vision workflows, containers, experiment
-  tracking, cloud deployment; PyTorch, Docker, MLflow, AWS.
+Technical toolkit (the "parts list" on the portfolio; tools used at work or in the projects):
+- LLM applications: LangGraph, LLM APIs, RAG, structured outputs, agent workflows.
+- Retrieval and evaluation: Qdrant, BM25, Reciprocal Rank Fusion, cross-encoder reranking,
+  RAGAS.
+- Backend: Python, FastAPI, Redis, SQL, streaming responses.
+- ML and delivery: PyTorch, Docker, MLflow, AWS.
 
-Working principles stated on the portfolio: ground before you generate (retrieval, source
-quality and context design are first-class parts of an LLM system); measure rather than
-assume; build systems that can be understood, evaluated and operated.
+How Anant describes his work on the portfolio: most of it is LLM applications (retrieval,
+orchestration and the services between a model and its users). He says calling the model is
+rarely the hard part; the effort goes into getting the right context in front of it,
+checking that answers are supported, and keeping the system fast and cheap enough to run.
+From mechanical engineering he kept two habits: work out the constraints before designing,
+and test instead of assuming.
 
-Experience: AI/ML and Generative AI Engineer at Tata Elxsi (current). Specific client work
-and internal deliverables are not publicly disclosed. Education: B.Tech, Mechanical
-Engineering, NIT Srinagar.
+Experience: AI/ML and Generative AI Engineer at Tata Elxsi (current). Client work there is
+under NDA and is not described on the portfolio; the three public projects are personal
+projects built on his own time. Education: B.Tech, Mechanical Engineering, NIT Srinagar.
 
-A résumé is not yet published on the portfolio (a download is planned).
+A résumé is not published on the portfolio; it is available on request by email.
 The portfolio chat assistant itself runs on Amazon Bedrock (Kimi K3.1) behind a small
 serverless API; visitor conversations are not stored by the API.
 

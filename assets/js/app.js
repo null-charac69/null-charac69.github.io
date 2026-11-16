@@ -1,7 +1,6 @@
 import { initTheme } from "./modules/theme.js";
 import { initNavigation } from "./modules/navigation.js";
-import { initReveal } from "./modules/reveal.js";
-import { initProjectFilters } from "./modules/project-filters.js";
+import { initHero } from "./modules/hero.js";
 
 // Each feature is isolated: one failure must not take down the others.
 function run(name, task) {
@@ -25,11 +24,46 @@ function lazy(name, path, exportName) {
     .catch((error) => console.error("[Portfolio] " + name + " failed:", error));
 }
 
+function initClock() {
+  const clock = document.getElementById("puneClock");
+  const time = clock && clock.querySelector("time");
+  if (!time) return;
+  const format = new Intl.DateTimeFormat("en-GB", { hour: "2-digit", minute: "2-digit", timeZone: "Asia/Kolkata" });
+  const tick = () => { time.textContent = format.format(new Date()); };
+  tick();
+  clock.hidden = false;
+  window.setInterval(tick, 20000);
+}
+
+function initCopyEmail() {
+  const button = document.getElementById("copyEmail");
+  if (!button || !navigator.clipboard) {
+    if (button) button.hidden = true;
+    return;
+  }
+  const label = button.textContent;
+  button.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(button.dataset.email || "");
+      button.textContent = "Copied";
+    } catch {
+      button.textContent = "Couldn't copy";
+    }
+    window.setTimeout(() => { button.textContent = label; }, 1600);
+  });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
+  // The hero question box is handled by chat.js; never let it reload the page.
+  document.querySelectorAll("[data-chat-ask]").forEach((form) => {
+    form.addEventListener("submit", (event) => event.preventDefault());
+  });
+
   run("Theme", initTheme);
   run("Navigation", initNavigation);
-  run("Reveal", initReveal);
-  run("Project filters", initProjectFilters);
+  run("Hero", initHero);
+  run("Clock", initClock);
+  run("Copy email", initCopyEmail);
   lazy("Repositories", "./modules/repositories.js", "initRepositories");
   lazy("Chat", "./modules/chat.js");
 

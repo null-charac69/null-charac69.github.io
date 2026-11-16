@@ -1,5 +1,5 @@
-title: "Anant Kumar Thakur — AI/ML Engineer"
-description: "AI/ML engineer focused on Generative AI, retrieval systems and agentic applications."
+title: "Anant Kumar Thakur, AI/ML engineer"
+description: "AI/ML engineer at Tata Elxsi in Pune. I build LLM applications: retrieval pipelines, agent workflows and the APIs around them."
 url: "https://null-charac69.github.io"
 baseurl: ""
 portfolio_api_url: "https://anant-portfolio-bedrock-api.vercel.app"
@@ -17,3 +17,4 @@ exclude:
   - Gemfile.lock
   - LICENSE
   - README.md
+  - REDESIGN_CHECKLIST.md
