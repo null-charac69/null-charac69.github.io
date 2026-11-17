@@ -1,5 +1,5 @@
 const STORAGE_KEY = "portfolio-theme";
-const COLORS = { light: "#efece4", dark: "#0b0b0c" };
+const COLORS = { light: "#f4f3ef", dark: "#101827" };
 
 function systemTheme() {
   return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";

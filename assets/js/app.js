@@ -1,6 +1,5 @@
 import { initTheme } from "./modules/theme.js";
 import { initNavigation } from "./modules/navigation.js";
-import { initHero } from "./modules/hero.js";
 
 // Each feature is isolated: one failure must not take down the others.
 function run(name, task) {
@@ -61,7 +60,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   run("Theme", initTheme);
   run("Navigation", initNavigation);
-  run("Hero", initHero);
   run("Clock", initClock);
   run("Copy email", initCopyEmail);
   lazy("Repositories", "./modules/repositories.js", "initRepositories");

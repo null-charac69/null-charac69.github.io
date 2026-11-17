@@ -35,7 +35,7 @@ One thing only you can check: I wrote the new copy from facts already on the old
 - [x] **A14. Chat widget voice.** "Talk through the work.", "PORTFOLIO GUIDE", "Grounded in published portfolio details."
   - Fixed: Chat renamed "Ask the site", with plain status and greeting text.
 - [x] **A15. The repo grid shows this site's own GitHub description**: "🚀 Welcome to my digital playground! … passion for clean, elegant design ✨". Also "No description has been added yet." filler on half the cards.
-  - Fixed: The site repo and profile repo are filtered out; empty or "NA" descriptions show nothing. The 🚀 description still exists on GitHub itself: edit it there.
+  - Fixed: The site repo and profile repo are filtered out; empty or "NA" descriptions show nothing. The GitHub repo description was changed separately.
 - [x] **A16. An ↗ on every single link** (about 20 of them) and em-dashes used as the default punctuation.
   - Fixed: No arrows on links, no em-dashes in the copy.
 
@@ -84,8 +84,12 @@ One thing only you can check: I wrote the new copy from facts already on the old
 - [x] **D3.** Dead code and assets: `reveal.js`, `project-filters.js`, five Manrope font files.
   - Fixed: Deleted.
 
+## Update: visual theme reverted
+
+The owner did not like the drawing-sheet look. The visual theme (palette, Manrope and DM Mono, rounded cards, dark Work band and contact panel) is back to the original. Everything else stays: the copy, the structure, the three diagrams, the hero question box and the parts list. C1 to C5 and C7 therefore describe the original look again and are no longer fixed; C6 now rests on the copy, the diagrams and the question box.
+
 ## Rules for the rewrite
 
 1. No fact gets invented. Everything stated comes from the old page or the public repos. Where the old page was vague (dates, client work), the new one says less, not more.
 2. First person, plain words, specific nouns.
-3. One idea carries the design, and it comes from you: mechanical engineer turned AI engineer. The page is laid out like a drawing sheet.
+3. The design is the original theme; the specific parts are the copy, the diagrams and the question box.

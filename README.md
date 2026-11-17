@@ -30,7 +30,7 @@ The Vercel API uses server-side AWS credentials from encrypted environment varia
 
 ## Features
 
-- One page laid out like an engineering drawing sheet: figure captions, a dimension line, a parts list, a title block. Light (paper) and dark themes, one orange accent, system-aware.
+- One page: hero with a question box, three projects with flow diagrams, about with a parts list, repos, contact. Light and dark themes (off-white and navy, soft blue accent), system-aware.
 - Self-hosted variable fonts; the name in the hero reacts to the pointer by changing weight per letter. Reduced-motion is respected.
 - Inline SVG pipeline diagrams for each written-up project.
 - A question box in the hero that opens the chat and sends the question.

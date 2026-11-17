@@ -1,7 +1,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#efece4">
+  <meta name="theme-color" content="#f4f3ef">
   <meta name="color-scheme" content="light dark">
   <script>
     // Resolve the theme before first paint (saved choice, else OS preference).
@@ -11,7 +11,7 @@
         var dark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
         if (dark) {
           document.documentElement.setAttribute("data-theme", "dark");
-          document.querySelector('meta[name="theme-color"]').setAttribute("content", "#0b0b0c");
+          document.querySelector('meta[name="theme-color"]').setAttribute("content", "#101827");
         }
       } catch (e) {}
     })();
@@ -36,8 +36,7 @@
   <meta name="twitter:image" content="{{ '/assets/og-card.png' | absolute_url }}">
   <link rel="canonical" href="{{ site.url }}{{ page.url }}">
   <link rel="icon" type="image/svg+xml" href="{{ '/favicon.svg' | relative_url }}">
-  <link rel="preload" href="{{ '/assets/fonts/BigShouldersDisplay-var.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="{{ '/assets/fonts/InstrumentSans-var.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{{ '/assets/fonts/Manrope-700.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="{{ '/assets/css/fonts.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/tokens.css' | relative_url }}">
   <link rel="stylesheet" href="{{ '/assets/css/base.css' | relative_url }}">
