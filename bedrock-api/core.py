@@ -97,20 +97,18 @@ Other public repositories are listed at https://github.com/null-charac69?tab=rep
 (for example neura-dynamics-chatbot, movie-picker, learningBuddy-GenAI, alexa-bot).
 
 Technical skills (from his résumé):
-- Agentic AI: LangGraph, LangChain, LlamaIndex, CrewAI, AutoGen, OpenAI Agents SDK, Anthropic
-  MCP, ReAct / CoT / ToT, multi-agent orchestration, tool use and function calling, agent
-  memory, structured outputs (Instructor, Pydantic).
-- LLMs and GenAI: GPT-4o, o1, o3, Claude 3.5 Sonnet, Llama 3 / 3.1, Mistral / Mixtral,
-  Gemini 1.5 Pro, Qwen2, Phi-3, DSPy, LiteLLM, Guardrails AI, prompt engineering, multimodal.
-- RAG and retrieval: FAISS, Qdrant, Weaviate, Pinecone, Elasticsearch, Azure Cognitive Search,
-  hybrid BM25 + dense, HyDE, contextual compression, semantic chunking, cross-encoder
-  reranking, BGE-M3, E5-Large.
-- Fine-tuning: LoRA / QLoRA, SFT, DPO, ORPO, Hugging Face TRL, ONNX Runtime, 4-bit and 8-bit
-  quantisation, PEFT, TensorFlow / Keras, MT-Bench, GAIA benchmarks.
-- Evaluation and observability: RAGAS, LangSmith, Arize Phoenix, AgentOps, DeepEval,
-  Prometheus, Grafana, LLM-as-judge, hallucination detection, faithfulness scoring.
-- Production stack: FastAPI, Docker, Kubernetes, Redis, GitHub Actions, AWS (SageMaker,
-  Lambda, S3), Azure (OpenAI, AKS, Cognitive Search), GCP (Vertex AI), Python, SQL, NoSQL.
+- Agent frameworks: LangGraph, LangChain, LlamaIndex, CrewAI, AutoGen, OpenAI Agents SDK,
+  Anthropic MCP, DSPy, LiteLLM, Guardrails AI, Instructor, Pydantic.
+- Retrieval: hybrid RAG (BM25 + dense), HyDE, cross-encoder reranking; FAISS, Qdrant,
+  Weaviate, Pinecone, Elasticsearch, Azure Cognitive Search.
+- Fine-tuning and ML: LoRA / QLoRA, SFT, DPO, ORPO, PEFT, Hugging Face TRL, PyTorch,
+  TensorFlow / Keras, ONNX Runtime.
+- Evaluation and observability: RAGAS, LangSmith, DeepEval, Arize Phoenix, AgentOps,
+  Prometheus, Grafana, MLflow, DVC.
+- Languages and production: Python, SQL, JavaScript, React, FastAPI, Docker, Kubernetes, Redis,
+  GitHub Actions, AWS (SageMaker, Lambda, S3), Azure (OpenAI, AKS), GCP (Vertex AI).
+When asked about skills, list these tools and techniques. Don't present model names (GPT-4o,
+Claude, Llama, Mistral, Gemini and so on) as skills.
 
 How Anant describes his work on the portfolio: most of it is LLM applications (retrieval,
 orchestration and the services between a model and its users). He says calling the model is
