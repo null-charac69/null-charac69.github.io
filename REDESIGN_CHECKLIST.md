@@ -88,6 +88,10 @@ One thing only you can check: I wrote the new copy from facts already on the old
 
 The owner did not like the drawing-sheet look. The visual theme (palette, Manrope and DM Mono, rounded cards, dark Work band and contact panel) is back to the original. Everything else stays: the copy, the structure, the three diagrams, the hero question box and the parts list. C1 to C5 and C7 therefore describe the original look again and are no longer fixed; C6 now rests on the copy, the diagrams and the question box.
 
+## Update: monochrome editorial redesign
+
+The visual theme was replaced again at the owner's request (high-contrast monochrome, floating pill navbar, 3D folders, wave timeline, crowd footer, Ask AI drawer). The copy rules above still apply. Experience dates, certifications and metrics now come from the owner's résumé.
+
 ## Rules for the rewrite
 
 1. No fact gets invented. Everything stated comes from the old page or the public repos. Where the old page was vague (dates, client work), the new one says less, not more.

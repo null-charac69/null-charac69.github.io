@@ -25,35 +25,92 @@ MAX_MESSAGES = 10
 MAX_MESSAGE_CHARS = 1_800
 
 PORTFOLIO_CONTEXT = """
-Anant Kumar Thakur is an AI/ML and Generative AI Engineer at Tata Elxsi, with
-approximately three years of AI/ML engineering experience. He is based in Pune, India.
-He has a B.Tech in Mechanical Engineering from NIT Srinagar.
+Anant Kumar Thakur is a Generative AI Engineer at Tata Elxsi in Pune, India, with about
+three years of production experience. He has a B.Tech in Mechanical Engineering from
+NIT Srinagar (August 2019 to August 2023).
 
-Public project — AgentOS:
+Experience (from his résumé):
+- Generative AI Engineer, Tata Elxsi, Pune, July 2023 to present. Work described there:
+  * A multi-agent document-intelligence system on LangGraph with five specialised agents
+    (task planner, document retriever, code executor, output validator, self-critic) over a
+    typed shared-state graph, with human-in-the-loop override and LangSmith tracing, deployed
+    on Azure Kubernetes Service. Resolved 70% of routed requests end to end at about 500
+    tasks a day. A Pydantic-validated tool-use layer with retry-and-repair reached 94%
+    schema compliance and cut error-handling overhead by 50%. A three-tier agent memory
+    (working state, episodic recall in a vector store, procedural memory) cut repeat-task
+    resolution time by 30% over 90 days.
+  * A production RAG and hybrid retrieval pipeline: BM25 plus dense retrieval, HyDE query
+    expansion, contextual compression and cross-encoder reranking raised retrieval precision
+    by 28% over a keyword-only baseline. He owns the team's RAGAS evaluation harness (recall@5,
+    precision@5, MRR, context faithfulness) with nightly regression runs and a Grafana
+    dashboard, which cut mean time to detect retrieval regressions from 2-3 days to under 4
+    hours. A synthetic evaluation set of 12,000+ QA pairs tripled evaluation coverage.
+  * LLM serving and compliance automation: moved serving to ONNX Runtime with 4-bit
+    quantisation and dynamic batching (p95 latency down 35%, per-request token cost down 20%);
+    a model-routing layer with automatic failover across AWS SageMaker, Azure OpenAI and GCP
+    Vertex AI; an agentic extraction-and-validation loop with Guardrails AI on a regulated
+    compliance workflow (300+ items a week) that cut analyst review time by 60%.
+- AI/ML Engineer Intern, Tata Elxsi, Pune, January 2023 to July 2023: benchmarked six LLM
+  configurations (GPT-3.5, Llama-2-13B, Mistral-7B, Mistral-7B-Instruct, Zephyr-7B, Falcon-7B)
+  across ReAct, chain-of-thought and few-shot strategies; built a reusable evaluation harness
+  (recall@5, MRR, RAGAS faithfulness) that became the team standard; prototyped hybrid
+  semantic retrieval with synthetic query sets and a semantic prompt-caching layer that cut
+  redundant inference calls by 40%.
+
+Certifications: AWS Certified Machine Learning - Specialty; Google Cloud Professional Machine
+Learning Engineer; DeepLearning.AI LangChain for LLM Application Development; DeepLearning.AI
+Building Agentic AI Systems; Hugging Face NLP Course; Hugging Face Agents Course.
+
+Public project - AgentOS:
 https://github.com/null-charac69/agentos
-An autonomous research workflow documented with a LangGraph state graph and five
-specialist stages: planner, web search, retrieval, code executor and critic. The design
-includes parallel search, Qdrant-based episodic recall, a critic-and-revision loop,
+An autonomous research workflow built on a LangGraph state graph with five specialist
+stages: planner, web search, retrieval, code executor and critic. The design includes
+parallel search, Qdrant-based episodic recall, a critic-and-revision loop with a cap,
 FastAPI server-sent events, and Redis caching.
 
-Public project — Hybrid RAG Pipeline:
+Public project - Hybrid RAG Pipeline:
 https://github.com/null-charac69/hrag-app
 A retrieval-augmented generation pipeline combining dense BGE embeddings and BM25 sparse
 retrieval, Reciprocal Rank Fusion, BGE cross-encoder reranking, citation verification
 and RAGAS evaluation.
 
-Public project — Healthcare Analytics:
+Public project - Healthcare Analytics:
 https://github.com/null-charac69/healthcare_analytics
 A healthcare analytics prototype whose README describes MRI and chest X-ray
 classification workflows, patient-outcome prediction concepts and model interpretability.
 Do not claim independently validated clinical performance or production deployment.
 
-Technical toolkit (the "parts list" on the portfolio; tools used at work or in the projects):
-- LLM applications: LangGraph, LLM APIs, RAG, structured outputs, agent workflows.
-- Retrieval and evaluation: Qdrant, BM25, Reciprocal Rank Fusion, cross-encoder reranking,
-  RAGAS.
-- Backend: Python, FastAPI, Redis, SQL, streaming responses.
-- ML and delivery: PyTorch, Docker, MLflow, AWS.
+Public project - The Cut:
+https://github.com/null-charac69/thecut (live app: https://the-cut-tracker.vercel.app)
+A personal nutrition, training and transformation tracker with an AI planner and an agentic
+coach. The AI planner generates a nutrition plan (targets, meal templates) and a training week
+from the user's profile; other tabs stay locked until the first plan exists, and AI output is
+always a draft the user applies. Database rules watch the user's logs and write insights in
+real time (Supabase Realtime); when the user edits the plan, the coach reviews the change and
+either adapts or offers to refine it, keep the user's version, or discuss it. The coach chat is a
+tool-using loop that can only propose drafts, never change a plan directly. Stack: static
+ES-module front end on Vercel; Supabase (Postgres with row-level security, Auth, Realtime, Edge
+Functions, pg_cron); a provider-agnostic OpenAI-compatible LLM adapter, currently DeepSeek V3.2
+on AWS Bedrock. Installable as a PWA. The code is proprietary (all rights reserved).
+
+Other public repositories are listed at https://github.com/null-charac69?tab=repositories
+(for example neura-dynamics-chatbot, movie-picker, learningBuddy-GenAI, alexa-bot).
+
+Technical skills (from his résumé):
+- Agentic AI: LangGraph, LangChain, LlamaIndex, CrewAI, AutoGen, OpenAI Agents SDK, Anthropic
+  MCP, ReAct / CoT / ToT, multi-agent orchestration, tool use and function calling, agent
+  memory, structured outputs (Instructor, Pydantic).
+- LLMs and GenAI: GPT-4o, o1, o3, Claude 3.5 Sonnet, Llama 3 / 3.1, Mistral / Mixtral,
+  Gemini 1.5 Pro, Qwen2, Phi-3, DSPy, LiteLLM, Guardrails AI, prompt engineering, multimodal.
+- RAG and retrieval: FAISS, Qdrant, Weaviate, Pinecone, Elasticsearch, Azure Cognitive Search,
+  hybrid BM25 + dense, HyDE, contextual compression, semantic chunking, cross-encoder
+  reranking, BGE-M3, E5-Large.
+- Fine-tuning: LoRA / QLoRA, SFT, DPO, ORPO, Hugging Face TRL, ONNX Runtime, 4-bit and 8-bit
+  quantisation, PEFT, TensorFlow / Keras, MT-Bench, GAIA benchmarks.
+- Evaluation and observability: RAGAS, LangSmith, Arize Phoenix, AgentOps, DeepEval,
+  Prometheus, Grafana, LLM-as-judge, hallucination detection, faithfulness scoring.
+- Production stack: FastAPI, Docker, Kubernetes, Redis, GitHub Actions, AWS (SageMaker,
+  Lambda, S3), Azure (OpenAI, AKS, Cognitive Search), GCP (Vertex AI), Python, SQL, NoSQL.
 
 How Anant describes his work on the portfolio: most of it is LLM applications (retrieval,
 orchestration and the services between a model and its users). He says calling the model is
@@ -62,12 +119,10 @@ checking that answers are supported, and keeping the system fast and cheap enoug
 From mechanical engineering he kept two habits: work out the constraints before designing,
 and test instead of assuming.
 
-Experience: AI/ML and Generative AI Engineer at Tata Elxsi (current). Client work there is
-under NDA and is not described on the portfolio; the three public projects are personal
-projects built on his own time. Education: B.Tech, Mechanical Engineering, NIT Srinagar.
-
-A résumé is not published on the portfolio; it is available on request by email.
-The portfolio chat assistant itself runs on Amazon Bedrock (Kimi K3.1) behind a small
+He is open to new opportunities. The three projects above are personal projects built on
+his own time; the Tata Elxsi work is summarised only at the level given above, and client
+names and confidential details are not published. His résumé is available on request by
+email. The portfolio chat assistant itself runs on Amazon Bedrock (Kimi K3.1) behind a small
 serverless API; visitor conversations are not stored by the API.
 
 Professional links:
@@ -75,8 +130,8 @@ GitHub: https://github.com/null-charac69
 LinkedIn: https://www.linkedin.com/in/anant-kumar-b12976178/
 Email: anant.thakur2000@gmail.com
 
-Do not invent client work, confidential company projects, metrics, awards, certifications,
-employment dates or unpublished details.
+Do not invent client names, confidential company projects, metrics, awards, certifications,
+employment dates or details that are not listed above.
 """.strip()
 
 SYSTEM_PROMPT = """You are the portfolio guide for Anant Kumar Thakur.

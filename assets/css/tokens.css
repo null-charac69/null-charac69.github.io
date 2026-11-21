@@ -1,44 +1,42 @@
-:root {
-  color-scheme: light;
-  --bg: #f4f3ef;
-  --surface: #ffffff;
-  --surface-soft: #ecece7;
-  --ink: #1a2028;
-  --ink-soft: #3f4854;
-  --muted: #5a6471;
-  --line: #dce0e4;
-  --line-strong: #b9c1ca;
-  --accent: #3f5fc5;
-  --accent-strong: #2f4eaf;
-  --accent-soft: rgba(63,95,197,.11);
-  --accent-contrast: #ffffff;
-  --dark: #182235;
-  --dark-panel: #111b2c;
-  --dark-line: rgba(255,255,255,.13);
-  --mono: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
-  --sans: 'Manrope', Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --page-width: 1180px;
-  --header-height: 76px;
-  --shadow: 0 24px 70px rgba(25,35,55,.09);
-  --grid: rgba(26,32,40,.05);
-}
-[data-theme="dark"] {
+/* Monochrome editorial. Dark is the default sheet; light is the same page inverted.
+   .scope-dark pins a region (footer, chat, folders) to the dark values in either theme. */
+:root, [data-theme="dark"], .scope-dark {
   color-scheme: dark;
-  --bg: #101827;
-  --surface: #172235;
-  --surface-soft: #1d2a40;
-  --ink: #eff2f8;
-  --ink-soft: #c7d0df;
-  --muted: #a7b4c6;
-  --line: #2b3a51;
-  --line-strong: #53637a;
-  --accent: #a9bcff;
-  --accent-strong: #c4d0ff;
-  --accent-soft: rgba(169,188,255,.13);
-  --accent-contrast: #111b2d;
-  --dark: #0b1220;
-  --dark-panel: #101827;
-  --dark-line: rgba(255,255,255,.14);
-  --shadow: 0 24px 70px rgba(0,0,0,.27);
-  --grid: rgba(239,242,248,.04);
+  --bg: #0a0a0a;
+  --bg-rgb: 10,10,10;
+  --surface: #141414;
+  --surface-2: #181818;
+  --line: rgba(255,255,255,.1);
+  --line-strong: rgba(255,255,255,.2);
+  --ink: #ffffff;
+  --ink-rgb: 255,255,255;
+  --ink-soft: #d4d4d4;
+  --muted: #8a8a8a;
+  --inv-bg: #ffffff;
+  --inv-ink: #0a0a0a;
+  --glass: rgba(20,20,20,.62);
+}
+[data-theme="light"] {
+  color-scheme: light;
+  --bg: #f3f3f0;
+  --bg-rgb: 243,243,240;
+  --surface: #ffffff;
+  --surface-2: #fafaf8;
+  --line: rgba(10,10,10,.12);
+  --line-strong: rgba(10,10,10,.24);
+  --ink: #0a0a0a;
+  --ink-rgb: 10,10,10;
+  --ink-soft: #2a2a2a;
+  --muted: #666666;
+  --inv-bg: #0a0a0a;
+  --inv-ink: #ffffff;
+  --glass: rgba(255,255,255,.7);
+}
+:root {
+  --sans: 'Inter', ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  --shell: 1240px;
+  --gutter: clamp(20px, 4vw, 56px);
+  --ease: cubic-bezier(.2,.7,.2,1);
+  --spring: cubic-bezier(.34,1.45,.64,1);
 }

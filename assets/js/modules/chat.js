@@ -10,6 +10,7 @@
   const messagesEl = document.getElementById("chatMessages");
   const suggestions = document.getElementById("chatSuggestions");
   const statusEl = document.getElementById("chatStatus");
+  const backdrop = document.getElementById("chatBackdrop");
 
   if (!launcher || !panel || !closeButton || !input || !form || !sendButton || !messagesEl) {
     if (statusEl) statusEl.textContent = "The chat interface could not initialise because part of the page is missing.";
@@ -321,7 +322,7 @@
 
     const label = document.createElement("span");
     label.className = "message-label";
-    label.textContent = role === "user" ? "You" : "Site";
+    label.textContent = role === "user" ? "You" : "Anant's Assistant";
 
     const messageContent = document.createElement("div");
     messageContent.className = "message-content";
@@ -334,6 +335,7 @@
     }
 
     wrapper.append(label, messageContent);
+    messagesEl.querySelector(".chat-empty")?.remove();
     messagesEl.append(wrapper);
     messagesEl.scrollTop = messagesEl.scrollHeight;
 
@@ -377,12 +379,14 @@
 
   function openChat() {
     panel.hidden = false;
+    if (backdrop) backdrop.hidden = false;
     launcher.setAttribute("aria-expanded", "true");
     window.setTimeout(() => input.focus(), 50);
   }
 
   function closeChat() {
     panel.hidden = true;
+    if (backdrop) backdrop.hidden = true;
     launcher.setAttribute("aria-expanded", "false");
     launcher.focus();
   }
@@ -392,6 +396,7 @@
     else closeChat();
   });
   closeButton.addEventListener("click", closeChat);
+  backdrop?.addEventListener("click", closeChat);
 
   const GREETING = messagesEl.firstElementChild ? messagesEl.firstElementChild.cloneNode(true) : null;
   const clearButton = document.getElementById("chatClear");
@@ -432,7 +437,9 @@
     await sendMessage(input.value, true);
   });
 
+  const syncSend = () => form.classList.toggle("has-text", input.value.trim().length > 0);
   input.addEventListener("input", () => {
+    syncSend();
     input.style.height = "auto";
     input.style.height = Math.min(input.scrollHeight, 112) + "px";
   });
@@ -472,17 +479,38 @@
     return messages;
   }
 
+  // Used when the live assistant can't be reached (or has no API configured): answers
+  // only from facts already published on this page.
+  const FALLBACKS = [
+    [/agentos|multi.?agent|langgraph|critic|planner/i, "AgentOS takes an open-ended research question and returns a structured Markdown report with citations. It's a LangGraph state graph with five stages: a planner, web search, retrieval, a code executor and a critic. The critic can send the draft back for another pass, with a cap so it can't loop forever. FastAPI streams progress over server-sent events, Qdrant keeps memory of earlier runs and Redis handles caching."],
+    [/rag|hybrid|bm25|dense|retriev|rerank|ragas/i, "The hybrid RAG pipeline (the hrag-app repo) runs dense BGE embeddings in Qdrant alongside BM25 and merges the two rankings with Reciprocal Rank Fusion. A BGE cross-encoder reranks the shortlist, each answer goes through a citation check, and RAGAS scores the pipeline."],
+    [/the ?cut|fitness|nutrition|tracker|coach|supabase|deepseek/i, "The Cut is a personal nutrition, training and transformation tracker (live at the-cut-tracker.vercel.app). An AI planner builds a nutrition plan and training week from your profile, always as a draft you apply. Database rules on Supabase Realtime turn your logs into live insights, and a tool-using coach reviews plan edits but can only propose drafts, never change your plan directly. The LLM runs behind a provider-agnostic adapter, currently DeepSeek V3.2 on Amazon Bedrock."],
+    [/health|mri|x-?ray|patient|clinical/i, "Healthcare Analytics is an applied ML prototype: image classification for MRI and chest X-rays, plus prediction models for patient risk, length of stay and readmission. It has a React front end, FastAPI and PyTorch behind it, and MLflow and DVC for tracking experiments and data. None of it has been clinically validated."],
+    [/tata|elxsi|work|job|experience|career|intern|role/i, "Anant has been a Generative AI Engineer at Tata Elxsi in Pune since July 2023, after an AI/ML internship there from January to July 2023. He has worked on a LangGraph multi-agent document-intelligence system, a hybrid RAG pipeline with a RAGAS evaluation harness, and LLM serving on ONNX Runtime."],
+    [/skill|stack|tool|tech|language|python|cloud|aws|azure/i, "The main areas are agentic AI (LangGraph, LangChain, multi-agent orchestration), retrieval (Qdrant, FAISS, Elasticsearch, BM25 plus dense, reranking), evaluation (RAGAS, LangSmith, DeepEval), fine-tuning (LoRA/QLoRA, SFT, DPO, ONNX Runtime) and a production stack of Python, FastAPI, Docker, Kubernetes, Redis, AWS, Azure and GCP. The Tech Stack section has the full list."],
+    [/educat|degree|college|university|nit|study|mechanical|graduat/i, "Anant has a B.Tech in Mechanical Engineering from NIT Srinagar (August 2019 to August 2023) and moved into AI after graduating."],
+    [/contact|email|hire|reach|available|opportunit|linkedin|github/i, "Anant is open to new opportunities. The quickest way to reach him is email at anant.thakur2000@gmail.com; he's also on LinkedIn and GitHub (null-charac69)."],
+  ];
+  function fallbackAnswer(prompt) {
+    const hit = FALLBACKS.find(([pattern]) => pattern.test(prompt));
+    const answer = hit
+      ? hit[1]
+      : "I can only answer from what's published on this page right now. Try asking about AgentOS, the hybrid RAG pipeline, The Cut, Healthcare Analytics, his work at Tata Elxsi, his skills, his education, or how to get in touch.";
+    return answer + "\n\n(Answered from the page itself, because the live assistant is unavailable.)";
+  }
+
   async function sendMessage(value, restoreInputFocus) {
     const prompt = String(value || "").trim();
     if (!prompt || busy) return;
 
     addMessage("user", prompt, true);
     input.value = "";
+    syncSend();
     input.style.height = "auto";
     if (suggestions) suggestions.hidden = true;
 
     if (!API_BASE) {
-      addMessage("assistant", "The portfolio API URL is not configured. Please contact Anant about the chat service.", false);
+      addMessage("assistant", fallbackAnswer(prompt), false);
       return;
     }
 
@@ -499,6 +527,11 @@
         signal: controller ? controller.signal : undefined
       });
       const result = await response.json().catch(() => ({}));
+      if (response.status >= 500) {
+        hideTyping();
+        addMessage("assistant", fallbackAnswer(prompt), false);
+        return;
+      }
       if (!response.ok) {
         throw new Error(result.error || "The assistant could not complete that request. Please try again.");
       }
@@ -512,7 +545,7 @@
       if (error?.name === "AbortError") {
         addMessage("assistant", "That request timed out. Please try again.", false);
       } else if (error?.name === "TypeError") {
-        addMessage("assistant", "The chat API could not be reached. Check the connection and try again.", false);
+        addMessage("assistant", fallbackAnswer(prompt), false);
       } else {
         addMessage("assistant", error?.message || "The chat service is temporarily unavailable. Please try again.", false);
       }
@@ -525,5 +558,5 @@
 
   history.forEach((message) => addMessage(message.role, message.content, false));
   if (history.length && suggestions) suggestions.hidden = true;
-  if (statusEl && !API_BASE) statusEl.textContent = "Chat API setup is incomplete.";
+  if (statusEl && !API_BASE) statusEl.textContent = "Answers come from the page (live assistant not configured)";
 })();

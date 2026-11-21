@@ -57,7 +57,7 @@ function enrichFeatured(byName) {
       if (live.pushed_at) details.push("last push " + monthFormat.format(new Date(live.pushed_at)));
       meta.textContent = details.join(" / ");
     }
-    const link = card.querySelector(".project-link");
+    const link = card.querySelector(".project-link:not([data-live])");
     if (link) link.href = live.html_url;
   });
 }

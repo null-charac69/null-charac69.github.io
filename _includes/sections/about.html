@@ -1,37 +1,51 @@
-<section class="section" id="about">
-  <div class="shell">
-    <header class="section-head">
-      <h2>About</h2>
-      <p>Mechanical engineer by degree, AI engineer by trade.</p>
-    </header>
-
-    <div class="about-grid">
-      <div class="about-text">
-        <p class="about-lead">Most of what I do is LLM applications: retrieval, orchestration, and the services between a model and the people using it.</p>
-        <p>Calling the model is rarely the hard part. The time goes into getting the right context in front of it, checking that the answer is supported by something, and keeping the whole thing fast and cheap enough to run. That's the work I like.</p>
-        <p>I studied mechanical engineering at NIT Srinagar before moving into AI. Two habits came with me: work out the constraints before designing anything, and test instead of assuming.</p>
-        <p>At Tata Elxsi I work on AI/ML and generative AI projects. I can't talk about the specifics, which is why everything on this page is something I built on my own time.</p>
+<section class="about" id="about">
+  <div class="shell about-grid">
+    <div class="about-left">
+      <h2 class="about-greet">Hi,<br>I'm Anant.</h2>
+      <p class="about-role">Generative AI engineer, building agents and retrieval systems.</p>
+      <div class="currently">
+        <p class="label">Currently at</p>
+        <p class="currently-co">Tata Elxsi</p>
+        <p class="currently-meta">Generative AI Engineer<br>Pune, India</p>
       </div>
-
-      <dl class="facts">
-        <div><dt>Now</dt><dd>AI/ML and Generative AI Engineer, Tata Elxsi</dd></div>
-        <div><dt>Based in</dt><dd>Pune, India</dd></div>
-        <div><dt>Experience</dt><dd>About three years in AI/ML</dd></div>
-        <div><dt>Degree</dt><dd>B.Tech, Mechanical Engineering, NIT Srinagar</dd></div>
-      </dl>
     </div>
 
-    <div class="parts" id="stack">
-      <table>
-        <caption>Parts list <span>What I've used at work or in the projects above. Nothing I only read about.</span></caption>
-        <thead><tr><th scope="col">Item</th><th scope="col">Area</th><th scope="col">Tools</th></tr></thead>
-        <tbody>
-          <tr><td>1</td><th scope="row">LLM applications</th><td>LangGraph, LLM APIs, RAG, structured outputs, agent workflows</td></tr>
-          <tr><td>2</td><th scope="row">Retrieval and evaluation</th><td>Qdrant, BM25, Reciprocal Rank Fusion, cross-encoder reranking, RAGAS</td></tr>
-          <tr><td>3</td><th scope="row">Backend</th><td>Python, FastAPI, Redis, SQL, streaming responses</td></tr>
-          <tr><td>4</td><th scope="row">ML and delivery</th><td>PyTorch, Docker, MLflow, AWS</td></tr>
-        </tbody>
-      </table>
+    <div class="about-center">
+      <div class="about-slot" data-portrait-slot="about">
+        <figure class="portrait-card portrait-static">
+          <img src="{{ '/assets/profile.jpg' | relative_url }}?v=20261111" width="400" height="400" alt="" loading="lazy">
+        </figure>
+      </div>
+    </div>
+
+    <div class="about-right">
+      <p class="about-value">I build production GenAI systems: stateful multi-agent workflows, hybrid retrieval pipelines, and the evaluation that keeps them honest.</p>
+      <a class="btn btn-solid" href="#work">Explore projects <span aria-hidden="true">→</span></a>
     </div>
   </div>
+
+  <div class="shell about-more">
+    <div class="about-text">
+      <p>Calling the model is rarely the hard part. The time goes into getting the right context in front of it, checking that the answer is supported by something, and keeping the whole thing fast and cheap enough to run. That's the work I like.</p>
+      <p>I studied mechanical engineering at NIT Srinagar before moving into AI. Two habits came with me: work out the constraints before designing anything, and test instead of assuming.</p>
+      <p>At Tata Elxsi I've worked on a multi-agent document-intelligence system, a hybrid RAG pipeline and its evaluation harness, and LLM serving optimisation. The details are on the timeline below.</p>
+    </div>
+    <div class="about-side">
+      <dl class="facts">
+        <div><dt class="label">Now</dt><dd>Generative AI Engineer, Tata Elxsi</dd></div>
+        <div><dt class="label">Based in</dt><dd>Pune, India</dd></div>
+        <div><dt class="label">Experience</dt><dd>Three years in production, since July 2023</dd></div>
+        <div><dt class="label">Degree</dt><dd>B.Tech, Mechanical Engineering, NIT Srinagar, 2023</dd></div>
+      </dl>
+      <form class="ask" data-chat-ask>
+        <label class="label" for="askInput">Ask the site a question</label>
+        <div class="ask-row">
+          <input id="askInput" type="text" maxlength="300" autocomplete="off" placeholder="How does the hybrid RAG work?">
+          <button type="submit" aria-label="Ask">↑</button>
+        </div>
+        <p class="ask-note">A model on Amazon Bedrock answers. It only knows what's published here.</p>
+      </form>
+    </div>
+  </div>
+
 </section>

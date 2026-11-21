@@ -1,19 +1,18 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f4f3ef">
-  <meta name="color-scheme" content="light dark">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="color-scheme" content="dark light">
   <script>
-    // Resolve the theme before first paint (saved choice, else OS preference).
+    // Resolve the theme before first paint: dark unless the visitor chose light.
     (function () {
+      var root = document.documentElement;
+      root.classList.add("js");
       try {
-        var saved = localStorage.getItem("portfolio-theme");
-        var dark = saved ? saved === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
-        if (dark) {
-          document.documentElement.setAttribute("data-theme", "dark");
-          document.querySelector('meta[name="theme-color"]').setAttribute("content", "#101827");
-        }
-      } catch (e) {}
+        var light = localStorage.getItem("portfolio-theme") === "light";
+        root.setAttribute("data-theme", light ? "light" : "dark");
+        if (light) document.querySelector('meta[name="theme-color"]').setAttribute("content", "#f3f3f0");
+      } catch (e) { root.setAttribute("data-theme", "dark"); }
     })();
   </script>
   {% assign page_title = page.title | default: site.title %}
@@ -29,26 +28,27 @@
   <meta property="og:image" content="{{ '/assets/og-card.png' | absolute_url }}">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Anant Kumar Thakur, AI/ML engineer">
+  <meta property="og:image:alt" content="Anant Kumar Thakur, Generative AI engineer">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="{{ page_title | escape }}">
   <meta name="twitter:description" content="{{ page_description | escape }}">
   <meta name="twitter:image" content="{{ '/assets/og-card.png' | absolute_url }}">
   <link rel="canonical" href="{{ site.url }}{{ page.url }}">
   <link rel="icon" type="image/svg+xml" href="{{ '/favicon.svg' | relative_url }}">
-  <link rel="preload" href="{{ '/assets/fonts/Manrope-700.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="{{ '/assets/css/fonts.css' | relative_url }}">
-  <link rel="stylesheet" href="{{ '/assets/css/tokens.css' | relative_url }}">
-  <link rel="stylesheet" href="{{ '/assets/css/base.css' | relative_url }}">
-  <link rel="stylesheet" href="{{ '/assets/css/layout.css' | relative_url }}">
-  <link rel="stylesheet" href="{{ '/assets/css/components.css' | relative_url }}">
-  <link rel="stylesheet" href="{{ '/assets/css/responsive.css' | relative_url }}">
+  <link rel="preload" href="{{ '/assets/fonts/Inter-var.woff2' | relative_url }}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{{ '/assets/css/fonts.css' | relative_url }}?v={{ asset_version }}">
+  <link rel="stylesheet" href="{{ '/assets/css/tokens.css' | relative_url }}?v={{ asset_version }}">
+  <link rel="stylesheet" href="{{ '/assets/css/base.css' | relative_url }}?v={{ asset_version }}">
+  <link rel="stylesheet" href="{{ '/assets/css/layout.css' | relative_url }}?v={{ asset_version }}">
+  <link rel="stylesheet" href="{{ '/assets/css/components.css' | relative_url }}?v={{ asset_version }}">
+  <link rel="stylesheet" href="{{ '/assets/css/chat.css' | relative_url }}?v={{ asset_version }}">
+  <link rel="stylesheet" href="{{ '/assets/css/responsive.css' | relative_url }}?v={{ asset_version }}">
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Anant Kumar Thakur",
-    "jobTitle": "AI/ML Engineer",
+    "jobTitle": "Generative AI Engineer",
     "description": "{{ site.description | escape }}",
     "url": "{{ site.url }}",
     "image": "{{ '/assets/profile.jpg' | absolute_url }}",

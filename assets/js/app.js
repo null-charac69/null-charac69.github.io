@@ -1,5 +1,3 @@
-import { initTheme } from "./modules/theme.js";
-import { initNavigation } from "./modules/navigation.js";
 
 // Each feature is isolated: one failure must not take down the others.
 function run(name, task) {
@@ -58,8 +56,15 @@ document.addEventListener("DOMContentLoaded", () => {
     form.addEventListener("submit", (event) => event.preventDefault());
   });
 
-  run("Theme", initTheme);
-  run("Navigation", initNavigation);
+  lazy("Theme", "./modules/theme.js", "initTheme");
+  lazy("Navigation", "./modules/navigation.js", "initNavigation");
+  lazy("Hero", "./modules/hero.js", "initHero");
+  lazy("Portrait", "./modules/portrait.js", "initPortrait");
+  lazy("Folders", "./modules/folders.js", "initFolders");
+  lazy("Timeline", "./modules/timeline.js", "initTimeline");
+  lazy("Contact", "./modules/contact.js", "initContact");
+  lazy("Crowd", "./modules/crowd.js", "initCrowd");
+  lazy("Reveal", "./modules/reveal.js", "initReveal");
   run("Clock", initClock);
   run("Copy email", initCopyEmail);
   lazy("Repositories", "./modules/repositories.js", "initRepositories");

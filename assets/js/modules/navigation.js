@@ -1,35 +1,57 @@
+import { reduced } from "./scroll.js";
+
+// Floating pill navbar + full-screen menu overlay + smooth "back to top".
 export function initNavigation() {
-  const header = document.getElementById("siteHeader");
-  const menuToggle = document.getElementById("menuToggle");
-  const mobileNav = document.getElementById("mobileNav");
+  const toggle = document.getElementById("menuToggle");
+  const overlay = document.getElementById("menuOverlay");
+  const label = document.getElementById("menuLabel");
+  const root = document.documentElement;
+  const behavior = reduced ? "auto" : "smooth";
 
-  const updateHeader = () => {
-    if (header) header.classList.toggle("scrolled", window.scrollY > 8);
+  const toTop = (event) => {
+    event.preventDefault();
+    window.scrollTo({ top: 0, behavior });
   };
-  window.addEventListener("scroll", updateHeader, { passive: true });
-  updateHeader();
+  document.getElementById("brandHome")?.addEventListener("click", (event) => {
+    setOpen(false);
+    toTop(event);
+  });
+  document.getElementById("backToTop")?.addEventListener("click", toTop);
 
-  if (menuToggle && mobileNav) {
-    const setOpen = (open) => {
-      mobileNav.hidden = !open;
-      menuToggle.setAttribute("aria-expanded", String(open));
-      menuToggle.setAttribute("aria-label", open ? "Close navigation" : "Open navigation");
-    };
-    menuToggle.addEventListener("click", () => setOpen(mobileNav.hidden));
-    mobileNav.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setOpen(false)));
+  function setOpen(open) {
+    if (!toggle || !overlay) return;
+    overlay.classList.toggle("open", open);
+    overlay.setAttribute("aria-hidden", String(!open));
+    toggle.setAttribute("aria-expanded", String(open));
+    if (label) label.textContent = open ? "Close" : "Menu";
+    root.style.overflow = open ? "hidden" : "";
+    if (open) { overlay.setAttribute("tabindex", "-1"); overlay.focus({ preventScroll: true }); }
   }
 
-  const links = Array.from(document.querySelectorAll(".desktop-nav a"));
-  const sections = document.querySelectorAll("#work, #about, #repos, #contact");
+  if (toggle && overlay) {
+    toggle.addEventListener("click", () => setOpen(!overlay.classList.contains("open")));
+    overlay.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => setOpen(false)));
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape" && overlay.classList.contains("open")) {
+        setOpen(false);
+        toggle.focus();
+      }
+    });
+  }
+
+  // Mark the current section in the overlay.
+  const links = Array.from(document.querySelectorAll(".menu-links a"));
+  const sections = document.querySelectorAll("#home, #about, #skills, #work, #repos, #experience, #contact");
   if ("IntersectionObserver" in window && links.length) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
         links.forEach((link) => {
-          link.classList.toggle("active", (link.getAttribute("href") || "").endsWith("#" + entry.target.id));
+          if ((link.getAttribute("href") || "").endsWith("#" + entry.target.id)) link.setAttribute("aria-current", "true");
+          else link.removeAttribute("aria-current");
         });
       });
-    }, { rootMargin: "-35% 0px -55% 0px" });
+    }, { rootMargin: "-40% 0px -50% 0px" });
     sections.forEach((section) => observer.observe(section));
   }
 }

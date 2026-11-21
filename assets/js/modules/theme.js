@@ -1,16 +1,13 @@
 const STORAGE_KEY = "portfolio-theme";
-const COLORS = { light: "#f4f3ef", dark: "#101827" };
+const COLORS = { light: "#f3f3f0", dark: "#0a0a0a" };
 
-function systemTheme() {
-  return window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
-}
-
+// The sheet is dark unless the visitor has chosen light.
 function readSaved() {
   try {
     const value = localStorage.getItem(STORAGE_KEY);
     return value === "dark" || value === "light" ? value : "";
   } catch {
-    return ""; // Storage disabled: fall back to the system preference.
+    return ""; // Storage disabled: stay on the default.
   }
 }
 
@@ -26,9 +23,10 @@ export function initTheme() {
     const label = theme === "dark" ? "Switch to light theme" : "Switch to dark theme";
     toggle.setAttribute("aria-label", label);
     toggle.setAttribute("title", label);
+    window.dispatchEvent(new CustomEvent("themechange", { detail: theme }));
   };
 
-  apply(readSaved() || systemTheme());
+  apply(readSaved() || "dark");
 
   toggle.addEventListener("click", () => {
     const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
@@ -39,11 +37,4 @@ export function initTheme() {
       // Still applies for this page view.
     }
   });
-
-  // Follow OS changes until the visitor makes an explicit choice.
-  if (window.matchMedia) {
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", () => {
-      if (!readSaved()) apply(systemTheme());
-    });
-  }
 }

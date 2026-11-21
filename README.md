@@ -30,11 +30,12 @@ The Vercel API uses server-side AWS credentials from encrypted environment varia
 
 ## Features
 
-- One page: hero with a question box, three projects with flow diagrams, about with a parts list, repos, contact. Light and dark themes (off-white and navy, soft blue accent), system-aware.
-- Self-hosted variable fonts; the name in the hero reacts to the pointer by changing weight per letter. Reduced-motion is respected.
-- Inline SVG pipeline diagrams for each written-up project.
-- A question box in the hero that opens the chat and sends the question.
+- One page in a high-contrast monochrome editorial style (dark by default, light toggle): floating pill navbar with a full-screen menu, a hero with a cursor-spotlight code canvas and a kinetic 3D title, a portrait card that flips and travels into the About section as you scroll, a tech stack in three cascading columns, interactive 3D project folders, a scroll-drawn wavy experience timeline, a contact form that builds an email draft, and a footer with a live halftone portrait that turns into code under the cursor while words drift past behind it. Reduced-motion and mobile get toned-down versions.
+- Self-hosted fonts (Inter, JetBrains Mono) and no build step: native ES modules, CSS and SVG only.
+- Project folders open case studies with an inline SVG flow diagram and animated signal for each written-up project.
+- A question box in About (and the floating Ask AI drawer) that talks to the Bedrock chat; if the API is unreachable it answers from facts already on the page.
 - Other public repos listed from `public-repos.json` (visitors never call the GitHub API). Refresh it with `python3 .github/scripts/update_repos.py`, then commit.
+- Footer band: a halftone portrait drawn live on a canvas from `assets/illustrations/portrait-dots.json` (my photo sampled into ~4,700 dot sizes); it assembles on scroll; around the cursor the dots turn into code glyphs and a spotlight reveals scanlines and code behind it, while rows of my stack and project names drift past.
 - Portfolio assistant powered by Kimi K3.1 on Amazon Bedrock.
 - Browser-local chat history; the API does not persist conversation content.
 

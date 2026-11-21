@@ -1,16 +1,32 @@
 <section class="contact" id="contact">
-  <div class="shell contact-panel">
-    <p class="contact-lead">Email is the fastest way to reach me. I'm always up for talking about retrieval, agents, or whatever you're stuck on.</p>
-    <a class="contact-email" href="mailto:anant.thakur2000@gmail.com">anant.thakur2000<wbr>@gmail.com</a>
-    <ul class="contact-links">
-      <li><button type="button" id="copyEmail" data-email="anant.thakur2000@gmail.com">Copy address</button></li>
-      <li><a href="https://www.linkedin.com/in/anant-kumar-b12976178/" target="_blank" rel="noreferrer">LinkedIn</a></li>
-      <li><a href="https://github.com/null-charac69" target="_blank" rel="noreferrer">GitHub</a></li>
-      {% if site.resume_url != "" %}
-      <li><a href="{{ site.resume_url | relative_url }}" download>Résumé (PDF)</a></li>
-      {% else %}
-      <li><span class="contact-placeholder">Résumé on request</span></li>
-      {% endif %}
-    </ul>
+  <div class="shell contact-grid">
+    <div class="contact-left">
+      <h2>Let's talk.</h2>
+      <p class="contact-note">I'm open to new opportunities in generative AI and agentic systems. Email is the fastest way to reach me.</p>
+      <a class="contact-email" href="mailto:anant.thakur2000@gmail.com">anant.thakur2000@gmail.com <span aria-hidden="true">↗</span></a>
+      <p class="contact-copy"><button type="button" id="copyEmail" class="link-u" data-email="anant.thakur2000@gmail.com">Copy address</button></p>
+      <ul class="socials">
+        <li><a href="https://www.linkedin.com/in/anant-kumar-b12976178/" target="_blank" rel="noreferrer"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="9" width="4" height="12"/><circle cx="5" cy="4.8" r="2.2"/><path d="M10 9h3.8v1.8c.7-1.2 2-2.1 3.9-2.1 3.4 0 4.3 2.2 4.3 5.3V21h-4v-6c0-1.5-.3-2.6-1.8-2.6-1.7 0-2.2 1.2-2.2 2.7V21h-4z"/></svg>LinkedIn</a></li>
+        <li><a href="https://github.com/null-charac69" target="_blank" rel="noreferrer"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>GitHub</a></li>
+        <li><button type="button" class="soc-ph" data-placeholder="x"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17.8 3h3.1l-6.7 7.7L22 21h-6.2l-4.8-6.3L5.4 21H2.3l7.2-8.2L2 3h6.3l4.4 5.8zm-1.1 16.2h1.7L7.4 4.7H5.6z"/></svg>X</button></li>
+        {% if site.resume_url != "" %}
+        <li><a href="{{ site.resume_url | relative_url }}" download><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM13 3v5h5M9 13h6M9 17h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Résumé</a></li>
+        {% else %}
+        <li><button type="button" class="soc-ph" data-placeholder="resume"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6zM13 3v5h5M9 13h6M9 17h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg>Résumé</button></li>
+        {% endif %}
+      </ul>
+    </div>
+
+    <form class="contact-form" id="contactForm" novalidate>
+      <div class="cf-row">
+        <label class="cf-field"><span class="label">Your name</span><input id="cfName" name="name" type="text" autocomplete="name" placeholder="What should I call you?"></label>
+        <label class="cf-field"><span class="label">Email address</span><input id="cfEmail" name="email" type="email" autocomplete="email" placeholder="you@company.com"></label>
+      </div>
+      <label class="cf-field"><span class="label">What do you have in mind?</span><textarea id="cfMsg" name="message" rows="4" placeholder="A little about your opportunity or project..."></textarea></label>
+      <div class="cf-foot">
+        <button class="btn btn-solid btn-pill" type="submit">Create email draft <span aria-hidden="true">↗</span></button>
+        <p class="cf-note" id="cfNote" role="status" aria-live="polite"></p>
+      </div>
+    </form>
   </div>
 </section>
