@@ -216,8 +216,15 @@ export async function initCrowd() {
     const rect = canvas.getBoundingClientRect();
     return { x: event.clientX - rect.left, y: event.clientY - rect.top };
   };
+  // The hint beside the portrait goes once someone has found the lens.
+  let hintTimer = 0;
+  const tried = () => {
+    if (hintTimer || crowd.classList.contains("tried")) return;
+    hintTimer = window.setTimeout(() => crowd.classList.add("tried"), 900);
+  };
   crowd.addEventListener("pointermove", (event) => {
     if (event.pointerType === "touch") return;
+    tried();
     const p = local(event);
     if (lens.k < 0.02) { lens.x = p.x; lens.y = p.y; }
     lens.tx = p.x; lens.ty = p.y; lens.target = 1;
@@ -227,6 +234,7 @@ export async function initCrowd() {
   // Touch: a tap opens the code lens where the finger lands for a moment.
   crowd.addEventListener("pointerdown", (event) => {
     if (event.pointerType !== "touch") return;
+    tried();
     const p = local(event);
     lens.x = lens.tx = p.x; lens.y = lens.ty = p.y; lens.target = 1;
     tapUntil = performance.now() + 1400;

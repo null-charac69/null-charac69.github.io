@@ -7,6 +7,12 @@
     <ul class="repo-list" id="repoGrid">
       <li class="repo-empty">Loading the list…</li>
     </ul>
-    <p class="repo-after"><span id="repoSync"></span> <a class="link-u" href="https://github.com/null-charac69?tab=repositories" target="_blank" rel="noreferrer">Everything on GitHub</a></p>
+    <div class="repo-after">
+      <p class="repo-sync" id="repoSync" role="status" aria-live="polite"></p>
+      <div class="repo-actions">
+        <button class="repo-refresh" id="repoRefresh" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12a8 8 0 1 1-2.34-5.66M20 4v5h-5"/></svg>Refresh</button>
+        <a class="link-u" href="https://github.com/null-charac69?tab=repositories" target="_blank" rel="noreferrer">Everything on GitHub</a>
+      </div>
+    </div>
   </div>
 </section>

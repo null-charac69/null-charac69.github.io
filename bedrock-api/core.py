@@ -94,7 +94,15 @@ Functions, pg_cron); a provider-agnostic OpenAI-compatible LLM adapter, currentl
 on AWS Bedrock. Installable as a PWA. The code is proprietary (all rights reserved).
 
 Other public repositories are listed at https://github.com/null-charac69?tab=repositories
-(for example neura-dynamics-chatbot, movie-picker, learningBuddy-GenAI, alexa-bot).
+(for example pjarvis, neura-dynamics-chatbot, movie-picker, learningBuddy-GenAI).
+- pjarvis ("Jarvis", from its README): a local-first desktop assistant for Windows with WSL
+  development support. An Electron + React + TypeScript desktop client talks to a local Python
+  FastAPI service with a permission-gated tool system, confirmation-gated execution and audit
+  records; opt-in voice input and OS speech output. Work in progress.
+- neura-dynamics-chatbot (from its README): an AI pipeline with LangChain, LangGraph, Qdrant and
+  LangSmith.
+- movie-picker (from its README): a web app that finds movies by genre, decade, language,
+  country, rating and runtime using the TMDB API.
 
 Technical skills (from his résumé):
 - Agent frameworks: LangGraph, LangChain, LlamaIndex, CrewAI, AutoGen, OpenAI Agents SDK,

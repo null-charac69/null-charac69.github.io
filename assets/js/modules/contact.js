@@ -3,41 +3,97 @@ import { reduced } from "./scroll.js";
 const EMAIL = "anant.thakur2000@gmail.com";
 const GLYPHS = ["{", "}", "<", ">", "/", "*", "[", "]", "0", "1", "=>", "()"];
 
-// "Create email draft": builds a mailto: link, so no form backend is needed.
+// "Create email draft": builds a mailto: link, so no form backend is needed. Empty or
+// malformed fields get an inline hint under the field instead of a silent no-op.
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
 function initForm() {
   const form = document.getElementById("contactForm");
   const note = document.getElementById("cfNote");
   if (!form) return;
+
+  const fieldOf = (input) => input.closest(".cf-field");
+  function hint(input, text) {
+    const field = fieldOf(input);
+    if (!field) return;
+    let err = field.querySelector(".cf-err");
+    if (!err) {
+      err = document.createElement("span");
+      err.className = "cf-err";
+      err.id = input.id + "Err";
+      field.append(err);
+    }
+    err.textContent = text;
+    field.classList.toggle("invalid", Boolean(text));
+    if (text) {
+      input.setAttribute("aria-invalid", "true");
+      input.setAttribute("aria-describedby", err.id);
+      if (!reduced) {
+        field.classList.remove("shake");
+        void field.offsetWidth; // restart the animation
+        field.classList.add("shake");
+      }
+    } else {
+      input.removeAttribute("aria-invalid");
+      input.removeAttribute("aria-describedby");
+    }
+  }
+
+  ["name", "email", "message"].forEach((key) => {
+    form.elements[key].addEventListener("input", () => hint(form.elements[key], ""));
+  });
+
   form.addEventListener("submit", (event) => {
     event.preventDefault();
     const name = form.elements.name.value.trim();
     const from = form.elements.email.value.trim();
     const message = form.elements.message.value.trim();
-    if (!name && !message) {
-      if (note) note.textContent = "Add a few words first and I'll prepare the draft.";
-      form.elements.message.focus();
+    note?.classList.remove("ok");
+    if (note) note.textContent = "";
+
+    let first = null;
+    if (from && !EMAIL_RE.test(from)) {
+      hint(form.elements.email, "That email address doesn't look complete.");
+      first = first || form.elements.email;
+    }
+    if (!message) {
+      hint(form.elements.message, "Add a few words so the draft isn't empty.");
+      first = first || form.elements.message;
+    }
+    if (first) {
+      first.focus();
       return;
     }
+
     const subject = name ? "Hello Anant, from " + name : "Hello Anant";
     const body = message + (name || from ? "\n\n" + [name, from].filter(Boolean).join("\n") : "");
     window.location.href = "mailto:" + EMAIL + "?subject=" + encodeURIComponent(subject) + "&body=" + encodeURIComponent(body);
-    if (note) note.textContent = "Opening your email app. If nothing opens, write to " + EMAIL + ".";
+    if (note) {
+      note.textContent = "Draft ready in your email app. Nothing opened? Write to " + EMAIL + ".";
+      note.classList.add("ok");
+    }
+    say("Opening your email app with the draft…");
   });
+}
+
+// One shared toast for short confirmations.
+let toast = null;
+let toastTimer = 0;
+function say(text) {
+  if (!toast) {
+    toast = document.createElement("div");
+    toast.className = "toast";
+    toast.setAttribute("role", "status");
+    document.body.append(toast);
+  }
+  toast.textContent = text;
+  toast.classList.add("show");
+  window.clearTimeout(toastTimer);
+  toastTimer = window.setTimeout(() => toast.classList.remove("show"), 2600);
 }
 
 // Social placeholders: a burst of code glyphs and a short note.
 function initPlaceholders() {
-  const toast = document.createElement("div");
-  toast.className = "toast";
-  toast.setAttribute("role", "status");
-  document.body.append(toast);
-  let timer = 0;
-  const say = (text) => {
-    toast.textContent = text;
-    toast.classList.add("show");
-    window.clearTimeout(timer);
-    timer = window.setTimeout(() => toast.classList.remove("show"), 2600);
-  };
   const messages = {
     x: "Not set up yet. LinkedIn or email is the best way to reach me.",
     resume: "Résumé on request. Email me and I'll send it over.",

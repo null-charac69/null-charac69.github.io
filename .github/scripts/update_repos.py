@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
 """Regenerate public-repos.json from the GitHub REST API (public data only)."""
+import base64
 import json
 import os
+import re
 import sys
+import urllib.error
 import urllib.request
 from datetime import datetime, timezone
 
@@ -17,6 +20,39 @@ def fetch(url):
         headers["Authorization"] = "Bearer " + token
     with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=30) as r:
         return json.load(r)
+
+
+def readme_summary(name):
+    """First prose sentence(s) of a repo's README, for repos with no GitHub description."""
+    try:
+        data = fetch(f"https://api.github.com/repos/{USER}/{name}/readme")
+        text = base64.b64decode(data.get("content", "")).decode("utf-8", "replace")
+    except (urllib.error.URLError, ValueError, OSError):
+        return ""
+    # A title like "# Name - what it is" already says it best.
+    title = re.search(r"^#\s+[^\n]+?\s+[-\u2013\u2014:]\s+([^\n]{12,})$", text, re.M)
+    if title:
+        return re.sub(r"[*_`]+", "", title.group(1)).strip()
+    in_code = False
+    for raw in text.splitlines():
+        line = raw.strip()
+        if line.startswith("```"):
+            in_code = not in_code
+            continue
+        if in_code or not line or line[0] in "#-*>|![<=_" or line[0].isdigit():
+            continue
+        line = re.sub(r"!?\[([^\]]*)\]\([^)]*\)", r"\1", line)  # links -> text
+        line = re.sub(r"[*_`]+", "", line).strip().rstrip(":")
+        if len(line) < 25:
+            continue
+        first = re.match(r"(.{25,}?[.!?])\s", line + " ")
+        if first:
+            line = first.group(1)
+        if len(line) > 170:
+            cut = line[:170].rsplit(" ", 1)[0].rstrip(",;:")
+            line = cut + "…"
+        return line
+    return ""
 
 
 def main():
@@ -43,6 +79,9 @@ def main():
         if not r.get("private") and not r.get("archived")
     ]
     keep.sort(key=lambda r: r["pushed_at"] or "", reverse=True)
+    for r in keep:
+        if not (r["description"] or "").strip():
+            r["summary"] = readme_summary(r["name"])
 
     try:
         with open(OUT, encoding="utf-8") as fh:

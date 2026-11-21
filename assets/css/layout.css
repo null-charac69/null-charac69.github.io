@@ -1,7 +1,14 @@
 /* Floating pill navbar */
-.pillnav { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 300; display: flex; align-items: center; justify-content: space-between; gap: 10px; width: 268px; padding: 6px 6px 6px 20px; border: 1px solid var(--line); border-radius: 999px; background: var(--glass); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4); }
-.pill-brand { font-size: 15px; font-weight: 700; letter-spacing: -.03em; }
+.pillnav { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); z-index: 300; display: flex; align-items: center; justify-content: space-between; gap: 10px; width: auto; min-width: 268px; transition: transform .45s var(--ease), opacity .3s ease, min-width .45s var(--ease); padding: 6px 6px 6px 20px; border: 1px solid var(--line); border-radius: 999px; background: var(--glass); -webkit-backdrop-filter: blur(14px) saturate(1.4); backdrop-filter: blur(14px) saturate(1.4); }
+.pill-brand { display: flex; align-items: baseline; min-width: 0; font-size: 15px; font-weight: 700; letter-spacing: -.03em; white-space: nowrap; }
+/* Item 12: current section, shown next to the name */
+.pill-sec { overflow: hidden; max-width: 0; color: var(--muted); font: 500 11px var(--mono); letter-spacing: .04em; opacity: 0; transition: max-width .45s var(--ease), opacity .3s ease, margin .45s var(--ease); }
+.pill-sec.on { max-width: 110px; margin-left: 10px; opacity: 1; }
+.pill-sec::before { content: "/ "; }
 .pill-actions { display: flex; align-items: center; gap: 6px; }
+/* Item 3: tuck the navbar away while reading down, bring it back on any scroll up */
+.nav-hidden .pillnav { transform: translate(-50%, calc(-100% - 24px)); opacity: 0; pointer-events: none; }
+.pillnav:focus-within { transform: translateX(-50%) !important; opacity: 1 !important; pointer-events: auto !important; }
 .pill-icon { width: 34px; height: 34px; display: grid; place-items: center; padding: 0; border: 1px solid var(--line-strong); border-radius: 50%; background: transparent; cursor: pointer; transition: border-color .2s ease, background .2s ease; }
 .pill-icon:hover { border-color: var(--ink); }
 .theme-toggle svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.6; }
@@ -56,6 +63,13 @@
 @keyframes stream { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(-50%, 0, 0); } }
 .crowd-canvas { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; }
 .crowd.paused .stream { animation-play-state: paused; }
+/* Item 10: hint next to the portrait, gone once someone has tried it */
+.crowd-hint { position: absolute; top: 50%; left: calc(50% + var(--band) * .42 + 24px); z-index: 3; margin: 0; padding: 8px 12px; border-radius: 10px; background: rgba(255,255,255,.9); transform: translateY(-50%); color: #0a0a0a; font: 500 12px/1.5 var(--mono); letter-spacing: .04em; pointer-events: none; transition: opacity .5s ease; }
+.crowd-hint-arrow { display: inline-block; animation: nudge 1.6s var(--ease) infinite; }
+@keyframes nudge { 50% { transform: translateX(-6px); } }
+.crowd-hint [data-hint-touch] { display: none; }
+@media (hover: none) { .crowd-hint [data-hint-touch] { display: inline; } .crowd-hint [data-hint-hover] { display: none; } }
+.crowd.tried .crowd-hint { opacity: 0; }
 .foot-caption { padding: 11px var(--gutter); background: #0a0a0a; color: #6f6f6f; font: 400 11px/1.4 var(--mono); letter-spacing: .04em; }
 
 /* 404 */

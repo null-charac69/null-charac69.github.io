@@ -1,4 +1,6 @@
-import { reduced } from "./scroll.js";
+import { reduced, onScroll } from "./scroll.js";
+
+const SECTION_NAMES = { about: "About", skills: "Skills", work: "Projects", repos: "Repos", experience: "Experience", contact: "Contact" };
 
 // Floating pill navbar + full-screen menu overlay + smooth "back to top".
 export function initNavigation() {
@@ -39,13 +41,31 @@ export function initNavigation() {
     });
   }
 
-  // Mark the current section in the overlay.
+  // Hide the pill while reading down; any scroll up (or keyboard focus) brings it back.
+  let lastY = window.scrollY;
+  onScroll((y) => {
+    root.classList.toggle("scrolled", y > 40);
+    const menuOpen = overlay && overlay.classList.contains("open");
+    const delta = y - lastY;
+    if (menuOpen || y < 160) root.classList.remove("nav-hidden");
+    else if (delta > 8) root.classList.add("nav-hidden");
+    else if (delta < -8) root.classList.remove("nav-hidden");
+    if (Math.abs(delta) > 8 || y < 160) lastY = y;
+  });
+
+  // Mark the current section in the overlay and name it in the pill.
+  const pillSection = document.getElementById("pillSection");
   const links = Array.from(document.querySelectorAll(".menu-links a"));
   const sections = document.querySelectorAll("#home, #about, #skills, #work, #repos, #experience, #contact");
   if ("IntersectionObserver" in window && links.length) {
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (!entry.isIntersecting) return;
+        const name = SECTION_NAMES[entry.target.id] || "";
+        if (pillSection) {
+          if (name) pillSection.textContent = name;
+          pillSection.classList.toggle("on", Boolean(name));
+        }
         links.forEach((link) => {
           if ((link.getAttribute("href") || "").endsWith("#" + entry.target.id)) link.setAttribute("aria-current", "true");
           else link.removeAttribute("aria-current");

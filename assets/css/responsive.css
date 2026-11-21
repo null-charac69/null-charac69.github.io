@@ -1,6 +1,5 @@
 @media (max-width: 1100px) {
   .folders { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 40px 28px; }
-  .repo-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .foot-top { grid-template-columns: 1fr 1fr; }
   .foot-touch { grid-column: 1 / -1; }
 }
@@ -41,6 +40,16 @@
   .foot-explore ul { grid-template-columns: repeat(2, auto); }
   .foot-strip { align-items: flex-start; flex-direction: column; gap: 16px; }
   .chat-launcher { right: 14px; bottom: 14px; }
+  .repo-link { grid-template-columns: minmax(0, 1fr) 20px; gap: 6px 12px; padding: 18px 2px; }
+  .repo-link:hover, .repo-link:focus-visible { padding-inline: 8px; }
+  .repo-name { grid-column: 1; }
+  .repo-go { grid-column: 2; grid-row: 1; }
+  .repo-desc, .repo-meta-row { grid-column: 1 / -1; }
+  .repo-meta-row { justify-content: flex-start; }
+  .hero-cue { display: none; }
+  .crowd-hint { top: auto; bottom: 14px; left: 50%; transform: translateX(-50%); padding: 6px 12px; border-radius: 999px; background: rgba(255,255,255,.88); text-align: center; white-space: nowrap; }
+  .crowd-hint br { display: none; }
+  .crowd-hint-arrow { display: none; }
   .chat-panel { right: 8px; bottom: 8px; width: calc(100vw - 16px); height: min(520px, calc(100dvh - 24px)); }
 }
 
@@ -48,7 +57,6 @@
   .hero-title { font-size: 12vw; line-height: .94; }
   .hero-line { white-space: normal; }
   .folders { grid-template-columns: 1fr; }
-  .repo-list { grid-template-columns: 1fr; }
   .cf-row { grid-template-columns: 1fr; }
   .facts div { grid-template-columns: 92px 1fr; }
   .case { max-height: 92vh; }
@@ -73,6 +81,11 @@
   .d-loop, .d-signal { animation: none; }
   .d-signal { stroke-dashoffset: 0; stroke-dasharray: none; opacity: .35; }
   .stream { animation: none; }
+  .tl-now::before, .hero-cue-line::after, .crowd-hint-arrow, .repo-refresh.spinning svg { animation: none; }
+  .case.closing, .case.closing::backdrop { animation: none; }
+  .cf-field.shake { animation: none; }
+  .crowd-hint { display: none; }
+  .pillnav, .pill-sec { transition: none; }
   .reveal-ready [data-reveal] { opacity: 1; transform: none; transition: none; }
   .menu-links a { opacity: 1; transform: none; }
 }

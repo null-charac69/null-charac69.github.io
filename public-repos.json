@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-11-13T13:14:41Z",
+  "generatedAt": "2026-11-21T20:45:34Z",
   "repositories": [
     {
       "name": "null-charac69.github.io",
       "html_url": "https://github.com/null-charac69/null-charac69.github.io",
-      "description": "🚀 Welcome to my digital playground! This portfolio showcases my creative work, skills, and journey in tech. Built with modern web technologies, it represents both my professional achievements and my passion for clean, elegant design. Feel free to explore and get to know my work better!  ✨ Live at: null-charac69.github.io",
+      "description": "Personal site: AI/ML engineer portfolio, plus a small Bedrock-backed chat API on Vercel.",
       "language": "JavaScript",
       "stargazers_count": 0,
       "pushed_at": "2026-11-11T17:23:21Z",
@@ -12,14 +12,37 @@
       "fork": false
     },
     {
+      "name": "pjarvis",
+      "html_url": "https://github.com/null-charac69/pjarvis",
+      "description": null,
+      "language": "Python",
+      "stargazers_count": 0,
+      "pushed_at": "2026-11-21T19:52:54Z",
+      "topics": [],
+      "fork": false,
+      "summary": "A local-first desktop assistant for Windows, with practical WSL development support."
+    },
+    {
+      "name": "neura-dynamics-chatbot",
+      "html_url": "https://github.com/null-charac69/neura-dynamics-chatbot",
+      "description": null,
+      "language": "Python",
+      "stargazers_count": 0,
+      "pushed_at": "2026-11-21T19:44:54Z",
+      "topics": [],
+      "fork": false,
+      "summary": "AI Pipeline with LangChain, LangGraph, and LangSmith"
+    },
+    {
       "name": "thecut",
       "html_url": "https://github.com/null-charac69/thecut",
       "description": null,
       "language": "JavaScript",
       "stargazers_count": 0,
-      "pushed_at": "2026-11-10T16:52:05Z",
+      "pushed_at": "2026-11-21T19:05:19Z",
       "topics": [],
-      "fork": false
+      "fork": false,
+      "summary": "A personal nutrition, training and transformation tracker with an AI planner and an agentic coach that always knows your live plan."
     },
     {
       "name": "hrag-app",
@@ -42,16 +65,6 @@
       "fork": false
     },
     {
-      "name": "neura-dynamics-chatbot",
-      "html_url": "https://github.com/null-charac69/neura-dynamics-chatbot",
-      "description": null,
-      "language": "Python",
-      "stargazers_count": 0,
-      "pushed_at": "2025-12-03T18:08:33Z",
-      "topics": [],
-      "fork": false
-    },
-    {
       "name": "movie-picker",
       "html_url": "https://github.com/null-charac69/movie-picker",
       "description": null,
@@ -59,7 +72,8 @@
       "stargazers_count": 0,
       "pushed_at": "2025-11-06T16:33:04Z",
       "topics": [],
-      "fork": false
+      "fork": false,
+      "summary": "A web application that helps you discover movies based on your preferences."
     },
     {
       "name": "learningBuddy-GenAI",
@@ -69,7 +83,8 @@
       "stargazers_count": 0,
       "pushed_at": "2025-11-01T20:39:08Z",
       "topics": [],
-      "fork": false
+      "fork": false,
+      "summary": ""
     },
     {
       "name": "healthcare_analytics",
@@ -79,17 +94,8 @@
       "stargazers_count": 0,
       "pushed_at": "2025-10-18T18:23:49Z",
       "topics": [],
-      "fork": false
-    },
-    {
-      "name": "alexa-bot",
-      "html_url": "https://github.com/null-charac69/alexa-bot",
-      "description": "NA",
-      "language": "Python",
-      "stargazers_count": 0,
-      "pushed_at": "2024-12-25T11:22:36Z",
-      "topics": [],
-      "fork": false
+      "fork": false,
+      "summary": "Advanced healthcare analytics platform using deep learning for medical image analysis and patient outcome prediction, achieving 95% accuracy in early disease detection."
     },
     {
       "name": "null-charac69",

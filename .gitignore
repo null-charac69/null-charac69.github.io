@@ -125,3 +125,6 @@ dist
 # Vite logs
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Local working notes, never committed
+UI_CHECKLIST.md

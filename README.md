@@ -34,7 +34,7 @@ The Vercel API uses server-side AWS credentials from encrypted environment varia
 - Self-hosted fonts (Inter, JetBrains Mono) and no build step: native ES modules, CSS and SVG only.
 - Project folders open case studies with an inline SVG flow diagram and animated signal for each written-up project.
 - A question box in About (and the floating Ask AI drawer) that talks to the Bedrock chat; if the API is unreachable it answers from facts already on the page.
-- Other public repos listed from `public-repos.json` (visitors never call the GitHub API). Refresh it with `python3 .github/scripts/update_repos.py`, then commit.
+- Other public repos: the list renders from `public-repos.json`, then the browser checks GitHub's public API for the current list (cached for an hour per visitor, with a Refresh button) and falls back to the snapshot if GitHub is unreachable. Refresh the snapshot, including the README summaries used for repos without a description, with `python3 .github/scripts/update_repos.py`, then commit.
 - Footer band: a halftone portrait drawn live on a canvas from `assets/illustrations/portrait-dots.json` (my photo sampled into ~4,700 dot sizes); it assembles on scroll; around the cursor the dots turn into code glyphs and a spotlight reveals scanlines and code behind it, while rows of my stack and project names drift past.
 - Portfolio assistant powered by Kimi K3.1 on Amazon Bedrock.
 - Browser-local chat history; the API does not persist conversation content.
