@@ -1,3 +1,8 @@
+# Jekyll build output
+_site/
+.jekyll-cache/
+.sass-cache/
+
 # Python and AWS SAM
 **/.venv/
 **/__pycache__/
