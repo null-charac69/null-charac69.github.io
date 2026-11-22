@@ -17,5 +17,3 @@ exclude:
   - Gemfile.lock
   - LICENSE
   - README.md
-  - REDESIGN_CHECKLIST.md
-  - UI_CHECKLIST.md
