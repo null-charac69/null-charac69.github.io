@@ -27,6 +27,12 @@ export function initNavigation() {
     toggle.setAttribute("aria-expanded", String(open));
     if (label) label.textContent = open ? "Close" : "Menu";
     root.style.overflow = open ? "hidden" : "";
+    overlay.setAttribute("aria-modal", String(open));
+    // Keep Tab inside the menu (and the header that closes it) while it is open.
+    const header = document.getElementById("siteHeader");
+    [...document.body.children].forEach((el) => {
+      if (el !== overlay && el !== header && el.tagName !== "SCRIPT") el.inert = open;
+    });
     if (open) { overlay.setAttribute("tabindex", "-1"); overlay.focus({ preventScroll: true }); }
   }
 

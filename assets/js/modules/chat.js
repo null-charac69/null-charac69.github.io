@@ -1,6 +1,7 @@
 (() => {
   "use strict";
 
+  const SEND_ICON = '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 7-7 7 7M12 19V5"/></svg>';
   const launcher = document.getElementById("chatLauncher");
   const panel = document.getElementById("chatPanel");
   const closeButton = document.getElementById("chatClose");
@@ -374,7 +375,8 @@
         button.disabled = value;
       });
     }
-    sendButton.textContent = value ? "…" : "↑";
+    if (value) sendButton.textContent = "…";
+    else sendButton.innerHTML = SEND_ICON;
   }
 
   function openChat() {

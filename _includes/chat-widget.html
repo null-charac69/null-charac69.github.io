@@ -6,10 +6,10 @@
 <section class="chat-panel scope-dark" id="chatPanel" role="dialog" aria-modal="false" aria-labelledby="chatTitle" hidden>
   <div class="chat-header">
     <img class="chat-avatar" src="{{ '/assets/profile.jpg' | relative_url }}?v=20261111" width="40" height="40" alt="">
-    <div class="chat-head-text"><h2 id="chatTitle">Anant's Assistant</h2><p id="chatStatus">Projects, skills &amp; experience</p></div>
+    <div class="chat-head-text"><h2 id="chatTitle">Anant's assistant</h2><p id="chatStatus">Projects, skills &amp; experience</p></div>
     <div class="chat-header-actions">
       <button class="chat-clear" id="chatClear" type="button" aria-label="Start a new conversation">New chat</button>
-      <button class="chat-close" id="chatClose" type="button" aria-label="Close chat">×</button>
+      <button class="chat-close" id="chatClose" type="button" aria-label="Close chat"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6l12 12"/></svg></button>
     </div>
   </div>
   <div class="chat-messages" id="chatMessages" aria-live="polite" aria-relevant="additions">
@@ -24,7 +24,7 @@
   <form class="chat-form" id="chatForm">
     <label class="visually-hidden" for="chatInput">Write a message</label>
     <textarea id="chatInput" rows="1" maxlength="1800" placeholder="Ask about Anant" required></textarea>
-    <button class="chat-send" id="chatSend" type="submit" aria-label="Send message"><span aria-hidden="true">↑</span></button>
+    <button class="chat-send" id="chatSend" type="submit" aria-label="Send message"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 7-7 7 7M12 19V5"/></svg></button>
   </form>
-  <p class="chat-disclaimer">Don't assume anything. Verify everything.</p>
+  <p class="chat-disclaimer">It only knows what's on this site and can get things wrong</p>
 </section>

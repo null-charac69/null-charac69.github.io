@@ -151,10 +151,14 @@ export async function initRepositories() {
       .filter((repo) => !repo.fork && !featured.has(repo.name.toLowerCase()) && !isHousekeeping(repo))
       .sort((a, b) => String(b.pushed_at || "").localeCompare(String(a.pushed_at || "")));
     list.replaceChildren(...(others.length
-      ? others.map((repo) => createRow(repo, summaries))
+      ? others.map((repo, i) => {
+          const row = createRow(repo, summaries);
+          row.style.setProperty("--i", String(i));
+          return row;
+        })
       : [el("li", "repo-empty", "Nothing else public right now.")]));
     if (summary && others.length) {
-      summary.textContent = "Smaller things and experiments. " + others.length + " public, some of them rough.";
+      summary.textContent = others.length + " more public repos, some of them rough";
     }
   }
 
@@ -174,7 +178,7 @@ export async function initRepositories() {
   const cached = readCache();
   if (cached) {
     render(cached.repositories);
-    note("Live from GitHub, checked " + ago(cached.at) + ".");
+    note("Live from GitHub, checked " + ago(cached.at));
   } else if (snapshot) {
     render(snapshot.repositories);
     note("Saved list from " + dayFormat.format(new Date(snapshot.generatedAt)) + ". Checking GitHub…");
@@ -197,7 +201,7 @@ export async function initRepositories() {
       const entry = { at: Date.now(), repositories };
       writeCache(entry);
       render(repositories);
-      note("Live from GitHub, checked just now.");
+      note("Live from GitHub, checked just now");
     } catch (error) {
       console.warn("[Portfolio] Live repository check failed:", error);
       const fallback = readCache();
@@ -223,7 +227,7 @@ export async function initRepositories() {
   // Keep the "checked … ago" note honest while the page stays open.
   window.setInterval(() => {
     const current = readCache();
-    if (current && !busy) note("Live from GitHub, checked " + ago(current.at) + ".");
+    if (current && !busy) note("Live from GitHub, checked " + ago(current.at));
   }, 60000);
   await check(false);
 }

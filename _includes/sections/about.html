@@ -1,13 +1,8 @@
 <section class="about" id="about">
   <div class="shell about-grid">
     <div class="about-left">
-      <h2 class="about-greet">Hi,<br>I'm Anant</h2>
+      <h2 class="about-greet" data-split>Hi,<br>I'm Anant</h2>
       <p class="about-role">Generative AI engineer, building agents and retrieval systems.</p>
-      <div class="currently">
-        <p class="label">Currently at</p>
-        <p class="currently-co">Tata Elxsi</p>
-        <p class="currently-meta">Generative AI Engineer<br>Pune, India</p>
-      </div>
     </div>
 
     <div class="about-center">
@@ -19,19 +14,19 @@
     </div>
 
     <div class="about-right">
-      <p class="about-value">At Tata Elxsi, the multi-agent system I work on handles about 500 document tasks a day and resolves 70% of them without a person stepping in.</p>
-      <a class="btn btn-solid" href="#work">Explore projects <span aria-hidden="true">→</span></a>
+      <p class="about-value" data-scrub="0.4,0.1">At Tata Elxsi, the multi-agent system I work on handles about <span data-count="500">500</span> document tasks a day and resolves <span data-count="70">70</span>% of them without a person stepping in.</p>
+      <a class="btn btn-solid" href="#work">Explore projects</a>
     </div>
   </div>
 
   <div class="shell about-more">
-    <div class="about-text">
+    <div class="about-text ink" data-scrub="0.95,0">
       <p>Calling the model is rarely the hard part. The time goes into getting the right context in front of it, checking that the answer is supported by something, and keeping the whole thing fast and cheap enough to run. That's the work I like.</p>
       <p>I studied mechanical engineering at NIT Srinagar before moving into AI. Two habits came with me: work out the constraints before designing anything, and test instead of assuming.</p>
       <p>At Tata Elxsi I've worked on a multi-agent document-intelligence system, a hybrid RAG pipeline and its evaluation harness, and LLM serving optimisation. The details are on the timeline below.</p>
     </div>
     <div class="about-side">
-      <dl class="facts">
+      <dl class="facts" data-scrub="0.45,0.1" data-stagger=":scope > div">
         <div><dt class="label">Now</dt><dd>Generative AI Engineer, Tata Elxsi</dd></div>
         <div><dt class="label">Based in</dt><dd>Pune, India</dd></div>
         <div><dt class="label">Experience</dt><dd>Three years in production, since July 2023</dd></div>
@@ -41,7 +36,7 @@
         <label class="label" for="askInput">Ask the site a question</label>
         <div class="ask-row">
           <input id="askInput" type="text" maxlength="300" autocomplete="off" placeholder="How does the hybrid RAG work?">
-          <button type="submit" aria-label="Ask">↑</button>
+          <button type="submit" aria-label="Ask"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 7-7 7 7M12 19V5"/></svg></button>
         </div>
         <p class="ask-note">A model on Amazon Bedrock answers. It only knows what's published here.</p>
       </form>
