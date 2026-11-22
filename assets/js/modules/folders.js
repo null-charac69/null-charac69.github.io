@@ -36,6 +36,8 @@ export function initFolders() {
     window.setTimeout(finish, 400); // in case animationend never fires
   }
 
+  initCursor();
+
   dialogs.forEach((dialog) => {
     dialog.querySelector("[data-case-close]")?.addEventListener("click", () => animateClose(dialog));
     dialog.addEventListener("click", (event) => { if (event.target === dialog) animateClose(dialog); });
@@ -50,4 +52,34 @@ export function initFolders() {
       if (trigger) trigger.focus({ preventScroll: true });
     });
   });
+}
+
+// A round "Open" label that follows a fine pointer over the folders. Mouse and pen only;
+// skipped for touch and reduced motion.
+function initCursor() {
+  if (reduced || !window.matchMedia("(hover: hover) and (pointer: fine)").matches) return;
+  const folders = document.querySelectorAll(".folder");
+  if (!folders.length) return;
+  const cursor = document.createElement("div");
+  cursor.className = "folder-cursor";
+  cursor.setAttribute("aria-hidden", "true");
+  cursor.textContent = "Open";
+  document.body.append(cursor);
+  let frame = 0, x = 0, y = 0;
+  const place = () => {
+    frame = 0;
+    cursor.style.setProperty("--cx", x + "px");
+    cursor.style.setProperty("--cy", y + "px");
+  };
+  folders.forEach((folder) => {
+    folder.addEventListener("pointermove", (event) => {
+      if (event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+      x = event.clientX; y = event.clientY;
+      if (!frame) frame = requestAnimationFrame(place);
+      cursor.classList.add("on");
+    });
+    folder.addEventListener("pointerleave", () => cursor.classList.remove("on"));
+    folder.addEventListener("click", () => cursor.classList.remove("on"));
+  });
+  window.addEventListener("scroll", () => cursor.classList.remove("on"), { passive: true });
 }

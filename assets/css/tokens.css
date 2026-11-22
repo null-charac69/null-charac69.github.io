@@ -39,4 +39,8 @@
   --gutter: clamp(20px, 4vw, 56px);
   --ease: cubic-bezier(.2,.7,.2,1);
   --spring: cubic-bezier(.34,1.45,.64,1);
+  /* One vertical rhythm for every section (8px-scale endpoints). */
+  --section-y: clamp(64px, 8vw, 112px);
+  /* Left/right edge of the centred .shell, for full-bleed blocks that must line up with it. */
+  --edge: max(var(--gutter), calc((100% - var(--shell)) / 2));
 }

@@ -1,6 +1,6 @@
 <div class="chat-backdrop" id="chatBackdrop" hidden></div>
 <button class="chat-launcher" id="chatLauncher" type="button" aria-label="Open Ask AI" aria-expanded="false" aria-controls="chatPanel">
-  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l1.9 6.100L20 10l-6.100 1.900L12 18l-1.900-6.100L4 10l6.100-1.900zM19 15l.8 2.200L22 18l-2.200.8L19 21l-.8-2.200L16 18l2.200-.8z"/></svg>
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22z"/></svg>
   <span>Ask AI</span>
 </button>
 <section class="chat-panel scope-dark" id="chatPanel" role="dialog" aria-modal="false" aria-labelledby="chatTitle" hidden>
@@ -13,7 +13,7 @@
     </div>
   </div>
   <div class="chat-messages" id="chatMessages" aria-live="polite" aria-relevant="additions">
-    <div class="chat-empty"><p>Get to know<br>Anant's work.</p></div>
+    <div class="chat-empty"><p>Get to know<br>Anant's work</p></div>
   </div>
   <div class="chat-suggestions" id="chatSuggestions">
     <button type="button" data-chat-prompt="Walk me through AgentOS and its architecture.">How does AgentOS work?</button>
@@ -23,7 +23,7 @@
   </div>
   <form class="chat-form" id="chatForm">
     <label class="visually-hidden" for="chatInput">Write a message</label>
-    <textarea id="chatInput" rows="1" maxlength="1800" placeholder="Ask about Anant..." required></textarea>
+    <textarea id="chatInput" rows="1" maxlength="1800" placeholder="Ask about Anant" required></textarea>
     <button class="chat-send" id="chatSend" type="submit" aria-label="Send message"><span aria-hidden="true">↑</span></button>
   </form>
   <p class="chat-disclaimer">Don't assume anything. Verify everything.</p>

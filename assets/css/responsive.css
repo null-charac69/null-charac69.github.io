@@ -6,7 +6,7 @@
 
 @media (max-width: 900px) {
   /* Tablet and below: no flying portrait, every static card is shown. */
-  .hero { padding-bottom: 300px; }
+  .hero { min-height: min(100svh, 760px); padding-bottom: 300px; }
   .about-grid { grid-template-columns: 1fr; gap: 36px; }
   .about-center { display: none; }
   .about-slot { max-width: 280px; }
@@ -14,8 +14,8 @@
   .about-more { grid-template-columns: 1fr; }
   .stack-grid { grid-template-columns: 1fr; padding-bottom: 32px; }
   .stack-col:nth-child(2), .stack-col:nth-child(3) { margin-top: 0; }
-  .sec-head { flex-direction: column; align-items: flex-start; }
-  .sec-sub { text-align: left; }
+  .sec-head { grid-template-columns: 1fr; }
+  .all-work { justify-self: start; }
   .project { grid-template-columns: 1fr; }
   .contact-grid { grid-template-columns: 1fr; }
   .menu-inner { grid-template-columns: 1fr; gap: 32px; padding-block: 100px 40px; }
@@ -33,15 +33,19 @@
 
 @media (max-width: 760px) {
   .pillnav { top: 10px; }
-  .hero-corner-r { display: none; }
   .hero-corner-l { left: 50%; transform: translateX(-50%); bottom: 4px; font-size: 14px; }
   .hero-slot { bottom: 34px; }
   .foot-top { grid-template-columns: 1fr; gap: 32px; padding-block: 48px 40px; }
   .foot-explore ul { grid-template-columns: repeat(2, auto); }
   .foot-strip { align-items: flex-start; flex-direction: column; gap: 16px; }
   .chat-launcher { right: 14px; bottom: 14px; }
-  .repo-link { grid-template-columns: minmax(0, 1fr) 20px; gap: 6px 12px; padding: 18px 2px; }
-  .repo-link:hover, .repo-link:focus-visible { padding-inline: 8px; }
+  .repo-link { grid-template-columns: minmax(0, 1fr) 20px; gap: 8px 12px; padding: 18px 0; }
+  .repo-link::before { inset: 0 -10px; }
+  .certs ul { grid-template-columns: 1fr; }
+  /* E5 / M11: Ask AI shrinks to an icon once the page is scrolled, so it covers less */
+  .scrolled .chat-launcher { width: 48px; height: 48px; padding: 0; justify-content: center; gap: 0; }
+  .scrolled .chat-launcher span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+  .scrolled .chat-launcher svg { width: 19px; height: 19px; }
   .repo-name { grid-column: 1; }
   .repo-go { grid-column: 2; grid-row: 1; }
   .repo-desc, .repo-meta-row { grid-column: 1 / -1; }
@@ -54,8 +58,11 @@
 }
 
 @media (max-width: 560px) {
-  .hero-title { font-size: 12vw; line-height: .94; }
-  .hero-line { white-space: normal; }
+  /* M3: each line stays whole ("AI" no longer drops to its own line); M4: no tall empty band */
+  .hero { min-height: min(100svh, 640px); }
+  .hero-title { font-size: min(12vw, calc((100vw - 40px) / 8.3)); line-height: .94; }
+  .hero-intro { gap: 8px 10px; font-size: 11px; }
+  .certs li { grid-template-columns: 1fr; gap: 4px; }
   .folders { grid-template-columns: 1fr; }
   .cf-row { grid-template-columns: 1fr; }
   .facts div { grid-template-columns: 92px 1fr; }
@@ -81,11 +88,27 @@
   .d-loop, .d-signal { animation: none; }
   .d-signal { stroke-dashoffset: 0; stroke-dasharray: none; opacity: .35; }
   .stream { animation: none; }
-  .tl-now::before, .hero-cue-line::after, .crowd-hint-arrow, .repo-refresh.spinning svg { animation: none; }
+  .repo-refresh.spinning svg { animation: none; }
   .case.closing, .case.closing::backdrop { animation: none; }
   .cf-field.shake { animation: none; }
   .crowd-hint { display: none; }
   .pillnav, .pill-sec { transition: none; }
+  .folder-cursor { display: none; }
   .reveal-ready [data-reveal] { opacity: 1; transform: none; transition: none; }
   .menu-links a { opacity: 1; transform: none; }
+}
+
+/* M10: touch screens get 44px targets. Visual size stays; the hit area grows. */
+@media (pointer: coarse) {
+  .pill-icon::after, .pill-menu::after { content: ""; position: absolute; inset: -5px; }
+  .folder-link, .all-work, .contact-copy button, .repo-actions a, .foot-explore a, .foot-touch a, .foot-top-link, .hero-avail, .pill-brand, .contact-email { display: inline-flex; align-items: center; min-height: 44px; }
+  .folder-link { padding-top: 4px; }
+  .repo-refresh { height: 44px; padding: 0 18px; }
+  .foot-explore ul { gap: 0 36px; }
+  .foot-touch { gap: 4px; }
+}
+
+/* E9: where the "Open" cursor runs, the folder's own "Click to open" label would repeat it. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  .f-hint { display: none; }
 }

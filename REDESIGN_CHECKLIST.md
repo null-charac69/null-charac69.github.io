@@ -97,3 +97,74 @@ The visual theme was replaced again at the owner's request (high-contrast monoch
 1. No fact gets invented. Everything stated comes from the old page or the public repos. Where the old page was vague (dates, client work), the new one says less, not more.
 2. First person, plain words, specific nouns.
 3. The design is the original theme; the specific parts are the copy, the diagrams and the question box.
+
+## E. UI/UX audit pass (layout, spacing, polish)
+
+Measured at 1440, 1024, 768 and 390 px wide, checked against the ui-ux-pro-max guidelines. The case-study dialogs keep the spacing the owner approved; nothing below changes them.
+
+### Must-fix layout and spacing
+
+- [x] **M1. Hero tagline on the portrait.** "[[ GENERATIVE AI & AGENTIC SYSTEMS ]]" sat on the portrait card between about 760 and 1100 px.
+  - Fixed: Hidden below 1100 px; above that it is placed from the shell edge.
+- [x] **M2. Hero corners off the page edge.** "©2026", the Scroll cue and the footer caption used the raw gutter (56 px at 1440) while every section starts at the shell edge (92 px).
+  - Fixed: New `--edge` token (shell edge for full-bleed blocks); all three use it.
+- [x] **M3. "AI" alone on a line on phones.** The title wrapped as GENERATIVE / AI / ENGINEER.
+  - Fixed: Lines no longer wrap; the size scales to fit the width.
+- [x] **M4. Empty band in the phone and tablet hero.** About 210 px of nothing between the title and the portrait.
+  - Fixed: Hero height capped (640 px phones, 760 px tablets) and the new intro line fills the middle.
+- [x] **M5. Timeline text collided at 901 to 1100 px** (introduced by the earlier "larger Experience text" change).
+  - Fixed: Each block is capped to its own column width (`--tl-col` set by `timeline.js`).
+- [x] **M6. "Read case study" links at two heights** because the folder captions wrapped to one or two lines.
+  - Fixed: Folder items are flex columns; the link sits at the bottom, so all four line up.
+- [x] **M7. No shared vertical rhythm.** Section padding was 140/110, 115, 86/115, 0/110, 115 and 129 px; inner gaps of 14, 18, 22, 26, 28 and 34 px.
+  - Fixed: One `--section-y` token (64 to 112 px) for every section; inner gaps moved to the 8 px scale (Repos keeps a zero top as the continuation of Projects).
+- [x] **M8. Repo rows shifted their text on hover** (the hover added padding).
+  - Fixed: The hover background is a pseudo-element behind the row; text stays put.
+- [x] **M9. Repo rows sat 6 px inside the shell edge** on both sides.
+  - Fixed: Rows are flush with the edges every other section uses.
+- [x] **M10. Small touch targets** (folder links 22 px, Copy address 21 px, footer links 18 px, Refresh 32 px, theme and Menu 34 px).
+  - Fixed: On touch screens these get 44 px hit areas; the visible size stays the same.
+- [x] **M11. Ask AI covered content on phones** (the email-draft button, the last repo row).
+  - Fixed: It shrinks to a 48 px icon once the page is scrolled.
+- [x] **M12. Two text colours failed contrast**: the footer caption and chat disclaimer were #6f6f6f on #0a0a0a (3.9:1).
+  - Fixed: #8a8a8a (5.7:1), the same grey as the rest of the page.
+
+### Enhancements
+
+- [x] **E1. Who and whether available, on the first screen.** The hero showed only a job title.
+  - Fixed: A line under the title with the name, "Pune, India" and an "Open to opportunities" pill that jumps to Contact.
+- [ ] **E2. Real résumé download.** Blocked: no PDF in the repo. Drop it in `assets/` (without the phone number) and set `resume_url` in `_config.yml`; the Résumé chip switches to a download by itself.
+- [x] **E3. One heading pattern.** Section subtitles floated right-aligned at different positions.
+  - Fixed: Section heads are a 2:1 grid, so every subtitle starts on the same line. Contact keeps its larger heading on purpose.
+- [x] **E4. Press feedback.** Buttons, pills, social chips, Refresh, the nav buttons and Ask AI now give a little on press.
+- [x] **E5. Ask AI compact on phones.** See M11.
+- [x] **E6. Readable supporting text.** Stack, folder, repo and certification text moved from 14 to 15 px.
+- [x] **E7. Folder captions.** Equal height (M6) plus a short tech line from each case study's stack.
+- [x] **E8. Scannable certifications.** A two-column list with the issuer in small type beside each name (one column on phones).
+- [x] **E9. Folder cursor.** A round "Open" label follows the mouse over the folders (mouse and pen only, off for reduced motion); it replaces the folder's own "Click to open" hint where it runs.
+- [x] **E10. Anchor offset.** The navbar now hides on the way down, so the 84 px scroll offset left a gap. Offset removed; Repos (no top padding) gets its own 80 px margin.
+
+### Earlier rules, reconsidered
+
+- [x] **B4 (reading-progress bar): brought back.** With the navbar hiding on scroll, a 2 px hairline along the top is the only constant sense of place, and it fits the monochrome style. It is a hairline, not a coloured bar.
+- **Kept out, still:**
+  - A3 numbered kickers: the most recognisable generated-portfolio pattern.
+  - B1 filters and B2 search: four projects and four repos need neither.
+  - B3 fade-in on every block: reveals stay limited to the few `[data-reveal]` items.
+  - B5 intro ticker: the footer word streams already do this.
+  - A16 an arrow on every link: arrows stay on outbound or directional links only.
+
+## F. Unslop polish pass
+
+Audit with the unslop checklist. The site was mostly designed already, so this was polish only: palette, bold Inter, layout and the visuals (3D title, halftone portrait, flow diagrams) stay. The `< />` brackets around the hero title are the one signature detail.
+
+- [x] **F1. No sparkle for AI.** Ask AI uses a plain speech-bubble line icon.
+- [x] **F2. Nothing loops unless it is live.** The "Open to opportunities" dot, the "Now" badge dot, the Scroll cue line and the footer hint arrow are still. The diagram signals (they show flow), the footer word streams, the chat typing dots and the Refresh spinner keep moving.
+- [x] **F3. No glow.** The current timeline node keeps its ring and loses the blur.
+- [x] **F4. Sentence-case micro-labels.** Mono labels (form labels, "Currently at", certification issuers, hero name line, Scroll, "Now", folder hint and cursor, project kind) are no longer uppercase with wide tracking.
+- [x] **F5. No negative tracking on small text.** Repo names, the pill wordmark, buttons and the chat header sit at 0. Large display type keeps its tight tracking.
+- [x] **F6. One bracket motif.** The `[[ GENERATIVE AI & AGENTIC SYSTEMS ]]` corner tagline repeated the headline and is gone.
+- [x] **F7. Headings without trailing periods.** "Experience", "Let's talk", "Hi, I'm Anant", "See you around", the footer wordmark and the chat's empty state now match "Tech Stack" and "Repos".
+- [x] **F8. Short placeholders.** "First and last name", "A role, a project or a question", "Ask about Anant".
+- [x] **F9. No dead controls.** The X chip only showed a toast, so it is removed until there is a profile. Résumé stays as a placeholder until the PDF exists (E2).
+- [x] **F10. 4 px grid.** Buttons and Ask AI are 48 px tall, the cursor is 64 px, and the odd gaps (7, 9, 14, 22 px) moved to the grid. The folder link's intended 12 px top padding was being overridden and now applies.

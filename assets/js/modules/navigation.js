@@ -43,7 +43,12 @@ export function initNavigation() {
 
   // Hide the pill while reading down; any scroll up (or keyboard focus) brings it back.
   let lastY = window.scrollY;
-  onScroll((y) => {
+  const progress = document.getElementById("readProgress");
+  onScroll((y, vh) => {
+    if (progress) {
+      const max = document.documentElement.scrollHeight - vh;
+      progress.style.setProperty("--read", max > 0 ? Math.min(1, y / max).toFixed(4) : "0");
+    }
     root.classList.toggle("scrolled", y > 40);
     const menuOpen = overlay && overlay.classList.contains("open");
     const delta = y - lastY;

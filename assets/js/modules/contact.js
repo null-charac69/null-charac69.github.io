@@ -95,7 +95,6 @@ function say(text) {
 // Social placeholders: a burst of code glyphs and a short note.
 function initPlaceholders() {
   const messages = {
-    x: "Not set up yet. LinkedIn or email is the best way to reach me.",
     resume: "Résumé on request. Email me and I'll send it over.",
   };
 

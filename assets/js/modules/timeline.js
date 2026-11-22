@@ -24,10 +24,13 @@ export function initTimeline() {
     if (vertical) {
       items.forEach((li) => { li.style.left = ""; li.style.top = ""; });
       list.style.removeProperty("--tl-h");
+      list.style.removeProperty("--tl-col");
       return;
     }
     const W = tl.clientWidth;
     const hp = W / N;
+    // Each text block may use at most its own column, so neighbours never touch.
+    list.style.setProperty("--tl-col", hp.toFixed(1) + "px");
     svg.setAttribute("viewBox", `0 0 ${W} ${H}`);
     svg.setAttribute("width", W);
     svg.setAttribute("height", H);
